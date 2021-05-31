@@ -1,5 +1,7 @@
 mod commands;
-use commands::prottern;
+mod utils;
+
+use commands::{prottern, init};
 use std::env;
 
 fn main() {
@@ -15,7 +17,13 @@ fn main() {
         args = &env[2..];
     }
 
-    match &env[1] {
-        _ => println!("Invalid command."),
+    let res = match env[1].as_str() {
+        "init" => init(),
+        _ => Err("Invalid command.".to_string())
+    };
+
+    match res {
+        Ok(o) => println!("{}", o),
+        Err(e) => println!("{}", e)
     }
 }
