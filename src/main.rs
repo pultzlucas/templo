@@ -1,7 +1,7 @@
 mod commands;
 mod utils;
 
-use commands::{prottern, init};
+use commands::{prottern::prottern, init::init};
 use std::env;
 
 #[allow(unused_variables, unused_assignments)]
