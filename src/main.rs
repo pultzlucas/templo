@@ -4,6 +4,7 @@ mod utils;
 use commands::{prottern, init};
 use std::env;
 
+#[allow(unused_variables, unused_assignments)]
 fn main() {
     let env: Vec<String> = env::args().collect();
     let mut args: &[String] = &[];
