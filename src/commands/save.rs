@@ -1,7 +1,7 @@
 use crate::core::get_template_paths;
 use crate::utils::structs::Template;
 
-pub fn save(args: &[String]) -> Result<String, String> {
+pub fn save(args: &[String]) -> Result<&str, String> {
     if args.len() < 1 {
         return Err("Folder name must be specified.".to_string())
     }
@@ -19,5 +19,5 @@ pub fn save(args: &[String]) -> Result<String, String> {
 
     println!("HEAD: \n{:?}", template_head);
 
-    Ok("saved!".to_string())
+    Ok("saved!")
 }
