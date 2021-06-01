@@ -1,5 +1,6 @@
 //#[derive(Serialize, Deserialize)]
+#[derive(Debug)]
 pub struct Template {
-    name: String,
-    paths: String,
+    pub name: String,
+    pub paths: String,
 }
