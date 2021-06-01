@@ -1,7 +1,7 @@
 mod commands;
 mod utils;
 
-use commands::{prottern::prottern, init::init};
+use commands::*;
 use std::env;
 
 #[allow(unused_variables, unused_assignments)]
@@ -19,6 +19,7 @@ fn main() {
     }
 
     let res = match env[1].as_str() {
+        "save" => save(args),
         "init" => init(),
         _ => Err("Invalid command.".to_string())
     };
