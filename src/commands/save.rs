@@ -1,5 +1,14 @@
 use crate::core::get_template_paths;
-use crate::utils::structs::HEAD;
+extern crate serde;
+extern crate serde_json;
+use serde_derive::{Serialize};
+
+#[derive(Debug, Serialize)]
+struct HEAD {
+    name: String,
+    paths: String,
+}
+
 use std::path::Path;
 
 pub fn save(args: &[String]) -> Result<&str, String> {
@@ -24,12 +33,14 @@ pub fn save(args: &[String]) -> Result<&str, String> {
         return Err(format!("Error: {}", template_paths.unwrap_err()))
     }
 
-    let template_head = HEAD {
+    let head = HEAD {
         name: template_name,
         paths: template_paths.unwrap().join(";")
     };
 
-    println!("{:?}", template_head);
+    let head_string = serde_json::to_string(&head).unwrap();
+
+    println!("{:?}", head_string);
 
     Ok("saved!")
 }
