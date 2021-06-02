@@ -3,13 +3,18 @@ mod tests;
 
 extern crate fs_tree;
 extern crate regex;
+use crate::utils::paths::TEMPLATES_PATH;
 use fs_tree::FsTreeBuilder;
 use regex::Regex;
-use std::path::MAIN_SEPARATOR;
+use std::{path::MAIN_SEPARATOR, path::{PathBuf, Path}};
+
+pub fn get_template_dir_path(template_name: &String) -> PathBuf {
+    Path::new(TEMPLATES_PATH).join(template_name)
+}
 
 pub fn get_template_paths(directory: String) -> Result<Vec<String>, String> {
     if directory.contains(r"\") || directory.ends_with("/") {
-        return Err("Invalid directory path".to_string())
+        return Err("Invalid directory path".to_string());
     }
 
     let fs_tree = FsTreeBuilder::new(&directory).build();
