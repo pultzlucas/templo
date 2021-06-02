@@ -29,7 +29,7 @@ pub fn save(args: &[String]) -> Result<&str, String> {
         paths: template_paths.unwrap().join(";")
     };
 
-    println!("HEAD: \n{:?}", template_head);
+    println!("{:?}", template_head);
 
     Ok("saved!")
 }
