@@ -13,7 +13,7 @@ pub fn save(args: &[String]) -> Result<&str, String> {
 
     let directory = args[0].clone();
     let template_name = args[1].clone();
-    
+
     if get_template_dir_path(&template_name).exists() {
         return Err(format!("Template \"{}\" already exists.", &template_name));
     }
@@ -22,22 +22,20 @@ pub fn save(args: &[String]) -> Result<&str, String> {
         return Err(format!("Error: Directory {} not exists.", directory));
     }
 
-    let template_paths = get_template_paths(directory);
-
-    if template_paths.is_err() {
-        return Err(format!("Error: {}", template_paths.unwrap_err()));
-    }
+    let template_paths = match get_template_paths(directory) {
+        Ok(o) => o,
+        Err(e) => return Err(e.to_string())
+    };
 
     let head = HEAD {
         name: template_name,
-        paths: template_paths.unwrap().join(";"),
+        paths: template_paths.join(";"),
     };
 
     let head_string = serde_json::to_string_pretty(&head).unwrap();
-    let err = save_head(head_string, head.name);
 
-    if err.is_err() {
-        return Err(err.unwrap_err().to_string());
+    if let Err(e) = save_head(head_string, head.name) {
+        return Err(e.to_string())
     }
 
     Ok("Template was saved successfully.")
