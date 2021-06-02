@@ -1,9 +1,9 @@
 extern crate serde;
 extern crate serde_json;
 
-use crate::core::{get_template_dir_path, get_template_paths};
+use crate::core::path::{get_template_dir_path, get_template_paths, save_head};
 use serde_derive::Serialize;
-use std::{fs, io, path::Path};
+use std::path::Path;
 
 #[derive(Debug, Serialize)]
 struct HEAD {
@@ -49,19 +49,4 @@ pub fn save(args: &[String]) -> Result<&str, String> {
     }
 
     Ok("Template was saved successfully.")
-}
-
-fn save_head(head: String, template_name: String) -> Result<(), io::Error> {
-    let template_path = get_template_dir_path(&template_name);
-    match fs::create_dir(&template_path) {
-        Ok(o) => o,
-        Err(e) => return Err(e),
-    }
-
-    let template_path = template_path
-        .join("HEAD.json")
-        .into_os_string()
-        .into_string()
-        .unwrap();
-    fs::write(template_path, head)
 }

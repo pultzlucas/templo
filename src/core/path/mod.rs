@@ -6,7 +6,22 @@ extern crate regex;
 use crate::utils::paths::TEMPLATES_PATH;
 use fs_tree::FsTreeBuilder;
 use regex::Regex;
-use std::{path::MAIN_SEPARATOR, path::{PathBuf, Path}};
+use std::{path::MAIN_SEPARATOR, path::{PathBuf, Path}, fs, io};
+
+pub fn save_head(head: String, template_name: String) -> Result<(), io::Error> {
+    let template_path = get_template_dir_path(&template_name);
+    match fs::create_dir(&template_path) {
+        Ok(o) => o,
+        Err(e) => return Err(e),
+    }
+
+    let template_path = template_path
+        .join("HEAD.json")
+        .into_os_string()
+        .into_string()
+        .unwrap();
+    fs::write(template_path, head)
+}
 
 pub fn get_template_dir_path(template_name: &String) -> PathBuf {
     Path::new(TEMPLATES_PATH).join(template_name)
