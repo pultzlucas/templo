@@ -1,1 +1,1 @@
-pub const TEMPLATES_PATH: &'static str = "C:/Prottern/Repository/Templates";
+pub const TEMPLATES_PATH: &'static str = r"C:\Prottern\Repository\Templates";
