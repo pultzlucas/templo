@@ -1,6 +1,6 @@
 //#[derive(Serialize, Deserialize)]
 #[derive(Debug)]
-pub struct Template {
+pub struct HEAD {
     pub name: String,
     pub paths: String,
 }
