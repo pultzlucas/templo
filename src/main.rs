@@ -5,8 +5,6 @@ mod core;
 use commands::*;
 use std::env;
 
-
-
 #[allow(unused_variables, unused_assignments)]
 fn main() {
     let env: Vec<String> = env::args().collect();
@@ -24,7 +22,7 @@ fn main() {
     let res = match env[1].as_str() {
         "init" => init(),
         "save" => save(args),
-        "remove" => remove(args),
+        "delete" => delete(args),
         "templates" => templates(),
         _ => Err("Invalid command.".to_string())
     };

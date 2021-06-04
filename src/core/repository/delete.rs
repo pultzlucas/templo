@@ -2,7 +2,7 @@ use std::{fs, path::Path};
 
 use crate::utils::paths::TEMPLATES_PATH;
 
-pub fn remove_template(template_name: &String) -> Result<(), String> {
+pub fn delete_template(template_name: &String) -> Result<(), String> {
     let template_dir_path = Path::new(TEMPLATES_PATH).join(template_name);
 
     if !template_dir_path.exists() {

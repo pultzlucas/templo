@@ -1,12 +1,12 @@
 mod init;
 mod prottern;
 mod save;
-mod remove;
+mod delete;
 mod templates;
 
 pub use init::*;
 pub use prottern::*;
 pub use save::*;
-pub use remove::*;
+pub use delete::*;
 pub use templates::*;
 //pub enum Commands {}

@@ -1,6 +1,6 @@
 mod save;
 mod get;
-mod remove;
+mod delete;
 pub use save::*;
 pub use get::*;
-pub use remove::*;
+pub use delete::*;
