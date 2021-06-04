@@ -22,9 +22,10 @@ fn main() {
     }
 
     let res = match env[1].as_str() {
-        "remove" => remove(args),
-        "save" => save(args),
         "init" => init(),
+        "save" => save(args),
+        "remove" => remove(args),
+        "templates" => templates(),
         _ => Err("Invalid command.".to_string())
     };
 
