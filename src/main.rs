@@ -22,6 +22,7 @@ fn main() {
     }
 
     let res = match env[1].as_str() {
+        "remove" => remove(args),
         "save" => save(args),
         "init" => init(),
         _ => Err("Invalid command.".to_string())
@@ -29,6 +30,6 @@ fn main() {
 
     match res {
         Ok(o) => println!("{}", o),
-        Err(e) => println!("{}", e)
+        Err(e) => println!("Error: {}", e)
     }
 }

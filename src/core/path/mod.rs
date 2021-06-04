@@ -6,9 +6,14 @@ extern crate regex;
 use crate::utils::paths::TEMPLATES_PATH;
 use fs_tree::FsTreeBuilder;
 use regex::Regex;
-use std::{path::MAIN_SEPARATOR, path::{PathBuf, Path}, fs, io};
+use std::{
+    fs,
+    io::Error,
+    path::MAIN_SEPARATOR,
+    path::{Path, PathBuf},
+};
 
-pub fn save_head(head: String, template_name: String) -> Result<(), io::Error> {
+pub fn save_head(head: String, template_name: String) -> Result<(), Error> {
     let template_path = get_template_dir_path(&template_name);
     match fs::create_dir(&template_path) {
         Ok(o) => o,
@@ -20,6 +25,7 @@ pub fn save_head(head: String, template_name: String) -> Result<(), io::Error> {
         .into_os_string()
         .into_string()
         .unwrap();
+        
     fs::write(template_path, head)
 }
 

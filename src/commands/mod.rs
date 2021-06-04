@@ -1,8 +1,10 @@
-pub mod prottern;
-pub mod init;
-pub mod save;
+mod init;
+mod prottern;
+mod save;
+mod remove;
 
-pub use prottern::prottern;
-pub use init::init;
-pub use save::save;
+pub use init::*;
+pub use prottern::*;
+pub use save::*;
+pub use remove::*;
 //pub enum Commands {}
