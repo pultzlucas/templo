@@ -1,4 +1,5 @@
-use crate::core::path::{get_template_dir_path, get_template_paths, save_head};
+use crate::core::path::{get_template_dir_path, get_template_paths};
+use crate::core::repository::save_template;
 use crate::utils::structs::HEAD;
 use std::path::Path;
 
@@ -34,7 +35,7 @@ pub fn save(args: &[String]) -> Result<&str, String> {
 
     let head_string = serde_json::to_string_pretty(&head).unwrap();
 
-    if let Err(e) = save_head(head_string, head.name) {
+    if let Err(e) = save_template(head_string, head.name) {
         return Err(e.to_string())
     }
 
