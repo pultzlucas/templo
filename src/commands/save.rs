@@ -1,6 +1,6 @@
 use crate::core::path::{get_template_dir_path, get_template_paths};
 use crate::core::repository::save_template;
-use crate::utils::structs::HEAD;
+use crate::utils::structs::Template;
 use std::path::Path;
 
 pub fn save(args: &[String]) -> Result<&str, String> {
@@ -28,7 +28,7 @@ pub fn save(args: &[String]) -> Result<&str, String> {
         Err(e) => return Err(e.to_string())
     };
 
-    let head = HEAD {
+    let head = Template {
         name: template_name,
         paths: template_paths.join(";"),
     };
