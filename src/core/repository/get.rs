@@ -4,7 +4,7 @@ extern crate serde_json;
 use crate::utils::paths::TEMPLATES_PATH;
 use crate::utils::structs::Template;
 
-pub fn get_templates_as_struct() -> Vec<Template> {
+pub fn get_templates_as_struct() -> Option<Vec<Template>> {
     let dir_names = fs::read_dir(TEMPLATES_PATH)
         .unwrap()
         .map(|res| res.map(|e| e.path()))
@@ -19,6 +19,10 @@ pub fn get_templates_as_struct() -> Vec<Template> {
             serde_json::from_str(head_string.as_str()).unwrap()
         })
         .collect();
+
+    if heads.is_empty() {
+        return None;
+    }
         
-    heads
+    Some(heads)
 }
