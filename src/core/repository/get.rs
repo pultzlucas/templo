@@ -27,10 +27,10 @@ pub fn get_templates_as_struct() -> Option<Vec<Template>> {
     Some(heads)
 }
 
-pub fn get_template(template_name: &String) -> Option<Template> {
+pub fn get_template(template_name: &String) -> Result<Template, String> {
     let templates_struct = match get_templates_as_struct() {
         Some(t) => t,
-        None => return None
+        None => return Err("Repository was empty.".to_string())
     };
 
     let template_option = templates_struct
@@ -39,8 +39,8 @@ pub fn get_template(template_name: &String) -> Option<Template> {
 
     let template = match template_option {
         Some(t) => t,
-        None => return None
+        None => return Err(format!("Not is possible find \"{}\" on repository", template_name))
     };
 
-    Some(template)
+    Ok(template)
 }
