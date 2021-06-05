@@ -24,6 +24,7 @@ fn main() {
         "save" => save(args),
         "delete" => delete(args),
         "templates" => templates(),
+        "describe" => describe(args),
         _ => Err("Invalid command.".to_string())
     };
 

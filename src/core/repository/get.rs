@@ -23,6 +23,24 @@ pub fn get_templates_as_struct() -> Option<Vec<Template>> {
     if heads.is_empty() {
         return None;
     }
-        
+
     Some(heads)
+}
+
+pub fn get_template(template_name: &String) -> Option<Template> {
+    let templates_struct = match get_templates_as_struct() {
+        Some(t) => t,
+        None => return None
+    };
+
+    let template_option = templates_struct
+        .into_iter()
+        .find(|temp| temp.name == *template_name);
+
+    let template = match template_option {
+        Some(t) => t,
+        None => return None
+    };
+
+    Some(template)
 }
