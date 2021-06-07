@@ -1,5 +1,5 @@
 use crate::core::repository::get_template;
-use std::{fs, path::Path};
+use std::{fs, path::Path, io::{Error, ErrorKind}};
 
 pub fn create(args: &[String]) -> Result<&str, String> {
     if args.len() < 1 {
@@ -35,17 +35,18 @@ pub fn create(args: &[String]) -> Result<&str, String> {
         })
         .collect();
 
-    paths_with_type.iter().for_each(|(path_type, path_name)| {
-        let real_path = Path::new(directory).join(path_name);
+    for (path_type, path_name) in paths_with_type.iter() {
 
+        let real_path = Path::new(directory).join(path_name);
+    
         if *path_type == "file" {
             fs::write(&real_path, "").unwrap();
         }
-
+    
         if *path_type == "dir" {
             fs::create_dir(&real_path).unwrap();
         }
-    });
+    }
 
     Ok("Project was created.")
 }
