@@ -1,8 +1,10 @@
 use crate::core::repository::delete_template;
+use std::io::{Error, ErrorKind};
 
-pub fn delete(args: &[String]) -> Result<&str, String> {
+pub fn delete(args: &[String]) -> Result<&str, Error> {
     if args.len() < 1  {
-        return Err("Template name must be specified.".to_string())
+        let err = Error::new(ErrorKind::InvalidInput, "Template name must be specified.");
+        return Err(err);
     }
 
     if let Err(e) = delete_template(&args[0]) {

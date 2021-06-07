@@ -3,7 +3,7 @@ mod utils;
 mod core;
 
 use commands::*;
-use std::env;
+use std::{env, io::{Error, ErrorKind}};
 
 #[allow(unused_variables, unused_assignments)]
 fn main() {
@@ -26,11 +26,14 @@ fn main() {
         "delete" => delete(args),
         "templates" => templates(),
         "describe" => describe(args),
-        _ => Err("Invalid command.".to_string())
+        _ =>{
+            let err = Error::new(ErrorKind::InvalidInput, "Invalid command.");
+            Err(err)
+        }
     };
 
     match res {
         Ok(o) => println!("{}", o),
-        Err(e) => println!("Error: {}", e)
+        Err(e) => eprintln!("Error: {}", e)
     }
 }

@@ -1,14 +1,19 @@
+use std::io::{Error, ErrorKind};
 use crate::core::repository::get_template;
 
-pub fn describe(args: &[String]) -> Result<&str, String> {
+pub fn describe(args: &[String]) -> Result<&str, Error> {
     if args.len() < 1 {
-        return Err("Template name must be specified.".to_string());
+        let err = Error::new(ErrorKind::InvalidInput, "Template name must be specified.");
+        return Err(err);
     }
 
     let template_name = &args[0];
     let template = match get_template(template_name) {
         Ok(t) => t,
-        Err(e) => return Err(e)
+        Err(e) => {
+            let err = Error::new(ErrorKind::NotFound, e);
+            return Err(err);
+        }
     };
     
     let paths_splitted: Vec<&str> = template.paths.split(";").collect();

@@ -1,29 +1,35 @@
 use crate::core::repository::get_template;
 use std::{fs, path::Path, io::{Error, ErrorKind}};
 
-pub fn create(args: &[String]) -> Result<&str, String> {
+pub fn create(args: &[String]) -> Result<&str, Error> {
     if args.len() < 1 {
-        return Err("Template name must be specified.".to_string());
+        let err = Error::new(ErrorKind::InvalidInput, "Template name must be specified.");
+        return Err(err);
     }
 
     if args.len() < 2 {
-        return Err("Directory path must be specified.".to_string());
+        let err = Error::new(ErrorKind::InvalidInput, "Directory path must be specified.");
+        return Err(err);
     }
-
+    
     let template_name = &args[0];
     let directory = Path::new(&args[1]);
-
+    
     if directory.extension() != None {
-        return Err("The path should be a directory.".to_string());
+        let err = Error::new(ErrorKind::InvalidInput, "The path should be a directory.");
+        return Err(err);
     }
-
+    
     if !directory.exists() {
         fs::create_dir_all(directory).unwrap();
     }
-
+    
     let template = match get_template(template_name) {
         Ok(t) => t,
-        Err(e) => return Err(e),
+        Err(e) => {
+            let err = Error::new(ErrorKind::NotFound, e);
+            return Err(err);
+        }
     };
 
     let paths_splitted: Vec<&str> = template.paths.split(";").collect();
