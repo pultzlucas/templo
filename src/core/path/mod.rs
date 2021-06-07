@@ -11,6 +11,11 @@ use std::{
     path::{Path, PathBuf},
 };
 
+struct DirPath<'a> {
+    name: String,
+    path_type: &'a str,
+}
+
 pub fn get_template_dir_path(template_name: &String) -> PathBuf {
     Path::new(TEMPLATES_PATH).join(template_name)
 }
@@ -22,33 +27,59 @@ pub fn get_template_paths(directory: String) -> Result<Vec<String>, String> {
 
     let fs_tree = FsTreeBuilder::new(&directory).build();
 
-    let files: Vec<String> = fs_tree
+    let paths: Vec<DirPath> = fs_tree
         .iter()
-        .map(|file| file.unwrap().into_os_string().into_string().unwrap())
+        .map(|path| {
+            let path = path.unwrap();
+            if path.is_file() {
+                return DirPath {
+                    name: path.into_os_string().into_string().unwrap(),
+                    path_type: "file",
+                };
+            }
+            if path.is_dir() {
+                return DirPath {
+                    name: path.into_os_string().into_string().unwrap(),
+                    path_type: "dir",
+                };
+            }
+
+            panic!("Path Error.");
+        })
         .collect();
 
-    let real_files = clear_files_name(directory, files);
+    let clean_paths = format_paths_name(directory, paths);
 
-    Ok(real_files)
+    Ok(clean_paths)
 }
 
-fn clear_files_name(dir: String, files: Vec<String>) -> Vec<String> {
-    let files = files
-        .iter()
-        .map(|file| {
+fn format_paths_name(dir: String, paths: Vec<DirPath>) -> Vec<String> {
+    let paths: Vec<String> = paths
+        .into_iter()
+        .map(|path| {
             let regex = Regex::new(dir.as_str()).unwrap();
-            let path_splitted: Vec<&str> = file.split(MAIN_SEPARATOR).collect();
+            let path_splitted: Vec<&str> = path.name.split(MAIN_SEPARATOR).collect();
 
-            let clean_path: Vec<&str> = path_splitted
+            let clean_splitted_path: Vec<&str> = path_splitted
                 .iter()
                 .filter(|path| !regex.is_match(path) && **path != ".")
                 .map(|path| *path)
                 .collect();
 
-            clean_path.join(&String::from(MAIN_SEPARATOR))
+            let clean_path = clean_splitted_path.join(&String::from(MAIN_SEPARATOR));
+
+            if path.path_type == "file" {
+                return format!("file|{}", clean_path);
+            }
+
+            if path.path_type == "dir" {
+                return format!("dir|{}", clean_path);
+            }
+
+            panic!("Error when saving.")
         })
-        .filter(|file| file != "")
+        .filter(|path| !(path == "dir|") && !(path == "file|"))
         .collect();
 
-    files
+    paths
 }
