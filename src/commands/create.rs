@@ -13,8 +13,12 @@ pub fn create(args: &[String]) -> Result<&str, String> {
     let template_name = &args[0];
     let directory = Path::new(&args[1]);
 
-    if let Err(e) = validate_input_path(Path::new(&directory)) {
-        return Err(e);
+    if directory.extension() != None {
+        return Err("The path should be a directory.".to_string());
+    }
+
+    if !directory.exists() {
+        fs::create_dir_all(directory).unwrap();
     }
 
     let template = match get_template(template_name) {
@@ -44,16 +48,4 @@ pub fn create(args: &[String]) -> Result<&str, String> {
     });
 
     Ok("Project was created.")
-}
-
-fn validate_input_path(path: &Path) -> Result<(), String> {
-    if !path.exists() {
-        return Err("The directory not exists.".to_string());
-    }
-
-    if !path.is_dir() {
-        return Err("The path should be a directory.".to_string());
-    }
-
-    Ok(())
 }
