@@ -12,11 +12,17 @@ fn test_get_template_paths() {
 #[test]
 #[ignore]
 fn test_clear_files_name() {
-    assert_eq!(clear_files_name("dir".to_string(), vec![
-        "dir\\file1.txt".to_string(),
-        "dir\\file2.txt".to_string()
+    assert_eq!(format_paths_name("dir".to_string(), vec![
+        DirPath {
+            name: "dir\\file1.txt".to_string(),
+            path_type: "file"
+        },
+        DirPath {
+            name: "dir\\file2.txt".to_string(),
+            path_type: "file"
+        }
     ]), vec![
-        "file1.txt".to_string(),
-        "file2.txt".to_string()
+        "file|file1.txt".to_string(),
+        "file|file2.txt".to_string()
     ])
 }

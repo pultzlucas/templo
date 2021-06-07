@@ -7,10 +7,10 @@ pub fn describe(args: &[String]) -> Result<&str, String> {
 
     let template_name = &args[0];
     let template = match get_template(template_name) {
-        Some(t) => t,
-        None => return Err(format!("Not is possible find \"{}\" on repository", template_name))
+        Ok(t) => t,
+        Err(e) => return Err(e)
     };
-
+    
     let paths_splitted: Vec<&str> = template.paths.split(";").collect();
 
     println!("--- name ---");

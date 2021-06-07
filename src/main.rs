@@ -22,6 +22,7 @@ fn main() {
     let res = match env[1].as_str() {
         "init" => init(),
         "save" => save(args),
+        "create" => create(args),
         "delete" => delete(args),
         "templates" => templates(),
         "describe" => describe(args),
