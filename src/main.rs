@@ -26,6 +26,7 @@ fn main() {
         "delete" => delete(args),
         "templates" => templates(),
         "describe" => describe(args),
+        "register" => register(),
         _ =>{
             let err = Error::new(ErrorKind::InvalidInput, "Invalid command.");
             Err(err)
