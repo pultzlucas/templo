@@ -1,4 +1,4 @@
-use crate::core::repository::get_template;
+use crate::core::repository::TemplateManager;
 use std::{fs, path::Path, io::{Error, ErrorKind}};
 
 pub fn create(args: &[String]) -> Result<&str, Error> {
@@ -24,7 +24,7 @@ pub fn create(args: &[String]) -> Result<&str, Error> {
         fs::create_dir_all(directory).unwrap();
     }
     
-    let template = match get_template(template_name) {
+    let template = match TemplateManager::get_template(template_name) {
         Ok(t) => t,
         Err(e) => {
             let err = Error::new(ErrorKind::NotFound, e);

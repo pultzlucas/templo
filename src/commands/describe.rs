@@ -1,5 +1,5 @@
 use std::io::{Error, ErrorKind};
-use crate::core::repository::get_template;
+use crate::core::repository::TemplateManager;
 
 pub fn describe(args: &[String]) -> Result<&str, Error> {
     if args.len() < 1 {
@@ -8,7 +8,7 @@ pub fn describe(args: &[String]) -> Result<&str, Error> {
     }
 
     let template_name = &args[0];
-    let template = match get_template(template_name) {
+    let template = match TemplateManager::get_template(template_name) {
         Ok(t) => t,
         Err(e) => {
             let err = Error::new(ErrorKind::NotFound, e);

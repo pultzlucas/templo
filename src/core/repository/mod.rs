@@ -1,7 +1,2 @@
-mod save;
-mod get;
-mod delete;
-mod verify;
-pub use save::*;
-pub use get::*;
-pub use delete::*;
+mod template_manager;
+pub use template_manager::TemplateManager;

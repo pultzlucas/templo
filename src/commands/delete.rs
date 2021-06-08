@@ -1,4 +1,4 @@
-use crate::core::repository::delete_template;
+use crate::core::repository::TemplateManager;
 use std::io::{Error, ErrorKind};
 
 pub fn delete(args: &[String]) -> Result<&str, Error> {
@@ -7,7 +7,7 @@ pub fn delete(args: &[String]) -> Result<&str, Error> {
         return Err(err);
     }
 
-    if let Err(e) = delete_template(&args[0]) {
+    if let Err(e) = TemplateManager::delete_template(&args[0]) {
         return Err(e)
     } 
 
