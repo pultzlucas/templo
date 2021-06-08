@@ -1,42 +1,52 @@
-use std::io::{stdin, stdout, Error, ErrorKind, Write};
-use crate::utils::structs::RegisterFields;
 use crate::core::UserAccountManager;
+use crate::utils::structs::UserAccountData;
+use std::io::{stdin, stdout, Error, ErrorKind, Write};
+
+type RegisterFields = (String, String, String, String);
 
 pub fn register<'a>() -> Result<&'a str, Error> {
-    let register_fields = RegisterFields {
-        username: ask_field("Username: ")?,
-        email: ask_field("Email: ")?,
-        password: ask_field("Password: ")?,
-        password2: ask_field("Confirm your passoword: ")?,
-    };
+    let fields = (
+        ask_field("Username: ")?,
+        ask_field("Email: ")?,
+        ask_field("Password: ")?,
+        ask_field("Confirm your passoword: ")?,
+    );
 
-    if let Err(e) = validate_register_fields(&register_fields) {
+    if let Err(e) = validate_register_fields(&fields) {
         eprintln!("Error: {}\n", e);
         register()?;
     }
 
     // save the user account file
 
-    UserAccountManager::create_user_account(&register_fields);
+    let (username, email, password, _) = fields;
+
+    UserAccountManager::create_user_account(&UserAccountData {
+        username,
+        email,
+        password,
+    })?;
 
     Ok("")
 }
 
-fn validate_register_fields(fields: &RegisterFields) -> Result<(), Error> {
+fn validate_register_fields(
+    (username, email, password, password2): &RegisterFields,
+) -> Result<(), Error> {
     let err = |msg: &str| Err(Error::new(ErrorKind::InvalidInput, msg));
 
-    if fields.username.len() > 30 {
+    if username.len() > 30 {
         return err("The username should not have more than 30 characters.");
     }
 
-    if fields.email.len() > 30 {
+    if email.len() > 30 {
         return err("The email should not have more than 30 characters.");
     }
-    if fields.password.len() > 30 {
+    if password.len() > 30 {
         return err("The password should not have more than 30 characters.");
     }
 
-    if fields.password != fields.password2 {
+    if password != password2 {
         return err("The confirm password is incorrect.");
     }
 
