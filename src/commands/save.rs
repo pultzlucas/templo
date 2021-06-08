@@ -1,5 +1,5 @@
-use crate::core::path::{get_template_dir_path, get_template_paths};
-use crate::core::repository::save_template;
+use crate::core::path::ProtternFileSystem;
+use crate::core::repository::TemplateManager;
 use crate::utils::structs::Template;
 use std::{
     io::{Error, ErrorKind},
@@ -19,7 +19,7 @@ pub fn save(args: &[String]) -> Result<&str, Error> {
     let directory = args[0].clone();
     let template_name = args[1].clone();
 
-    if get_template_dir_path(&template_name).exists() {
+    if ProtternFileSystem::get_dir_path(&template_name).exists() {
         let err = Error::new(
             ErrorKind::AlreadyExists,
             format!("Template \"{}\" already exists.", &template_name),
@@ -35,7 +35,7 @@ pub fn save(args: &[String]) -> Result<&str, Error> {
         return Err(err);
     }
 
-    let template_paths = match get_template_paths(directory) {
+    let template_paths = match ProtternFileSystem::dismount_dir(directory) {
         Ok(o) => o,
         Err(e) => {
             let err = Error::new(ErrorKind::Other, e);
@@ -50,7 +50,7 @@ pub fn save(args: &[String]) -> Result<&str, Error> {
     
     let head_string = serde_json::to_string_pretty(&head).unwrap();
     
-    if let Err(e) = save_template(head_string, head.name) {
+    if let Err(e) = TemplateManager::save_template(head_string, head.name) {
         return Err(e);
     }
 
