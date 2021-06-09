@@ -6,9 +6,10 @@ use regex::Regex;
 use std::{
     path::MAIN_SEPARATOR,
     path::{Path, PathBuf},
+    fs
 };
 
-struct DirPath<'a> {
+pub struct DirPath<'a> {
     name: String,
     path_type: &'a str,
 }
@@ -16,15 +17,25 @@ struct DirPath<'a> {
 pub struct ProtternFileSystem {}
 
 impl ProtternFileSystem {
-    pub fn get_dir_path(template_name: &String) -> PathBuf {
+    pub fn get_dir_address(template_name: &String) -> PathBuf {
         Path::new(TEMPLATES_PATH).join(template_name)
     }
 
-    pub fn dismount_dir(directory: String) -> Result<Vec<String>, String> {
+    pub fn extract_template_from(directory: String) -> Result<(Vec<String>, Vec<String>), String> {
+        let paths = ProtternFileSystem::dismount_dir(&directory)?;
+        let files = paths.iter().filter(|path| path.path_type == "file");
+        let content: Vec<String> = files.map(|path| fs::read_to_string(&path.name).unwrap()).collect();
+
+        let formated_paths = ProtternFileSystem::format_paths_name(directory, paths);
+
+        Ok((formated_paths, content))
+    }
+
+    pub fn dismount_dir<'a>(directory: &String) -> Result<Vec<DirPath<'a>>, String> {
         if directory.contains(r"\") || directory.ends_with("/") {
             return Err("Invalid directory path".to_string());
         }
-        let fs_tree = FsTreeBuilder::new(&directory).build();
+        let fs_tree = FsTreeBuilder::new(directory).build();
         let paths: Vec<DirPath> = fs_tree
             .iter()
             .map(|path| {
@@ -44,8 +55,7 @@ impl ProtternFileSystem {
                 panic!("Path Error.");
             })
             .collect();
-        let clean_paths = ProtternFileSystem::format_paths_name(directory, paths);
-        Ok(clean_paths)
+        Ok(paths)
     }
 
     fn format_paths_name(dir: String, paths: Vec<DirPath>) -> Vec<String> {

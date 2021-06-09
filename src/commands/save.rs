@@ -1,6 +1,5 @@
 use crate::core::path::ProtternFileSystem;
-use crate::core::repository::TemplateManager;
-use crate::utils::structs::Template;
+use crate::core::repository::{TemplateManager, Template};
 use std::{
     io::{Error, ErrorKind},
     path::Path,
@@ -19,7 +18,7 @@ pub fn save(args: &[String]) -> Result<&str, Error> {
     let directory = args[0].clone();
     let template_name = args[1].clone();
 
-    if ProtternFileSystem::get_dir_path(&template_name).exists() {
+    if ProtternFileSystem::get_dir_address(&template_name).exists() {
         let err = Error::new(
             ErrorKind::AlreadyExists,
             format!("Template \"{}\" already exists.", &template_name),
@@ -35,22 +34,18 @@ pub fn save(args: &[String]) -> Result<&str, Error> {
         return Err(err);
     }
 
-    let template_paths = match ProtternFileSystem::dismount_dir(directory) {
+    let (template_paths, template_content) = match ProtternFileSystem::extract_template_from(directory) {
         Ok(o) => o,
         Err(e) => {
             let err = Error::new(ErrorKind::Other, e);
             return Err(err);
         },
     };
+
+    let template = Template::new(template_name, template_paths.join(";"), template_content);
+    let template_string = serde_json::to_string_pretty(&template).unwrap();
     
-    let head = Template {
-        name: template_name,
-        paths: template_paths.join(";"),
-    };
-    
-    let head_string = serde_json::to_string_pretty(&head).unwrap();
-    
-    if let Err(e) = TemplateManager::save_template(head_string, head.name) {
+    if let Err(e) = TemplateManager::save_template(template_string, template.name) {
         return Err(e);
     }
 
