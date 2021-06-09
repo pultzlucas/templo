@@ -1,18 +1,18 @@
 extern crate fs_tree;
 extern crate regex;
+mod dir_path;
+mod file_content;
+
 use crate::utils::paths::TEMPLATES_PATH;
+pub use dir_path::DirPath;
+pub use file_content::FileContent;
 use fs_tree::FsTreeBuilder;
-use regex::Regex;
 use std::{
-    path::MAIN_SEPARATOR,
+    fs,
     path::{Path, PathBuf},
-    fs
 };
 
-pub struct DirPath<'a> {
-    name: String,
-    path_type: &'a str,
-}
+use super::repository::TemplateFormatter;
 
 pub struct ProtternFileSystem {}
 
@@ -21,14 +21,20 @@ impl ProtternFileSystem {
         Path::new(TEMPLATES_PATH).join(template_name)
     }
 
-    pub fn extract_template_from(directory: String) -> Result<(Vec<String>, Vec<String>), String> {
+    pub fn extract_template_from<'a>(
+        directory: String,
+    ) -> Result<(String, String), String> {
         let paths = ProtternFileSystem::dismount_dir(&directory)?;
         let files = paths.iter().filter(|path| path.path_type == "file");
-        let content: Vec<String> = files.map(|path| fs::read_to_string(&path.name).unwrap()).collect();
-
-        let formated_paths = ProtternFileSystem::format_paths_name(directory, paths);
-
-        Ok((formated_paths, content))
+        let content: Vec<FileContent> = files
+            .map(|path| {
+                FileContent::new(path.name.clone(), fs::read_to_string(&path.name).unwrap())
+            })
+            .collect();
+            
+        let formated_paths = TemplateFormatter::bundle_paths(directory, paths);
+        let formated_content = TemplateFormatter::bundle_content(content);
+        Ok((formated_paths, formated_content))
     }
 
     pub fn dismount_dir<'a>(directory: &String) -> Result<Vec<DirPath<'a>>, String> {
@@ -37,49 +43,20 @@ impl ProtternFileSystem {
         }
         let fs_tree = FsTreeBuilder::new(directory).build();
         let paths: Vec<DirPath> = fs_tree
-            .iter()
+            .into_iter()
             .map(|path| {
                 let path = path.unwrap();
                 if path.is_file() {
-                    return DirPath {
-                        name: path.into_os_string().into_string().unwrap(),
-                        path_type: "file",
-                    };
+                    return DirPath::new(path.into_os_string().into_string().unwrap(), "file");
                 }
                 if path.is_dir() {
-                    return DirPath {
-                        name: path.into_os_string().into_string().unwrap(),
-                        path_type: "dir",
-                    };
+                    return DirPath::new(path.into_os_string().into_string().unwrap(), "dir");
                 }
                 panic!("Path Error.");
             })
             .collect();
-        Ok(paths)
-    }
 
-    fn format_paths_name(dir: String, paths: Vec<DirPath>) -> Vec<String> {
-        let paths: Vec<String> = paths
-            .into_iter()
-            .map(|path| {
-                let regex = Regex::new(dir.as_str()).unwrap();
-                let path_splitted: Vec<&str> = path.name.split(MAIN_SEPARATOR).collect();
-                let clean_splitted_path: Vec<&str> = path_splitted
-                    .iter()
-                    .filter(|path| !regex.is_match(path) && **path != ".")
-                    .map(|path| *path)
-                    .collect();
-                let clean_path = clean_splitted_path.join(&String::from(MAIN_SEPARATOR));
-                if path.path_type == "file" {
-                    return format!("file|{}", clean_path);
-                }
-                if path.path_type == "dir" {
-                    return format!("dir|{}", clean_path);
-                }
-                panic!("Error when saving.")
-            })
-            .filter(|path| !(path == "dir|") && !(path == "file|"))
-            .collect();
-        paths
+        
+        Ok(paths)
     }
 }

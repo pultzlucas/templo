@@ -6,11 +6,15 @@ use serde_derive::{Deserialize, Serialize};
 pub struct Template {
     pub name: String,
     pub paths: String,
-    pub content: Vec<String>
+    pub content: String,
 }
 
 impl Template {
-    pub fn new(name: String, paths: String, content: Vec<String>) -> Self {
-        Self { name, paths, content }
+    pub fn new(name: String, paths: String, content: String) -> Self {
+        Self {
+            name,
+            paths,
+            content,
+        }
     }
 }

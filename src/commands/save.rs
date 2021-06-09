@@ -42,10 +42,9 @@ pub fn save(args: &[String]) -> Result<&str, Error> {
         },
     };
 
-    let template = Template::new(template_name, template_paths.join(";"), template_content);
-    let template_string = serde_json::to_string_pretty(&template).unwrap();
+    let template = Template::new(template_name, template_paths, template_content);
     
-    if let Err(e) = TemplateManager::save_template(template_string, template.name) {
+    if let Err(e) = TemplateManager::save_template(template) {
         return Err(e);
     }
 
