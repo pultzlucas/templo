@@ -2,7 +2,7 @@ extern crate serde;
 extern crate serde_json;
 use serde_derive::{Deserialize, Serialize};
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Template {
     pub name: String,
     pub paths: String,

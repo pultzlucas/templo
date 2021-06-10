@@ -3,30 +3,40 @@ use crate::core::path::{DirPath, FileContent};
 use regex::Regex;
 use std::path::MAIN_SEPARATOR;
 
-pub struct TemplateFormatter {}
+pub struct TemplateFormatter {
+
+}
 
 impl TemplateFormatter {
-    pub fn bundle_paths(dir: String, paths: Vec<DirPath>) -> String {
+    pub fn format_path<'a>(dir: &'a String, path: DirPath<'a>) -> DirPath<'a> {
+        let regex = Regex::new(dir.as_str()).unwrap();
+        let path_splitted: Vec<&str> = path.name.split(MAIN_SEPARATOR).collect();
+        let mut formatted_path: Vec<&str> = vec![];
+
+        for path in path_splitted.into_iter() {
+            if !regex.is_match(path) && path != "." {
+                formatted_path.push(path)
+            }
+        }
+
+        let formatted_path = formatted_path.join(MAIN_SEPARATOR.to_string().as_str());
+
+        DirPath::new(formatted_path, path.path_type)
+    }
+
+    pub fn bundle_paths(paths: Vec<DirPath>) -> String {
         let paths: Vec<String> = paths
             .into_iter()
             .map(|path| {
-                let regex = Regex::new(dir.as_str()).unwrap();
-                let path_splitted: Vec<&str> = path.name.split(MAIN_SEPARATOR).collect();
-                let clean_splitted_path: Vec<&str> = path_splitted
-                    .iter()
-                    .filter(|path| !regex.is_match(path) && **path != ".")
-                    .map(|path| *path)
-                    .collect();
-                let clean_path = clean_splitted_path.join(&String::from(MAIN_SEPARATOR));
                 if path.path_type == "file" {
-                    return format!("file|{}", clean_path);
+                    return format!("file|{}", &path.name);
                 }
                 if path.path_type == "dir" {
-                    return format!("dir|{}", clean_path);
+                    return format!("dir|{}", &path.name);
                 }
+
                 panic!("Error when saving.")
             })
-            .filter(|path| !(path == "dir|") && !(path == "file|"))
             .collect();
 
         paths.join(";").to_string()
@@ -37,7 +47,6 @@ impl TemplateFormatter {
             .into_iter()
             .map(|fc| format!("{}|{}", fc.file, fc.content))
             .collect();
-        
         content_vec.join(";").to_string()
     }
 }

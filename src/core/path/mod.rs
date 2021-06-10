@@ -21,23 +21,35 @@ impl ProtternFileSystem {
         Path::new(TEMPLATES_PATH).join(template_name)
     }
 
-    pub fn extract_template_from<'a>(
-        directory: String,
-    ) -> Result<(String, String), String> {
+    pub fn extract_template_from<'a>(directory: String) -> Result<(String, String), String> {
         let paths = ProtternFileSystem::dismount_dir(&directory)?;
-        let files = paths.iter().filter(|path| path.path_type == "file");
-        let content: Vec<FileContent> = files
-            .map(|path| {
-                FileContent::new(path.name.clone(), fs::read_to_string(&path.name).unwrap())
-            })
-            .collect();
-            
-        let formated_paths = TemplateFormatter::bundle_paths(directory, paths);
-        let formated_content = TemplateFormatter::bundle_content(content);
-        Ok((formated_paths, formated_content))
+        let mut formatted_paths: Vec<DirPath> = vec![];
+        let mut content: Vec<FileContent> = vec![];
+
+        for path in paths.into_iter() {
+            let is_file = &path.path_type == &"file";
+            let fp = TemplateFormatter::format_path(&directory, path.clone());
+
+            if is_file {
+                let file_content = fs::read_to_string(path.name.to_string()).unwrap();
+
+                if !file_content.is_empty() {
+                    content.push(FileContent::new(
+                        fp.clone().name,
+                        file_content,
+                    ));
+                }
+            }
+
+            formatted_paths.push(fp);
+        }
+
+        let paths_bundle = TemplateFormatter::bundle_paths(formatted_paths);
+        let content_bundle = TemplateFormatter::bundle_content(content);
+        Ok((paths_bundle, content_bundle))
     }
 
-    pub fn dismount_dir<'a>(directory: &String) -> Result<Vec<DirPath<'a>>, String> {
+    pub fn dismount_dir<'a>(directory: &String) -> Result<Vec<DirPath>, String> {
         if directory.contains(r"\") || directory.ends_with("/") {
             return Err("Invalid directory path".to_string());
         }
@@ -56,7 +68,6 @@ impl ProtternFileSystem {
             })
             .collect();
 
-        
         Ok(paths)
     }
 }
