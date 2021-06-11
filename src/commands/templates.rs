@@ -1,6 +1,6 @@
 extern crate serde_json;
 use crate::core::repository::TemplateManager;
-use std::io::{Error,ErrorKind};
+use std::io::{Error, ErrorKind};
 
 pub fn templates<'a>() -> Result<&'a str, Error> {
     let templates = match TemplateManager::get_all_templates() {
