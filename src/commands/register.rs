@@ -1,3 +1,4 @@
+extern crate serde_json;
 use crate::core::user_account::{UserAccountData, UserAccountManager};
 use std::io::{stdin, stdout, Error, ErrorKind, Write};
 
@@ -20,7 +21,7 @@ pub fn register<'a>() -> Result<&'a str, Error> {
 
     let (username, email, password, _) = fields;
 
-    UserAccountManager::create_user_account(&UserAccountData::new(username, email, password))?;
+    UserAccountManager::log_user_account(&UserAccountData::new(username, email, password))?;
 
     Ok("")
 }
