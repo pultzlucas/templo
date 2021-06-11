@@ -1,7 +1,7 @@
 use std::io::{Error, ErrorKind};
 use crate::core::repository::TemplateManager;
 
-pub fn describe(args: &[String]) -> Result<&str, Error> {
+pub fn describe(args: &[String]) -> Result<(), Error> {
     if args.len() < 1 {
         let err = Error::new(ErrorKind::InvalidInput, "Template name must be specified.");
         return Err(err);
@@ -26,5 +26,5 @@ pub fn describe(args: &[String]) -> Result<&str, Error> {
         println!("{}", path);
     });
 
-    Ok("")
+    Ok(())
 }

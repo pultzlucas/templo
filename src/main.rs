@@ -33,8 +33,7 @@ fn main() {
         }
     };
 
-    match res {
-        Ok(o) => println!("{}", o),
-        Err(e) => eprintln!("Error: {}", e)
+    if let Err(e) = res {
+        eprintln!("Error: {}", e)
     }
 }

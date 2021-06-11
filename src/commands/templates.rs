@@ -2,7 +2,7 @@ extern crate serde_json;
 use crate::core::repository::TemplateManager;
 use std::io::{Error, ErrorKind};
 
-pub fn templates<'a>() -> Result<&'a str, Error> {
+pub fn templates() -> Result<(), Error> {
     let templates = match TemplateManager::get_all_templates() {
         Some(t) => t,
         None => {
@@ -15,5 +15,5 @@ pub fn templates<'a>() -> Result<&'a str, Error> {
         println!("- {}", temp.name);
     }
 
-    Ok("")
+    Ok(())
 }

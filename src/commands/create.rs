@@ -5,7 +5,7 @@ use std::{
     path::Path,
 };
 
-pub fn create(args: &[String]) -> Result<&str, Error> {
+pub fn create(args: &[String]) -> Result<(), Error> {
     if args.len() < 1 {
         let err = Error::new(ErrorKind::InvalidInput, "Template name must be specified.");
         return Err(err);
@@ -79,5 +79,6 @@ pub fn create(args: &[String]) -> Result<&str, Error> {
             }
         }
     }
-    Ok("Project was created.")
+    println!("Project was created.");
+    Ok(())
 }
