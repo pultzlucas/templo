@@ -1,6 +1,8 @@
-use crate::utils::{paths::USER_ACCOUNT_PATH, structs::UserAccountData};
-use serde_json;
+extern crate serde_json;
+use crate::utils::{paths::USER_ACCOUNT_PATH};
 use std::{fs, io::Error};
+mod user_account_data;
+pub use user_account_data::UserAccountData;
 
 pub struct UserAccountManager {}
 

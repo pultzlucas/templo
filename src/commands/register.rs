@@ -1,5 +1,4 @@
-use crate::core::UserAccountManager;
-use crate::utils::structs::UserAccountData;
+use crate::core::user_account::{UserAccountData, UserAccountManager};
 use std::io::{stdin, stdout, Error, ErrorKind, Write};
 
 type RegisterFields = (String, String, String, String);
@@ -21,11 +20,7 @@ pub fn register<'a>() -> Result<&'a str, Error> {
 
     let (username, email, password, _) = fields;
 
-    UserAccountManager::create_user_account(&UserAccountData {
-        username,
-        email,
-        password,
-    })?;
+    UserAccountManager::create_user_account(&UserAccountData::new(username, email, password))?;
 
     Ok("")
 }
