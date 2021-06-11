@@ -21,9 +21,9 @@ pub fn create(args: &[String]) -> Result<(), Error> {
         let err = Error::new(ErrorKind::InvalidInput, "The path should be a directory.");
         return Err(err);
     }
-    /*  if !directory.exists() {
+    if !directory.exists() {
         fs::create_dir_all(directory).unwrap();
-    } */
+    }
     let template = match TemplateManager::get_template(template_name) {
         Ok(t) => t,
         Err(e) => {
