@@ -1,18 +1,14 @@
 extern crate serde_json;
 use crate::core::repository::TemplateManager;
-use std::io::{Error, ErrorKind};
+use std::io::Error;
 
 pub fn templates() -> Result<(), Error> {
-    let templates = match TemplateManager::get_all_templates() {
-        Some(t) => t,
-        None => {
-            let err = Error::new(ErrorKind::NotFound, "Repository is empty.");
-            return Err(err);
+    if let Some(templates) = TemplateManager::get_all_templates() {
+        for temp in templates.iter() {
+            println!("- {}", temp.name);
         }
-    };
-
-    for temp in templates.iter() {
-        println!("- {}", temp.name);
+    } else {
+        println!("Repository is empty.");
     }
 
     Ok(())
