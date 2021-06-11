@@ -4,7 +4,7 @@ use std::io::{stdin, stdout, Error, ErrorKind, Write};
 
 type RegisterFields = (String, String, String, String);
 
-pub fn register<'a>() -> Result<&'a str, Error> {
+pub fn register() -> Result<(), Error> {
     let fields = (
         ask_field("Username: ")?,
         ask_field("Email: ")?,
@@ -23,7 +23,7 @@ pub fn register<'a>() -> Result<&'a str, Error> {
 
     UserAccountManager::log_user_account(&UserAccountData::new(username, email, password))?;
 
-    Ok("")
+    Ok(())
 }
 
 fn validate_register_fields(

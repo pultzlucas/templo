@@ -5,7 +5,7 @@ use std::{
     path::Path,
 };
 
-pub fn create(args: &[String]) -> Result<&str, Error> {
+pub fn create(args: &[String]) -> Result<(), Error> {
     if args.len() < 1 {
         let err = Error::new(ErrorKind::InvalidInput, "Template name must be specified.");
         return Err(err);
@@ -21,9 +21,9 @@ pub fn create(args: &[String]) -> Result<&str, Error> {
         let err = Error::new(ErrorKind::InvalidInput, "The path should be a directory.");
         return Err(err);
     }
-    /*  if !directory.exists() {
+    if !directory.exists() {
         fs::create_dir_all(directory).unwrap();
-    } */
+    }
     let template = match TemplateManager::get_template(template_name) {
         Ok(t) => t,
         Err(e) => {
@@ -79,5 +79,6 @@ pub fn create(args: &[String]) -> Result<&str, Error> {
             }
         }
     }
-    Ok("Project was created.")
+    println!("Project was created.");
+    Ok(())
 }

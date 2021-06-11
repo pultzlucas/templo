@@ -2,7 +2,7 @@ use crate::utils;
 use std::{fs, path::Path, io::{Error, ErrorKind}};
 use utils::paths::TEMPLATES_PATH;
 
-pub fn init<'a>() -> Result<&'a str, Error> {
+pub fn init() -> Result<(), Error> {
     let repository_not_exists = !Path::new(TEMPLATES_PATH).exists();
 
     if repository_not_exists {
@@ -13,8 +13,10 @@ pub fn init<'a>() -> Result<&'a str, Error> {
             return Err(err);
         }
             
-        return Ok("Repository was created.");
+        println!("Repository was created.");
+
+        return Ok(());
     }
 
-    Ok("")
+    Ok(())
 }

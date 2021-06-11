@@ -1,15 +1,18 @@
 extern crate regex;
-use regex::Regex;
 use crate::core::path::{DirPath, FileContent};
+use regex::Regex;
 use std::path::MAIN_SEPARATOR;
 
-pub struct TemplateFormatter {
-
-}
+pub struct TemplateFormatter {}
 
 impl TemplateFormatter {
     pub fn format_path<'a>(dir: &'a String, path: DirPath<'a>) -> DirPath<'a> {
-        let regex = Regex::new(dir.as_str()).unwrap();
+        let mut regex = Regex::new(&dir).unwrap();
+
+        if dir == "." {
+            regex = Regex::new(r"\.$").unwrap();
+        }
+
         let path_splitted: Vec<&str> = path.name.split(MAIN_SEPARATOR).collect();
         let mut formatted_path: Vec<&str> = vec![];
 
@@ -37,6 +40,7 @@ impl TemplateFormatter {
 
                 panic!("Error when saving.")
             })
+            .filter(|path| path != "dir|")
             .collect();
 
         paths.join(";").to_string()
@@ -45,9 +49,7 @@ impl TemplateFormatter {
     pub fn bundle_content(file_contents: Vec<FileContent>) -> String {
         let content_vec: Vec<String> = file_contents
             .into_iter()
-            .map(|fc| {
-                format!("{}|{}", fc.file, base64::encode(fc.content))
-            })
+            .map(|fc| format!("{}|{}", fc.file, base64::encode(fc.content)))
             .collect();
         content_vec.join(";").to_string()
     }

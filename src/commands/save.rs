@@ -5,7 +5,7 @@ use std::{
     path::Path,
 };
 
-pub fn save(args: &[String]) -> Result<&str, Error> {
+pub fn save(args: &[String]) -> Result<(), Error> {
     if args.len() < 1 {
         let err = Error::new(ErrorKind::InvalidInput, "Folder name must be specified.");
         return Err(err);
@@ -48,5 +48,7 @@ pub fn save(args: &[String]) -> Result<&str, Error> {
         return Err(e);
     }
 
-    Ok("Template was saved successfully.")
+    println!("Template was saved successfully.");
+
+    Ok(())
 }

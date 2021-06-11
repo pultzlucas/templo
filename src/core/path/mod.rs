@@ -29,15 +29,12 @@ impl ProtternFileSystem {
         for path in paths.into_iter() {
             let is_file = &path.path_type == &"file";
             let fp = TemplateFormatter::format_path(&directory, path.clone());
-
+            
             if is_file {
                 let file_content = fs::read_to_string(path.name.to_string()).unwrap();
 
                 if !file_content.is_empty() {
-                    content.push(FileContent::new(
-                        fp.clone().name,
-                        file_content,
-                    ));
+                    content.push(FileContent::new(fp.clone().name, file_content));
                 }
             }
 
@@ -59,10 +56,12 @@ impl ProtternFileSystem {
             .map(|path| {
                 let path = path.unwrap();
                 if path.is_file() {
-                    return DirPath::new(path.into_os_string().into_string().unwrap(), "file");
+                    let path_name = path.into_os_string().into_string().unwrap();
+                    return DirPath::new(path_name, "file");
                 }
                 if path.is_dir() {
-                    return DirPath::new(path.into_os_string().into_string().unwrap(), "dir");
+                    let path_name = path.into_os_string().into_string().unwrap();
+                    return DirPath::new(path_name, "dir");
                 }
                 panic!("Path Error.");
             })
