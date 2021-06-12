@@ -30,6 +30,7 @@ async fn main() {
         "templates" => templates(),
         "describe" => describe(args),
         "register" => register().await,
+        "login" => login().await,
         _ => {
             let err = Error::new(ErrorKind::InvalidInput, "Invalid command.");
             Err(err)
