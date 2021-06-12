@@ -20,8 +20,8 @@ pub fn register() -> Result<(), Error> {
     // save the user account file
 
     let (username, email, password, _) = fields;
-
-    UserAccountManager::log_user_account(&UserAccountData::new(username, email, password))?;
+    let user_account = UserAccountData::new(username, email, password);
+    UserAccountManager::log_user_account(&user_account)?;
 
     Ok(())
 }

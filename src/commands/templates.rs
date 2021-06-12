@@ -1,4 +1,3 @@
-extern crate serde_json;
 use crate::core::repository::TemplateManager;
 use std::io::Error;
 
