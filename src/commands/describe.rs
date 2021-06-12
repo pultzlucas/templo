@@ -21,6 +21,9 @@ pub fn describe(args: &[String]) -> Result<(), Error> {
     println!("--- name ---");
     println!("{}", template.name);
 
+    println!("--- owner ---");
+    println!("{}", template.owner);
+
     println!("--- paths ---");
     paths_splitted.iter().for_each(|path| {
         println!("{}", path);

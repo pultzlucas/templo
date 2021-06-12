@@ -6,7 +6,7 @@ use serde_derive::{Deserialize, Serialize};
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Template {
     pub name: String,
-    owner: String,
+    pub owner: String,
     pub paths: String,
     pub content: String,
 }
