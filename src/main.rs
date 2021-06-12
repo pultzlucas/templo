@@ -1,11 +1,15 @@
+extern crate tokio;
 mod commands;
 mod core;
 
 use commands::*;
-use std::{env, io::{Error, ErrorKind}};
+use std::{
+    env,
+    io::{Error, ErrorKind},
+};
 
-#[allow(unused_variables, unused_assignments)]
-fn main() {
+#[tokio::main]
+async fn main() {
     let env: Vec<String> = env::args().collect();
     let mut args: &[String] = &[];
 
@@ -25,8 +29,8 @@ fn main() {
         "delete" => delete(args),
         "templates" => templates(),
         "describe" => describe(args),
-        "register" => register(),
-        _ =>{
+        "register" => register().await,
+        _ => {
             let err = Error::new(ErrorKind::InvalidInput, "Invalid command.");
             Err(err)
         }
