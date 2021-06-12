@@ -1,4 +1,4 @@
-use crate::core::path::ProtternFileSystem;
+use crate::core::file_system::ProtternFileSystem;
 use crate::core::repository::{TemplateManager, Template};
 use std::{
     io::{Error, ErrorKind},

@@ -1,5 +1,5 @@
 extern crate regex;
-use crate::core::path::{DirPath, FileContent};
+use crate::core::file_system::{DirPath, FileContent};
 use regex::Regex;
 use std::path::MAIN_SEPARATOR;
 

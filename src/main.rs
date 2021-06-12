@@ -1,5 +1,4 @@
 mod commands;
-mod utils;
 mod core;
 
 use commands::*;

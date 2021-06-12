@@ -1,5 +1,4 @@
-use crate::core::path::ProtternFileSystem;
-use crate::utils::paths::TEMPLATES_PATH;
+use crate::core::file_system::{paths::TEMPLATES_PATH, ProtternFileSystem};
 use std::{
     fs,
     io::{Error, ErrorKind},

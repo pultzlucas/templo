@@ -1,4 +1,4 @@
-use crate::utils::paths::TEMPLATES_PATH;
+use crate::core::file_system::paths::TEMPLATES_PATH;
 use std::path::Path;
 pub fn prottern() {
     println!("Welcome to prottern!");

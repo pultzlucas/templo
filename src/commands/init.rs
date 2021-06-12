@@ -1,6 +1,5 @@
-use crate::utils;
 use std::{fs, path::Path, io::{Error, ErrorKind}};
-use utils::paths::TEMPLATES_PATH;
+use crate::core::file_system::paths::TEMPLATES_PATH;
 
 pub fn init() -> Result<(), Error> {
     let repository_not_exists = !Path::new(TEMPLATES_PATH).exists();

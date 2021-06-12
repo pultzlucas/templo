@@ -1,18 +1,15 @@
 extern crate fs_tree;
 extern crate regex;
-mod dir_path;
-mod file_content;
 
-use crate::utils::paths::TEMPLATES_PATH;
-pub use dir_path::DirPath;
-pub use file_content::FileContent;
+use super::paths::TEMPLATES_PATH;
+use super::{DirPath, FileContent};
 use fs_tree::FsTreeBuilder;
 use std::{
     fs,
     path::{Path, PathBuf},
 };
 
-use super::repository::TemplateFormatter;
+use crate::core::repository::TemplateFormatter;
 
 pub struct ProtternFileSystem {}
 
