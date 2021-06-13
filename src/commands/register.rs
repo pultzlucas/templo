@@ -1,7 +1,7 @@
 use crate::core::user_account::{UserAccountData, UserAccountManager};
 use hyper::{body::to_bytes, Body, Client, Method, Request};
-use serde_derive::{Deserialize, Serialize};
 use std::io::{stdin, stdout, Error, ErrorKind, Write};
+use serde_derive::{Deserialize, Serialize};
 
 type RegisterFields = (String, String, String, String);
 
@@ -25,31 +25,31 @@ pub async fn register() -> Result<(), Error> {
     }
 
     let (username, email, password, _) = fields;
+
+    /* let mut s = DefaultHasher::new();
+    password.hash(&mut s);
+    let hash_password = s.finish().to_string(); */
     let user_account = UserAccountData::new(username, email, password);
 
     // save user account on database
-    
     let req = Request::builder()
-    .method(Method::POST)
-    .uri("http://localhost:8081/user/register")
-    .header("content-type", "application/json")
-    .body(Body::from(serde_json::to_string(&user_account).unwrap()))
-    .unwrap();
-    
+        .method(Method::POST)
+        .uri("http://localhost:8081/user/register")
+        .header("content-type", "application/json")
+        .body(Body::from(serde_json::to_string(&user_account).unwrap()))
+        .unwrap();
     let client = Client::new();
-    
     let res = client.request(req).await.unwrap();
     let bytes = to_bytes(res.into_body()).await.unwrap();
     let data = String::from_utf8(bytes.into_iter().collect()).unwrap();
     let response_json: RegisterResponse = serde_json::from_str(&data).unwrap();
-    
     // verify if user account is valid
     if !response_json.registered {
         let err = Error::new(ErrorKind::AlreadyExists, response_json.message);
         return Err(err);
     }
 
-    UserAccountManager::log_user_account(&user_account)?;
+    UserAccountManager::log_user_account(user_account, response_json.key)?;
 
     println!("\nAccount was registered.");
 
