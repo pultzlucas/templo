@@ -1,62 +1,50 @@
-use crate::core::user_account::{UserAccountData, UserAccountManager};
-use hyper::{body::to_bytes, Body, Client, Method, Request};
-use std::io::{stdin, stdout, Error, ErrorKind, Write};
-use serde_derive::{Deserialize, Serialize};
+use crate::core::{
+    io::ProtternInput,
+    user_account::{UserAccountData, UserAccountManager},
+};
+use std::io::{Error, ErrorKind};
 
 type RegisterFields = (String, String, String, String);
 
-#[derive(Serialize, Deserialize, Debug)]
-struct RegisterResponse {
-    registered: bool,
-    key: String,
-    message: String,
-}
-
 pub async fn register() -> Result<(), Error> {
-    let fields = (
-        ask_field("Username: ").unwrap(),
-        ask_field("Email: ").unwrap(),
-        ask_field("Password: ").unwrap(),
-        ask_field("Confirm your passoword: ").unwrap(),
+    let inputs = (
+        ProtternInput::get("Username: ").unwrap(),
+        ProtternInput::get("Email: ").unwrap(),
+        ProtternInput::get("Password: ").unwrap(),
+        ProtternInput::get("Confirm your passoword: ").unwrap(),
     );
 
-    if let Err(e) = validate_register_fields(&fields) {
+    if let Err(e) = validate_register_inputs(&inputs) {
         return Err(e);
     }
 
-    let (username, email, password, _) = fields;
-
-    /* let mut s = DefaultHasher::new();
-    password.hash(&mut s);
-    let hash_password = s.finish().to_string(); */
+    let (username, email, password, _) = inputs;
     let user_account = UserAccountData::new(username, email, password);
 
-    // save user account on database
-    let req = Request::builder()
-        .method(Method::POST)
-        .uri("http://localhost:8081/user/register")
-        .header("content-type", "application/json")
-        .body(Body::from(serde_json::to_string(&user_account).unwrap()))
-        .unwrap();
-    let client = Client::new();
-    let res = client.request(req).await.unwrap();
-    let bytes = to_bytes(res.into_body()).await.unwrap();
-    let data = String::from_utf8(bytes.into_iter().collect()).unwrap();
-    let response_json: RegisterResponse = serde_json::from_str(&data).unwrap();
-    // verify if user account is valid
-    if !response_json.registered {
-        let err = Error::new(ErrorKind::AlreadyExists, response_json.message);
-        return Err(err);
-    }
+    // Requesting registration
+    let res = UserAccountManager::register_user_account(&user_account).await;
+    let key = match res {
+        Ok(res) => {
+            if !res.registered {
+                let err = Error::new(ErrorKind::AlreadyExists, res.message);
+                return Err(err);
+            }
 
-    UserAccountManager::log_user_account(user_account, response_json.key)?;
+            res.key
+        }
+        Err(e) => return Err(e),
+    };
+
+    // Saving user account authentication
+
+    UserAccountManager::log_user_account(user_account, key)?;
 
     println!("\nAccount was registered.");
 
     Ok(())
 }
 
-fn validate_register_fields(
+fn validate_register_inputs(
     (username, email, password, password2): &RegisterFields,
 ) -> Result<(), Error> {
     let err = |msg: &str| Err(Error::new(ErrorKind::InvalidInput, msg));
@@ -77,16 +65,4 @@ fn validate_register_fields(
     }
 
     Ok(())
-}
-
-fn ask_field(text: &str) -> Result<String, Error> {
-    print!("{}", text);
-    stdout().flush().unwrap();
-
-    let mut info = String::new();
-    if let Err(e) = stdin().read_line(&mut info) {
-        return Err(e);
-    }
-
-    Ok(info.trim().to_string())
 }
