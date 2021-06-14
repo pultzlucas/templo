@@ -1,5 +1,3 @@
-extern crate serde;
-extern crate serde_json;
 use crate::core::user_account::UserAccountManager;
 use serde_derive::{Deserialize, Serialize};
 
