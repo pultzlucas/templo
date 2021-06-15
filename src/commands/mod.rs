@@ -8,6 +8,7 @@ mod create;
 mod register;
 mod login;
 mod publish;
+mod unpub;
 mod get;
 
 pub use init::*;
@@ -20,4 +21,5 @@ pub use create::*;
 pub use register::*;
 pub use login::*;
 pub use publish::*;
+pub use unpub::*;
 pub use get::*;

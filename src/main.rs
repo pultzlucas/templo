@@ -32,6 +32,7 @@ async fn main() {
         "register" => register().await,
         "login" => login().await,
         "pub" => publish(args).await,
+        "unpub" => unpub(args).await,
         "get" => get(args).await,
         _ => {
             let err = Error::new(ErrorKind::InvalidInput, "Invalid command.");
