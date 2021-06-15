@@ -11,6 +11,7 @@ mod publish;
 mod unpub;
 mod get;
 mod discover;
+mod profile;
 
 pub use init::*;
 pub use prottern::*;
@@ -25,3 +26,4 @@ pub use publish::*;
 pub use unpub::*;
 pub use get::*;
 pub use discover::*;
+pub use profile::*;

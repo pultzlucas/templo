@@ -23,7 +23,7 @@ pub struct AuthResponse {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UserAccountKey {
     pub username: String,
-    email: String,
+    pub email: String,
     password: String,
     pub key: String,
 }

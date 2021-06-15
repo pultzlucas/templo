@@ -35,6 +35,7 @@ async fn main() {
         "unpub" => unpub(args).await,
         "get" => get(args).await,
         "discover" => discover().await,
+        "profile" => profile(),
         _ => {
             let err = Error::new(ErrorKind::InvalidInput, "Invalid command.");
             Err(err)
