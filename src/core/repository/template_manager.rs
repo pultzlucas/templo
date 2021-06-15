@@ -84,4 +84,5 @@ impl TemplateManager {
     pub fn template_exists(template_name: &String) -> bool {
         Path::new(TEMPLATES_PATH).join(template_name).exists()
     }
+
 }

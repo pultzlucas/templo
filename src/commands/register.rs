@@ -1,9 +1,8 @@
-use std::io::{Error, ErrorKind};
 use crate::core::{
-    requester::{Method, ProtternRequester, RegisterResponse},
+    io::ProtternInput,
     user_account::{UserAccountData, UserAccountManager},
-    io::ProtternInput
 };
+use std::io::{Error, ErrorKind};
 
 type RegisterFields = (String, String, String, String);
 
@@ -22,22 +21,23 @@ pub async fn register() -> Result<(), Error> {
     let (username, email, password, _) = inputs;
     let user_account = UserAccountData::new(username, email, password);
 
-    // Requesting authentication
+    // Requesting registration
+    let res = UserAccountManager::register_user_account(&user_account).await;
+    let key = match res {
+        Ok(res) => {
+            if !res.registered {
+                let err = Error::new(ErrorKind::AlreadyExists, res.message);
+                return Err(err);
+            }
 
-    let body = serde_json::to_string(&user_account).unwrap();
-    let response = ProtternRequester::request("/user/register", Method::POST, body)
-        .await
-        .unwrap();
-    let response_json: RegisterResponse = serde_json::from_str(&response).unwrap();
-
-    if !response_json.registered {
-        let err = Error::new(ErrorKind::AlreadyExists, response_json.message);
-        return Err(err);
-    }
+            res.key
+        }
+        Err(e) => return Err(e),
+    };
 
     // Saving user account authentication
 
-    UserAccountManager::log_user_account(user_account, response_json.key)?;
+    UserAccountManager::log_user_account(user_account, key)?;
 
     println!("\nAccount was registered.");
 

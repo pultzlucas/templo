@@ -7,6 +7,7 @@ mod describe;
 mod create;
 mod register;
 mod login;
+mod publish;
 
 pub use init::*;
 pub use prottern::*;
@@ -17,3 +18,4 @@ pub use describe::*;
 pub use create::*;
 pub use register::*;
 pub use login::*;
+pub use publish::*;

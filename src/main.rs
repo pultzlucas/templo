@@ -31,6 +31,7 @@ async fn main() {
         "describe" => describe(args),
         "register" => register().await,
         "login" => login().await,
+        "pub" => publish(args).await,
         _ => {
             let err = Error::new(ErrorKind::InvalidInput, "Invalid command.");
             Err(err)
