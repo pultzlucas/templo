@@ -21,15 +21,15 @@ pub struct AuthResponse {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-struct UserAccountKey<'a> {
-    username: &'a str,
-    email: &'a str,
-    password: &'a str,
-    key: String,
+pub struct UserAccountKey {
+    pub username: String,
+    email: String,
+    password: String,
+    pub key: String,
 }
 
-impl<'a> UserAccountKey<'a> {
-    pub fn new(username: &'a String, email: &'a String, password: &'a String, key: String) -> Self {
+impl UserAccountKey {
+    pub fn new(username: String, email: String, password: String, key: String) -> Self {
         Self {
             username: username,
             email: email,
@@ -44,12 +44,12 @@ pub struct UserAccountManager {}
 impl UserAccountManager {
     pub fn log_user_account(fields: UserAccountData, key: String) -> Result<(), Error> {
         let user_account =
-            UserAccountKey::new(&fields.username, &fields.email, &fields.password, key);
+            UserAccountKey::new(fields.username, fields.email, fields.password, key);
         let content = serde_json::to_string(&user_account)?;
         fs::write(USER_ACCOUNT_PATH, content)
     }
 
-    pub fn get_user_account_data() -> Result<UserAccountData, serde_json::Error> {
+    pub fn get_user_account_data() -> Result<UserAccountKey, serde_json::Error> {
         let user_account = fs::read_to_string(USER_ACCOUNT_PATH).unwrap();
         serde_json::from_str(&user_account)
     }
@@ -58,9 +58,8 @@ impl UserAccountManager {
         user_account: &UserAccountData,
     ) -> Result<RegisterResponse, Error> {
         let body = serde_json::to_string(user_account).unwrap();
-        let response = ProtternRequester::request("/user/register", Method::POST, body)
-            .await
-            .unwrap();
+        let req = ProtternRequester::build_request("/user/register", Method::POST, body);
+        let response = ProtternRequester::request(req).await.unwrap();
         Ok(serde_json::from_str(&response).unwrap())
     }
 
@@ -68,9 +67,8 @@ impl UserAccountManager {
         user_account: &UserAccountData,
     ) -> Result<AuthResponse, Error> {
         let body = serde_json::to_string(user_account).unwrap();
-        let response = ProtternRequester::request("/user/login", Method::POST, body)
-            .await
-            .unwrap();
+        let req = ProtternRequester::build_request("/user/login", Method::POST, body);
+        let response = ProtternRequester::request(req).await.unwrap();
 
         Ok(serde_json::from_str(&response).unwrap())
     }
