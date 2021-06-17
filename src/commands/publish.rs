@@ -31,6 +31,7 @@ pub async fn publish(args: &[String]) -> Result<(), Error> {
         Ok(o) => o,
     };
 
+    
     let template_as_string = match serde_json::to_string(&template) {
         Err(e) => {
             let err = Error::new(ErrorKind::Other, e.to_string());
@@ -38,11 +39,11 @@ pub async fn publish(args: &[String]) -> Result<(), Error> {
         },
         Ok(t) => t,
     };
-
+    
     // Publishing template
     let mut req =
-        ProtternRequester::build_request("/templates/pub", Method::POST, template_as_string);
-
+    ProtternRequester::build_request("/templates/pub", Method::POST, template_as_string);
+    
     let headers = req.headers_mut();
     headers.insert(
         "authorization",
