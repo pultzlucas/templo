@@ -9,7 +9,9 @@ pub async fn discover() -> Result<(), Error> {
 
     match ProtternRequester::request(req).await {
         Err(e) => return Err(e),
-        Ok(response) => show_templates(serde_json::from_str(&response).unwrap()),
+        Ok(response) => {
+            show_templates(serde_json::from_str(&response).unwrap())
+        }
     }
 
     Ok(())

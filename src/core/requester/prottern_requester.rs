@@ -1,7 +1,5 @@
-use hyper::{
-    body::to_bytes,
-    Body, Client, Method, Request,
-};
+use hyper::{body::to_bytes, Body, Client, Method, Request};
+use std::io::{Error, ErrorKind};
 
 const BASE_URL: &str = "http://localhost:8081";
 
@@ -22,12 +20,15 @@ impl ProtternRequester {
         req
     }
 
-    pub async fn request(req: hyper::Request<hyper::Body>) -> Result<String, std::io::Error> {
+    pub async fn request(req: hyper::Request<hyper::Body>) -> Result<String, Error> {
         let client = Client::new();
-        let res = client
-            .request(req)
-            .await
-            .expect("Internal error when requesting rest api.");
+        let res = match client.request(req).await {
+            Err(e) => {
+                let err = Error::new(ErrorKind::ConnectionAborted, e.to_string());
+                return Err(err)
+            },
+            Ok(r) => r,
+        };
         let bytes = to_bytes(res.into_body())
             .await
             .expect("Internal error when converting body response.");

@@ -24,25 +24,35 @@ pub async fn unpub(args: &[String]) -> Result<(), Error> {
     }
 
     let template_name = &args[0];
-    let current_user = UserAccountManager::get_user_account_data().unwrap();
+    let current_user = match UserAccountManager::get_user_account_data() {
+        Err(e) => return Err(e),
+        Ok(u) => u,
+    };
 
     let body = UnpubRequestBody {
         template_name: template_name.to_string(),
         user: current_user.username,
     };
 
-    let body_as_string = serde_json::to_string(&body).unwrap();
+    let body_as_string = match serde_json::to_string(&body) {
+        Err(e) => {
+            let err = Error::new(ErrorKind::Other, e.to_string());
+            return Err(err);
+        }
+        Ok(t) => t,
+    };
 
     let mut req =
         ProtternRequester::build_request("/templates/unpub", Method::POST, body_as_string);
     let headers = req.headers_mut();
     headers.insert(
         "authorization",
-        HeaderValue::from_str(current_user.key.as_str()).unwrap(),
+        HeaderValue::from_str(current_user.key.as_str()).expect("Error when set headers."),
     );
     match ProtternRequester::request(req).await {
         Ok(res) => {
-            let res_json: UnpubResponse = serde_json::from_str(&res).unwrap();
+            let res_json: UnpubResponse =
+                serde_json::from_str(&res).expect("Error when parsing JSON.");
             if !res_json.unpublished {
                 let err = Error::new(ErrorKind::Other, res_json.message);
                 return Err(err);

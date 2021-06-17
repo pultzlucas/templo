@@ -19,8 +19,11 @@ pub async fn get(args: &[String]) -> Result<(), Error> {
         Err(e) => return Err(e)
     };
 
-    let template: Template = serde_json::from_str(&response).unwrap();
-    TemplateManager::save_template(template).unwrap();
+    let template: Template = serde_json::from_str(&response).expect("Error when parsing JSON.");
+
+    if let Err(e) = TemplateManager::save_template(template) {
+         return Err(e)
+    }
 
     println!("Template was installed.");
 

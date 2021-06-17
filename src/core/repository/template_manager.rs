@@ -26,10 +26,13 @@ impl TemplateManager {
         fs::write(template_path, template_string)
     }
 
-    pub fn get_template(template_name: &String) -> Result<Template, String> {
+    pub fn get_template(template_name: &String) -> Result<Template, Error> {
         let templates_struct = match TemplateManager::get_all_templates() {
             Some(t) => t,
-            None => return Err("Repository was empty.".to_string()),
+            None => {
+                let err = Error::new(ErrorKind::NotFound, "Repository was empty.");
+                return Err(err);
+            },
         };
         let template_option = templates_struct
             .into_iter()
@@ -37,10 +40,12 @@ impl TemplateManager {
         let template = match template_option {
             Some(t) => t,
             None => {
-                return Err(format!(
-                    "Not is possible find \"{}\" on repository",
-                    template_name
-                ))
+                let err = Error::new(
+                    ErrorKind::NotFound,
+                    format!("Not is possible find \"{}\" on repository", template_name),
+                );
+
+                return Err(err);
             }
         };
         Ok(template)
@@ -84,5 +89,4 @@ impl TemplateManager {
     pub fn template_exists(template_name: &String) -> bool {
         Path::new(TEMPLATES_PATH).join(template_name).exists()
     }
-
 }

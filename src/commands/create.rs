@@ -22,7 +22,7 @@ pub fn create(args: &[String]) -> Result<(), Error> {
         return Err(err);
     }
     if !directory.exists() {
-        fs::create_dir_all(directory).unwrap();
+        fs::create_dir_all(directory)?;
     }
     let template = match TemplateManager::get_template(template_name) {
         Ok(t) => t,

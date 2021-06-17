@@ -4,7 +4,10 @@ use crate::core::{
     requester::{Method, ProtternRequester},
 };
 use serde_derive::{Deserialize, Serialize};
-use std::{fs, io::Error};
+use std::{
+    fs,
+    io::{Error, ErrorKind},
+};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct RegisterResponse {
@@ -43,15 +46,20 @@ pub struct UserAccountManager {}
 
 impl UserAccountManager {
     pub fn log_user_account(fields: UserAccountData, key: String) -> Result<(), Error> {
-        let user_account =
-            UserAccountKey::new(fields.username, fields.email, fields.password, key);
+        let user_account = UserAccountKey::new(fields.username, fields.email, fields.password, key);
         let content = serde_json::to_string(&user_account)?;
         fs::write(USER_ACCOUNT_PATH, content)
     }
 
-    pub fn get_user_account_data() -> Result<UserAccountKey, serde_json::Error> {
+    pub fn get_user_account_data() -> Result<UserAccountKey, Error> {
         let user_account = fs::read_to_string(USER_ACCOUNT_PATH).unwrap();
-        serde_json::from_str(&user_account)
+        match serde_json::from_str(&user_account) {
+            Err(e) => {
+                let err = Error::new(ErrorKind::Other, e.to_string());
+                Err(err)
+            }
+            Ok(u) => Ok(u),
+        }
     }
 
     pub async fn register_user_account(
