@@ -24,6 +24,9 @@ pub fn describe(args: &[String]) -> Result<(), Error> {
     println!("--- owner ---");
     println!("{}", template.owner);
 
+    println!("--- created at ---");
+    println!("{}", template.created_at);
+
     println!("--- paths ---");
     paths_splitted.iter().for_each(|path| {
         println!("{}", path);
