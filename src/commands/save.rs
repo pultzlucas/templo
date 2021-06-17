@@ -17,8 +17,9 @@ pub fn save(args: &[String]) -> Result<(), Error> {
 
     let directory = args[0].clone();
     let template_name = args[1].clone();
+    let template_path = ProtternFileSystem::get_template_path(&template_name);
 
-    if ProtternFileSystem::get_dir_address(&template_name).exists() {
+    if template_path.exists() {
         let err = Error::new(
             ErrorKind::AlreadyExists,
             format!("Template \"{}\" already exists.", &template_name),

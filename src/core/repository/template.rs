@@ -7,8 +7,8 @@ use serde_derive::{Deserialize, Serialize};
 pub struct Template {
     pub name: String,
     pub owner: String,
-    pub paths: String,
     pub created_at: String,
+    pub paths: String,
     pub content: String,
 }
 

@@ -1,21 +1,15 @@
-extern crate fs_tree;
-extern crate regex;
-
-use super::paths::TEMPLATES_PATH;
-use super::{DirPath, FileContent};
-use fs_tree::FsTreeBuilder;
-use std::{
-    fs,
-    path::{Path, PathBuf},
-};
-
 use crate::core::repository::TemplateFormatter;
+use super::{DirPath, FileContent, paths::TEMPLATES_PATH};
+use fs_tree::FsTreeBuilder;
+use std::{fs, path::{Path, PathBuf}};
+
 
 pub struct ProtternFileSystem {}
 
 impl ProtternFileSystem {
-    pub fn get_dir_address(template_name: &String) -> PathBuf {
-        Path::new(TEMPLATES_PATH).join(template_name)
+    pub fn get_template_path(template_name: &String) -> PathBuf {
+        let template_filename = format!("{}.json", template_name);
+        Path::new(TEMPLATES_PATH).join(template_filename)
     }
 
     pub fn extract_template_from<'a>(directory: String) -> Result<(String, String), String> {
@@ -26,7 +20,6 @@ impl ProtternFileSystem {
         for path in paths.into_iter() {
             let is_file = &path.path_type == &"file";
             let fp = TemplateFormatter::format_path(&directory, path.clone());
-            
             if is_file {
                 let file_content = fs::read_to_string(path.name.to_string()).unwrap();
 
