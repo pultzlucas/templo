@@ -29,13 +29,14 @@ async fn main() {
         "delete" => delete(args),
         "templates" => templates(),
         "describe" => describe(args),
+        "profile" => profile(),
+        "help" => help(),
         "register" => register().await,
         "login" => login().await,
         "pub" => publish(args).await,
         "unpub" => unpub(args).await,
         "get" => get(args).await,
         "discover" => discover().await,
-        "profile" => profile(),
         _ => {
             let err = Error::new(ErrorKind::InvalidInput, "Invalid command.");
             Err(err)
