@@ -78,4 +78,14 @@ impl TemplateManager {
     pub fn template_exists(template_name: &String) -> bool {
         Path::new(TEMPLATES_PATH).join(template_name).exists()
     }
+
+    pub fn split_template_paths(template_paths: Vec<&str>) -> Vec<(String, String)> {
+        template_paths
+            .into_iter()
+            .map(|path| {
+                let path_splitted: Vec<&str> = path.split("|").collect();
+                (path_splitted[0].to_string(), path_splitted[1].to_string())
+            })
+            .collect()
+    }
 }

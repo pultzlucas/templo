@@ -1,5 +1,5 @@
+use crate::core::{io::ProtternOutput, repository::TemplateManager};
 use std::io::{Error, ErrorKind};
-use crate::core::repository::TemplateManager;
 
 pub fn describe(args: &[String]) -> Result<(), Error> {
     if args.len() < 1 {
@@ -15,9 +15,6 @@ pub fn describe(args: &[String]) -> Result<(), Error> {
             return Err(err);
         }
     };
-    
-    let paths_splitted: Vec<&str> = template.paths.split(";").collect();
-
     println!("--- name ---");
     println!("{}", template.name);
 
@@ -28,9 +25,8 @@ pub fn describe(args: &[String]) -> Result<(), Error> {
     println!("{}", template.created_at);
 
     println!("--- paths ---");
-    paths_splitted.iter().for_each(|path| {
-        println!("{}", path);
-    });
+    let template_paths: Vec<&str> = template.paths.split(";").collect();
+    ProtternOutput::print_template_paths(template_paths);
 
     Ok(())
 }
