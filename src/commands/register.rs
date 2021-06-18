@@ -1,6 +1,6 @@
 use crate::core::{
-    io::ProtternInput,
-    user_account::{UserAccountData, UserAccountManager, UserAccountKey},
+    io::{InputType, ProtternInput},
+    user_account::{UserAccountData, UserAccountKey, UserAccountManager},
 };
 use std::io::{Error, ErrorKind};
 
@@ -8,10 +8,12 @@ type RegisterFields = (String, String, String, String);
 
 pub async fn register() -> Result<(), Error> {
     let inputs = (
-        ProtternInput::get("Username: ").expect("Error when get register data."),
-        ProtternInput::get("Email: ").expect("Error when get register data."),
-        ProtternInput::get("Password: ").expect("Error when get register data."),
-        ProtternInput::get("Confirm your passoword: ").expect("Error when get register data."),
+        ProtternInput::get("Username: ", InputType::Text).expect("Error when get register data."),
+        ProtternInput::get("Email: ", InputType::Text).expect("Error when get register data."),
+        ProtternInput::get("Password: ", InputType::Password)
+            .expect("Error when get register data."),
+        ProtternInput::get("Confirm your password: ", InputType::Password)
+            .expect("Error when get register data."),
     );
 
     if let Err(e) = validate_register_inputs(&inputs) {

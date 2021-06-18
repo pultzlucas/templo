@@ -18,3 +18,4 @@ base64 = "0.13.0"
 hyper = { version = "0.14", features = ["full"] }
 tokio = { version = "1", features = ["full"] }
 chrono = "0.4"
+scanpw = "0.1.0"

@@ -1,3 +1,3 @@
 mod input;
 
-pub use input::ProtternInput;
+pub use input::{ProtternInput, InputType};
