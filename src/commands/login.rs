@@ -7,8 +7,8 @@ use std::io::{Error, ErrorKind};
 
 pub async fn login() -> Result<(), Error> {
     let (username, password) = (
-        ProtternInput::get("Username: ", InputType::Text).ok(),
-        ProtternInput::get("Password: ", InputType::Password).ok(),
+        ProtternInput::get("Username: ", InputType::Text).unwrap(),
+        ProtternInput::get("Password: ", InputType::Password).unwrap(),
     );
     // Authenticating user account
     let res = UserAccountManager::authenticate_user_account(username, password).await;

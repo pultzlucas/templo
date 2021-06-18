@@ -8,10 +8,10 @@ type RegisterFields = (String, String, String, String);
 
 pub async fn register() -> Result<(), Error> {
     let inputs = (
-        ProtternInput::get("Username: ", InputType::Text).ok(),
-        ProtternInput::get("Email: ", InputType::Text).ok(),
-        ProtternInput::get("Password: ", InputType::Password).ok(),
-        ProtternInput::get("Confirm your password: ", InputType::Password).ok(),
+        ProtternInput::get("Username: ", InputType::Text).unwrap(),
+        ProtternInput::get("Email: ", InputType::Text).unwrap(),
+        ProtternInput::get("Password: ", InputType::Password).unwrap(),
+        ProtternInput::get("Confirm your password: ", InputType::Password).unwrap(),
     );
 
     if let Err(e) = validate_register_inputs(&inputs) {
