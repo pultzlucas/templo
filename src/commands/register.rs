@@ -1,6 +1,6 @@
 use crate::core::{
     io::ProtternInput,
-    user_account::{UserAccountData, UserAccountManager},
+    user_account::{UserAccountData, UserAccountManager, UserAccountKey},
 };
 use std::io::{Error, ErrorKind};
 
@@ -23,21 +23,21 @@ pub async fn register() -> Result<(), Error> {
 
     // Requesting registration
     let res = UserAccountManager::register_user_account(&user_account).await;
-    let key = match res {
+    let user_account_registration: UserAccountKey = match res {
         Ok(res) => {
             if !res.registered {
                 let err = Error::new(ErrorKind::AlreadyExists, res.message);
                 return Err(err);
             }
 
-            res.key
+            serde_json::from_str(&res.user).unwrap()
         }
         Err(e) => return Err(e),
     };
 
     // Saving user account authentication
 
-    UserAccountManager::log_user_account(user_account, key)?;
+    UserAccountManager::save_user_account(user_account_registration)?;
 
     println!("\nAccount was registered.");
 
