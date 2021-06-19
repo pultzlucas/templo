@@ -37,28 +37,20 @@ pub struct UserAccountKey {
     pub key: String,
 }
 
-/* impl UserAccountKey {
-    pub fn new(username: String, email: String, password: String, key: String) -> Self {
-        Self {
-            username: username,
-            email: email,
-            password: password,
-            key,
-        }
-    }
-} */
-
 pub struct UserAccountManager {}
 
 impl UserAccountManager {
     pub fn save_user_account(user_account: UserAccountKey) -> Result<(), Error> {
         let content = serde_json::to_string(&user_account)?;
-        fs::write(USER_ACCOUNT_AUTH_PATH, content)
+        let content_encoded = base64::encode(content);
+        fs::write(USER_ACCOUNT_AUTH_PATH, content_encoded)
     }
 
     pub fn get_user_account_data() -> Result<UserAccountKey, Error> {
-        let user_account = fs::read_to_string(USER_ACCOUNT_AUTH_PATH).unwrap();
-        match serde_json::from_str(&user_account) {
+        let user_account_encoded = fs::read_to_string(USER_ACCOUNT_AUTH_PATH)?;
+        let user_account_bytes = base64::decode(user_account_encoded).expect("Decode error");
+        let user_account = String::from_utf8(user_account_bytes).unwrap();
+        match serde_json::from_str(&user_account.to_string()) {
             Err(e) => {
                 let err = Error::new(ErrorKind::Other, e.to_string());
                 Err(err)
@@ -70,9 +62,9 @@ impl UserAccountManager {
     pub async fn register_user_account(
         user_account: &UserAccountData,
     ) -> Result<RegisterResponse, Error> {
-        let body = serde_json::to_string(user_account).unwrap();
+        let body = serde_json::to_string(user_account)?;
         let req = ProtternRequester::build_request("/user/register", Method::POST, body);
-        let response = ProtternRequester::request(req).await.unwrap();
+        let response = ProtternRequester::request(req).await?;
         Ok(serde_json::from_str(&response).unwrap())
     }
 
