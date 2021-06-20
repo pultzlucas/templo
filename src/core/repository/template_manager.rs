@@ -11,9 +11,8 @@ pub struct TemplateManager {}
 impl TemplateManager {
     pub fn save_template(template: Template) -> Result<(), Error> {
         let template_path = ProtternFileSystem::get_template_path(&template.name);
-        let template_file_buf = serde_json::to_string_pretty(&template).unwrap();
-
-        fs::write(template_path, template_file_buf)
+        let template_file_string = serde_json::to_string(&template).unwrap();
+        ProtternFileSystem::write_base64_file(template_path, template_file_string)
     }
 
     pub fn get_template(template_name: &String) -> Result<Template, Error> {
@@ -50,8 +49,10 @@ impl TemplateManager {
         let templates: Vec<Template> = template_files
             .iter()
             .map(|template_file| {
-                let template_file_buf = fs::read_to_string(template_file).unwrap();
-                serde_json::from_str(template_file_buf.as_str()).unwrap()
+                //let template_file_buf = fs::read_to_string(template_file).unwrap();
+                //let template_file_bytes = base64::decode(template_file_buf).expect("Decode error");
+                let template_file_string = ProtternFileSystem::read_base64_file(template_file).unwrap();
+                serde_json::from_str(template_file_string.as_str()).unwrap()
             })
             .collect();
         if templates.is_empty() {

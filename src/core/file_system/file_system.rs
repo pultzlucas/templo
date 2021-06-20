@@ -1,15 +1,14 @@
 use crate::core::repository::TemplateFormatter;
 use super::{DirPath, FileContent, paths::TEMPLATES_PATH};
 use fs_tree::FsTreeBuilder;
-use std::{fs, path::{Path, PathBuf}};
+use std::{fs, path::{Path, PathBuf}, io::Error};
 
 
 pub struct ProtternFileSystem {}
 
 impl ProtternFileSystem {
     pub fn get_template_path(template_name: &String) -> PathBuf {
-        let template_filename = format!("{}.json", template_name);
-        Path::new(TEMPLATES_PATH).join(template_filename)
+        Path::new(TEMPLATES_PATH).join(template_name)
     }
 
     pub fn extract_template_from<'a>(directory: String) -> Result<(String, String), String> {
@@ -58,5 +57,16 @@ impl ProtternFileSystem {
             .collect();
 
         Ok(paths)
+    }
+
+    pub fn write_base64_file<P: AsRef<Path>>(path: P, content: String) -> Result<(), Error> {
+        let content_as_base64 = base64::encode(content);
+        fs::write(path, content_as_base64)
+    }
+
+    pub fn read_base64_file<P: AsRef<Path>>(path: P) -> Result<String, Error> {
+        let content_as_base64 = fs::read_to_string(path)?;
+        let content_as_bytes = base64::decode(content_as_base64).expect("Base64 decode error");
+        Ok(String::from_utf8(content_as_bytes).unwrap())
     }
 }
