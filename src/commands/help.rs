@@ -1,8 +1,6 @@
+use crate::core::info::{REPOSITORY, VERSION};
 use super::COMMANDS;
 use std::io::Error;
-
-const VERSION: &'static str = env!("CARGO_PKG_VERSION");
-const REPOSITORY: &'static str = env!("CARGO_PKG_REPOSITORY");
 
 pub fn help() -> Result<(), Error> {
     println!("Version:\n{}v\n", VERSION);

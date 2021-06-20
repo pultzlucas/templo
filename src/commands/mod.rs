@@ -29,6 +29,7 @@ mod get;
 mod discover;
 mod profile;
 mod help;
+mod version;
 
 pub use init::*;
 pub use prottern::*;
@@ -45,3 +46,4 @@ pub use get::*;
 pub use discover::*;
 pub use profile::*;
 pub use help::*;
+pub use version::*;

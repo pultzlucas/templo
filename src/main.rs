@@ -31,6 +31,7 @@ async fn main() {
         "describe" => describe(args),
         "profile" => profile(),
         "help" => help(),
+        "version" => version(),
         "register" => register().await,
         "login" => login().await,
         "pub" => publish(args).await,
