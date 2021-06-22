@@ -1,11 +1,29 @@
-use crate::core::file_system::ProtternFileSystem;
-use crate::core::repository::{TemplateManager, Template};
+use crate::{
+    core::{
+        file_system::ProtternFileSystem,
+        repository::{Template, TemplateManager},
+        user_account::UserAccountManager,
+    },
+    init,
+};
 use std::{
     io::{Error, ErrorKind},
     path::Path,
 };
 
 pub fn save(args: &[String]) -> Result<(), Error> {
+    init()?;
+
+    if !UserAccountManager::user_auth_exists() {
+        let err = Error::new(
+            ErrorKind::NotFound, 
+            r#"This process cannot be runned because You dont has an authenticated user account.
+Please type "prottern register" to register one.
+If you already have a user account created, type "prottern login" to authenticate it."#
+        );
+        return Err(err);
+    }
+
     if args.len() < 1 {
         let err = Error::new(ErrorKind::InvalidInput, "Folder name must be specified.");
         return Err(err);
@@ -26,7 +44,6 @@ pub fn save(args: &[String]) -> Result<(), Error> {
         );
         return Err(err);
     }
-    
     if !Path::new(&directory).exists() {
         let err = Error::new(
             ErrorKind::InvalidInput,
@@ -35,16 +52,16 @@ pub fn save(args: &[String]) -> Result<(), Error> {
         return Err(err);
     }
 
-    let (template_paths, template_content) = match ProtternFileSystem::extract_template_from(directory) {
-        Ok(o) => o,
-        Err(e) => {
-            let err = Error::new(ErrorKind::Other, e);
-            return Err(err);
-        },
-    };
+    let (template_paths, template_content) =
+        match ProtternFileSystem::extract_template_from(directory) {
+            Ok(o) => o,
+            Err(e) => {
+                let err = Error::new(ErrorKind::Other, e);
+                return Err(err);
+            }
+        };
 
     let template = Template::new(template_name, template_paths, template_content);
-    
     if let Err(e) = TemplateManager::save_template(template) {
         return Err(e);
     }

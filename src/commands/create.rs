@@ -1,4 +1,7 @@
-use crate::core::repository::TemplateManager;
+use crate::{
+    core::repository::TemplateManager,
+    init
+};
 use std::{
     fs,
     io::{Error, ErrorKind, Write},
@@ -6,6 +9,8 @@ use std::{
 };
 
 pub fn create(args: &[String]) -> Result<(), Error> {
+    init()?;
+
     if args.len() < 1 {
         let err = Error::new(ErrorKind::InvalidInput, "Template name must be specified.");
         return Err(err);

@@ -4,7 +4,10 @@ use crate::core::{
     requester::{Method, ProtternRequester},
 };
 use serde_derive::{Deserialize, Serialize};
-use std::io::{Error, ErrorKind};
+use std::{
+    io::{Error, ErrorKind},
+    path::Path,
+};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct RegisterResponse {
@@ -71,5 +74,9 @@ impl UserAccountManager {
         let response = ProtternRequester::request(req).await?;
 
         Ok(serde_json::from_str(&response)?)
+    }
+
+    pub fn user_auth_exists() -> bool {
+        Path::new(USER_ACCOUNT_AUTH_PATH).exists()
     }
 }

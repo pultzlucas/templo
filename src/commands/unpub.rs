@@ -18,6 +18,17 @@ struct UnpubResponse {
 }
 
 pub async fn unpub(args: &[String]) -> Result<(), Error> {
+
+    if !UserAccountManager::user_auth_exists() {
+        let err = Error::new(
+            ErrorKind::NotFound, 
+            r#"This process cannot be runned because You dont has an authenticated user account.
+Please type "prottern register" to register one.
+If you already have a user account created, type "prottern login" to authenticate it."#
+        );
+        return Err(err);
+    }
+
     if args.len() < 1 {
         let err = Error::new(ErrorKind::InvalidInput, "Template name must be specified.");
         return Err(err);
