@@ -12,10 +12,7 @@ If you already have a user account created, type "prottern login" to authenticat
         return Err(err);
     }
 
-    let current_user = match UserAccountManager::get_user_account_data() {
-        Err(e) => return Err(e),
-        Ok(o) => o,
-    };
+    let current_user = UserAccountManager::get_user_account_data()?;
     
     println!("Name: {}", current_user.username);
     println!("Email: {}", current_user.email);

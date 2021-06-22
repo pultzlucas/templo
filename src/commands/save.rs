@@ -16,21 +16,25 @@ pub fn save(args: &[String]) -> Result<(), Error> {
 
     if !UserAccountManager::user_auth_exists() {
         let err = Error::new(
-            ErrorKind::NotFound, 
+            ErrorKind::NotFound,
             r#"This process cannot be runned because You dont has an authenticated user account.
 Please type "prottern register" to register one.
-If you already have a user account created, type "prottern login" to authenticate it."#
+If you already have a user account created, type "prottern login" to authenticate it."#,
         );
         return Err(err);
     }
 
     if args.len() < 1 {
-        let err = Error::new(ErrorKind::InvalidInput, "Folder name must be specified.");
-        return Err(err);
+        return Err(Error::new(
+            ErrorKind::InvalidInput,
+            "Folder name must be specified.",
+        ));
     }
     if args.len() < 2 {
-        let err = Error::new(ErrorKind::InvalidInput, "Template name must be specified.");
-        return Err(err);
+        return Err(Error::new(
+            ErrorKind::InvalidInput,
+            "Template name must be specified.",
+        ));
     }
 
     let directory = args[0].clone();
@@ -62,9 +66,7 @@ If you already have a user account created, type "prottern login" to authenticat
         };
 
     let template = Template::new(template_name, template_paths, template_content);
-    if let Err(e) = TemplateManager::save_template(template) {
-        return Err(e);
-    }
+    TemplateManager::save_template(template)?;
 
     println!("Template was saved successfully.");
 

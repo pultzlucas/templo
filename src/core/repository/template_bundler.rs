@@ -13,16 +13,14 @@ impl TemplateFormatter {
             regex = Regex::new(r"\.$").unwrap();
         }
 
-        let path_splitted: Vec<&str> = path.name.split(MAIN_SEPARATOR).collect();
-        let mut formatted_path: Vec<&str> = vec![];
-
-        for path in path_splitted.into_iter() {
-            if !regex.is_match(path) && path != "." {
-                formatted_path.push(path)
-            }
-        }
-
-        let formatted_path = formatted_path.join(MAIN_SEPARATOR.to_string().as_str());
+        let formatted_path = {
+            let path_pieces: Vec<&str> = path.name.split(MAIN_SEPARATOR).collect();
+            let right_path_pieces: Vec<&str> = path_pieces
+                .into_iter()
+                .filter(|path_piece| !regex.is_match(path_piece) && *path_piece != ".")
+                .collect();
+            right_path_pieces.join(MAIN_SEPARATOR.to_string().as_str())
+        };
 
         DirPath::new(formatted_path, path.path_type)
     }

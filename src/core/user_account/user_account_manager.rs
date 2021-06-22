@@ -48,20 +48,19 @@ impl UserAccountManager {
     pub fn get_user_account_data() -> Result<UserAccountKey, Error> {
         let user_account = ProtternFileSystem::read_base64_file(USER_ACCOUNT_AUTH_PATH)?;
         match serde_json::from_str(&user_account) {
-            Err(e) => {
-                let err = Error::new(ErrorKind::Other, e.to_string());
-                Err(err)
-            }
             Ok(u) => Ok(u),
+            Err(e) => Err(Error::new(ErrorKind::Other, e.to_string())),
         }
     }
 
     pub async fn register_user_account(
         user_account: &UserAccountData,
     ) -> Result<RegisterResponse, Error> {
-        let body = serde_json::to_string(user_account)?;
-        let req = ProtternRequester::build_request("/user/register", Method::POST, body);
-        let response = ProtternRequester::request(req).await?;
+        let response = {
+            let body = serde_json::to_string(user_account)?;
+            let request = ProtternRequester::build_request("/user/register", Method::POST, body);
+            ProtternRequester::request(request).await?
+        };
         Ok(serde_json::from_str(&response).unwrap())
     }
 
@@ -69,9 +68,11 @@ impl UserAccountManager {
         username: String,
         password: String,
     ) -> Result<AuthResponse, Error> {
-        let body = serde_json::to_string(&AuthRequestBody { username, password }).unwrap();
-        let req = ProtternRequester::build_request("/user/login", Method::POST, body);
-        let response = ProtternRequester::request(req).await?;
+        let response = {
+            let body = serde_json::to_string(&AuthRequestBody { username, password }).unwrap();
+            let request = ProtternRequester::build_request("/user/login", Method::POST, body);
+            ProtternRequester::request(request).await?
+        };
 
         Ok(serde_json::from_str(&response)?)
     }

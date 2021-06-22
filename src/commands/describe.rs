@@ -8,26 +8,25 @@ pub fn describe(args: &[String]) -> Result<(), Error> {
     init()?;
 
     if args.len() < 1 {
-        let err = Error::new(ErrorKind::InvalidInput, "Template name must be specified.");
-        return Err(err);
+        return Err(Error::new(
+            ErrorKind::InvalidInput,
+            "Template name must be specified.",
+        ));
     }
 
-    let template_name = &args[0];
-    let template = match TemplateManager::get_template(template_name) {
+    let template = match TemplateManager::get_template(&args[0]) {
         Ok(t) => t,
-        Err(e) => {
-            let err = Error::new(ErrorKind::NotFound, e);
-            return Err(err);
-        }
+        Err(e) => return Err(Error::new(ErrorKind::NotFound, e)),
     };
+
     paint!("--- {yellow} ---", "name");
     println!("{}", template.name);
-
     paint!("--- {yellow} ---", "owner");
     println!("{}", template.owner);
     paint!("--- {yellow} ---", "created at");
     println!("{}", template.created_at);
     paint!("--- {yellow} ---", "paths");
+
     let template_paths: Vec<&str> = template.paths.split(";").collect();
     ProtternOutput::print_template_paths(template_paths);
 

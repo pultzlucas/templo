@@ -1,8 +1,11 @@
+use super::{paths::TEMPLATES_PATH, DirPath, FileContent};
 use crate::core::repository::TemplateFormatter;
-use super::{DirPath, FileContent, paths::TEMPLATES_PATH};
 use fs_tree::FsTreeBuilder;
-use std::{fs, path::{Path, PathBuf}, io::Error};
-
+use std::{
+    fs,
+    io::Error,
+    path::{Path, PathBuf},
+};
 
 pub struct ProtternFileSystem {}
 
@@ -39,22 +42,24 @@ impl ProtternFileSystem {
         if directory.contains(r"\") || directory.ends_with("/") {
             return Err("Invalid directory path".to_string());
         }
-        let fs_tree = FsTreeBuilder::new(directory).build();
-        let paths: Vec<DirPath> = fs_tree
-            .into_iter()
-            .map(|path| {
-                let path = path.unwrap();
-                if path.is_file() {
-                    let path_name = path.into_os_string().into_string().unwrap();
-                    return DirPath::new(path_name, "file");
-                }
-                if path.is_dir() {
-                    let path_name = path.into_os_string().into_string().unwrap();
-                    return DirPath::new(path_name, "dir");
-                }
-                panic!("Path Error.");
-            })
-            .collect();
+        let paths: Vec<DirPath> = {
+            let fs_tree = FsTreeBuilder::new(directory).build();
+            fs_tree
+                .into_iter()
+                .map(|path| {
+                    let path = path.unwrap();
+                    if path.is_file() {
+                        let path_name = path.into_os_string().into_string().unwrap();
+                        return DirPath::new(path_name, "file");
+                    }
+                    if path.is_dir() {
+                        let path_name = path.into_os_string().into_string().unwrap();
+                        return DirPath::new(path_name, "dir");
+                    }
+                    panic!("Path Error.");
+                })
+                .collect()
+        };
 
         Ok(paths)
     }
@@ -65,8 +70,10 @@ impl ProtternFileSystem {
     }
 
     pub fn read_base64_file<P: AsRef<Path>>(path: P) -> Result<String, Error> {
-        let content_as_base64 = fs::read_to_string(path)?;
-        let content_as_bytes = base64::decode(content_as_base64).expect("Base64 decode error");
-        Ok(String::from_utf8(content_as_bytes).unwrap())
+        let content = {
+            let content_as_base64 = fs::read_to_string(path)?;
+            base64::decode(content_as_base64).expect("Base64 decode error")
+        };
+        Ok(String::from_utf8(content).unwrap())
     }
 }

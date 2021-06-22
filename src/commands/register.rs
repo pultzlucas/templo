@@ -7,35 +7,32 @@ use std::io::{Error, ErrorKind};
 type RegisterFields = (String, String, String, String);
 
 pub async fn register() -> Result<(), Error> {
-    let inputs = (
-        ProtternInput::get("Username: ", InputType::Text).unwrap(),
-        ProtternInput::get("Email: ", InputType::Text).unwrap(),
-        ProtternInput::get("Password: ", InputType::Password).unwrap(),
-        ProtternInput::get("Confirm your password: ", InputType::Password).unwrap(),
-    );
+    let user_account = {
+        let inputs = (
+            ProtternInput::get("Username: ", InputType::Text).unwrap(),
+            ProtternInput::get("Email: ", InputType::Text).unwrap(),
+            ProtternInput::get("Password: ", InputType::Password).unwrap(),
+            ProtternInput::get("Confirm your password: ", InputType::Password).unwrap(),
+        );
 
-    if let Err(e) = validate_register_inputs(&inputs) {
-        return Err(e);
-    }
+        validate_register_inputs(&inputs)?;
 
-    let (username, email, password, _) = inputs;
-    let user_account = UserAccountData::new(username, email, password);
+        let (username, email, password, _) = inputs;
+        UserAccountData::new(username, email, password)
+    };
 
     // Requesting registration
     let res = UserAccountManager::register_user_account(&user_account).await;
     let user_account_registration: UserAccountKey = match res {
         Ok(res) => {
             if !res.registered {
-                let err = Error::new(ErrorKind::AlreadyExists, res.message);
-                return Err(err);
+                return Err(Error::new(ErrorKind::AlreadyExists, res.message));
             }
 
             serde_json::from_str(&res.user).unwrap()
         }
         Err(e) => return Err(e),
     };
-
-    // Saving user account authentication
 
     UserAccountManager::save_user_account(user_account_registration)?;
 

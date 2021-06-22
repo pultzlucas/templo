@@ -18,13 +18,12 @@ struct UnpubResponse {
 }
 
 pub async fn unpub(args: &[String]) -> Result<(), Error> {
-
     if !UserAccountManager::user_auth_exists() {
         let err = Error::new(
-            ErrorKind::NotFound, 
+            ErrorKind::NotFound,
             r#"This process cannot be runned because You dont has an authenticated user account.
 Please type "prottern register" to register one.
-If you already have a user account created, type "prottern login" to authenticate it."#
+If you already have a user account created, type "prottern login" to authenticate it."#,
         );
         return Err(err);
     }
@@ -34,39 +33,34 @@ If you already have a user account created, type "prottern login" to authenticat
         return Err(err);
     }
 
-    let template_name = &args[0];
-    let current_user = match UserAccountManager::get_user_account_data() {
-        Err(e) => return Err(e),
-        Ok(u) => u,
-    };
+    let current_user = UserAccountManager::get_user_account_data()?;
 
-    let body = UnpubRequestBody {
-        template_name: template_name.to_string(),
-        user: current_user.username,
-    };
-
-    let body_as_string = match serde_json::to_string(&body) {
-        Err(e) => {
-            let err = Error::new(ErrorKind::Other, e.to_string());
-            return Err(err);
+    let body = {
+        let body = UnpubRequestBody {
+            template_name: args[0].to_string(),
+            user: current_user.username,
+        };
+        match serde_json::to_string(&body) {
+            Err(e) => return Err(Error::new(ErrorKind::Other, e.to_string())),
+            Ok(t) => t,
         }
-        Ok(t) => t,
     };
 
-    let mut req =
-        ProtternRequester::build_request("/templates/unpub", Method::POST, body_as_string);
-    let headers = req.headers_mut();
-    headers.insert(
-        "authorization",
-        HeaderValue::from_str(current_user.key.as_str()).expect("Error when set headers."),
-    );
-    match ProtternRequester::request(req).await {
+    let request = {
+        let mut request = ProtternRequester::build_request("/templates/unpub", Method::POST, body);
+        request.headers_mut().insert(
+            "authorization",
+            HeaderValue::from_str(current_user.key.as_str()).expect("Error when set headers."),
+        );
+
+        request
+    };
+    match ProtternRequester::request(request).await {
         Ok(res) => {
             let res_json: UnpubResponse =
                 serde_json::from_str(&res).expect("Error when parsing JSON.");
             if !res_json.unpublished {
-                let err = Error::new(ErrorKind::Other, res_json.message);
-                return Err(err);
+                return Err(Error::new(ErrorKind::Other, res_json.message));
             }
 
             println!("{}", res_json.message);

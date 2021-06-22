@@ -11,15 +11,11 @@ use std::{
 #[tokio::main]
 async fn main() {
     let env: Vec<String> = env::args().collect();
-    let mut args: &[String] = &[];
+    let args: &[String] = if env.len() > 2 { &env[2..] } else { &[] };
 
     if env.len() == 1 {
         prottern();
         return;
-    }
-
-    if env.len() > 2 {
-        args = &env[2..];
     }
 
     let res = match env[1].as_str() {
@@ -38,10 +34,7 @@ async fn main() {
         "unpub" => unpub(args).await,
         "get" => get(args).await,
         "discover" => discover().await,
-        _ => {
-            let err = Error::new(ErrorKind::InvalidInput, "Invalid command.");
-            Err(err)
-        }
+        _ => Err(Error::new(ErrorKind::InvalidInput, "Invalid command.")),
     };
 
     if let Err(e) = res {

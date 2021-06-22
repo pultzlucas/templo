@@ -1,9 +1,12 @@
-use crate::{core::file_system::paths::TEMPLATES_PATH, paint};
-use std::path::Path;
-pub fn prottern() {
-    paint!("{red} to {yellow}!","Welcome", "prottern");
+use crate::{core::repository::template_repository_exists, paint};
 
-    if !Path::new(TEMPLATES_PATH).exists() {
-        paint!("Type \"{yellow}\" to create a template repository.", "prottern init");
+pub fn prottern() {
+    paint!("{red} to {yellow}!", "Welcome", "prottern");
+
+    if !template_repository_exists() {
+        paint!(
+            "Type \"{yellow}\" to create a template repository.",
+            "prottern init"
+        );
     }
 }
