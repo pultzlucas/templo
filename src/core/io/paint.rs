@@ -4,11 +4,15 @@ macro_rules! paint {
         //\{(\w+|:)*}
         {
             use regex::{Captures, Regex};
+            use termcolor::{BufferWriter, ColorChoice};
+
             let regex = Regex::new(r"\{(\w+|:)*}").unwrap();
             let mut strings = Vec::new();
             $(strings.push($string);)*
 
             let _paint_string = |string: &str, color_name: &str| {
+                BufferWriter::stderr(ColorChoice::Always);
+
                 let color_id = match color_name {
                     "red" => 31,
                     "green" => 32,

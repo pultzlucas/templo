@@ -1,4 +1,5 @@
 use crate::core::{io::ProtternOutput, repository::TemplateManager};
+use crate::paint;
 use std::io::{Error, ErrorKind};
 
 pub fn describe(args: &[String]) -> Result<(), Error> {
@@ -15,16 +16,16 @@ pub fn describe(args: &[String]) -> Result<(), Error> {
             return Err(err);
         }
     };
-    println!("--- name ---");
+    paint!("--- {yellow} ---", "name");
     println!("{}", template.name);
 
-    println!("--- owner ---");
+    paint!("--- {yellow} ---", "owner");
     println!("{}", template.owner);
-
-    println!("--- created at ---");
+    
+    paint!("--- {yellow} ---", "created at");
     println!("{}", template.created_at);
-
-    println!("--- paths ---");
+    
+    paint!("--- {yellow} ---", "paths");
     let template_paths: Vec<&str> = template.paths.split(";").collect();
     ProtternOutput::print_template_paths(template_paths);
 
