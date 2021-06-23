@@ -3,9 +3,16 @@ use chrono::prelude::Utc;
 
 use serde_derive::{Deserialize, Serialize};
 
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
+pub enum TemplateType {
+    Local,
+    Remote
+}
+
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Template {
     pub name: String,
+    pub template_type: TemplateType, 
     pub owner: String,
     pub created_at: String,
     pub paths: String,
@@ -18,6 +25,7 @@ impl Template {
             .unwrap()
             .username;
         let created_at = Utc::now().to_string();
+        let template_type = TemplateType::Local;
 
         Self {
             name,
@@ -25,6 +33,7 @@ impl Template {
             content,
             owner,
             created_at,
+            template_type
         }
     }
 }

@@ -3,8 +3,8 @@ use hyper_tls::HttpsConnector;
 use serde_derive::{Deserialize, Serialize};
 use std::io::{Error, ErrorKind};
 
-//const BASE_URL: &str = "http://localhost:8081";
-const BASE_URL: &str = "https://protternio.herokuapp.com";
+const BASE_URL: &str = "http://localhost:8081";
+//const BASE_URL: &str = "https://protternio.herokuapp.com";
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 struct NotFoundResponse {
@@ -29,10 +29,7 @@ impl ProtternRequester {
             let https = HttpsConnector::new();
             let client = Client::builder().build::<_, hyper::Body>(https);
             match client.request(req).await {
-                Err(e) => {
-                    let err = Error::new(ErrorKind::ConnectionAborted, e.to_string());
-                    return Err(err);
-                }
+                Err(e) => return Err(Error::new(ErrorKind::ConnectionAborted, e.to_string())),
                 Ok(r) => r,
             }
         };

@@ -1,4 +1,4 @@
-use crate::core::repository::TemplateManager;
+use crate::core::repository::{TemplateManager, TemplateType};
 use super::{UserAccountKey, UserAccountManager};
 
 pub struct UserPermissions {
@@ -19,6 +19,7 @@ impl UserPermissions {
 
     pub fn delete_template(&self, template_name: &String) -> bool {
         let template = TemplateManager::get_template(template_name).unwrap();
-        template.owner == self.user.username
+        let template_is_remote = template.template_type == TemplateType::Remote; 
+        template.owner == self.user.username || template_is_remote
     }
 }

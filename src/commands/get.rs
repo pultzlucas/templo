@@ -11,8 +11,10 @@ pub async fn get(args: &[String]) -> Result<(), Error> {
     init()?;
 
     if args.len() < 1 {
-        let err = Error::new(ErrorKind::InvalidInput, "Template name must be specified.");
-        return Err(err);
+        return Err(Error::new(
+            ErrorKind::InvalidInput,
+            "Template name must be specified.",
+        ));
     }
 
     let template_name = &args[0];
@@ -39,9 +41,7 @@ pub async fn get(args: &[String]) -> Result<(), Error> {
         serde_json::from_str(&response).expect("Error when parsing JSON.")
     };
 
-    if let Err(e) = TemplateManager::save_template(template) {
-        return Err(e);
-    }
+    TemplateManager::save_template(template)?;
 
     println!("Template was installed.");
 
