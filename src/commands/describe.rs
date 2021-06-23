@@ -21,6 +21,8 @@ pub fn describe(args: &[String]) -> Result<(), Error> {
 
     paint!("--- {yellow} ---", "name");
     println!("{}", template.name);
+    paint!("--- {yellow} ---", "type");
+    println!("{:?}", template.template_type);
     paint!("--- {yellow} ---", "owner");
     println!("{}", template.owner);
     paint!("--- {yellow} ---", "created at");
