@@ -9,13 +9,17 @@ pub fn create(args: &[String]) -> Result<(), Error> {
     init()?;
 
     if args.len() < 1 {
-        let err = Error::new(ErrorKind::InvalidInput, "Template name must be specified.");
-        return Err(err);
+        return Err(Error::new(
+            ErrorKind::InvalidInput,
+            "Template name must be specified.",
+        ));
     }
 
     if args.len() < 2 {
-        let err = Error::new(ErrorKind::InvalidInput, "Directory path must be specified.");
-        return Err(err);
+        return Err(Error::new(
+            ErrorKind::InvalidInput,
+            "Directory path must be specified.",
+        ));
     }
     let template_name = &args[0];
     let directory = Path::new(&args[1]);
@@ -61,14 +65,10 @@ pub fn create(args: &[String]) -> Result<(), Error> {
     for (path_type, path_name) in template_paths.into_iter() {
         let real_path = Path::new(directory).join(path_name);
         if path_type == "file" {
-            if let Err(e) = fs::write(&real_path, "") {
-                return Err(e);
-            }
+            fs::write(&real_path, "")?;
         }
         if path_type == "dir" {
-            if let Err(e) = fs::create_dir(&real_path) {
-                return Err(e);
-            }
+            fs::create_dir(&real_path)?;
         }
     }
 
@@ -77,9 +77,7 @@ pub fn create(args: &[String]) -> Result<(), Error> {
         let real_file_path = Path::new(directory).join(file_name);
         if real_file_path.exists() {
             let mut file = fs::OpenOptions::new().write(true).open(real_file_path)?;
-            if let Err(e) = file.write(&content_buf[..]) {
-                return Err(e);
-            }
+            file.write(&content_buf[..])?;
         }
     }
     println!("Project was created.");
