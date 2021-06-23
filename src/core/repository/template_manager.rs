@@ -131,7 +131,7 @@ impl TemplateManager {
         }
 
         let template_path = Path::new(TEMPLATES_PATH).join(template_name);
-        fs::remove_dir_all(template_path)?;
+        fs::remove_file(template_path)?;
         Ok(())
     }
 
