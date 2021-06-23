@@ -1,6 +1,16 @@
 #[macro_export]
 macro_rules! paint {
     ($text:expr, $($string:expr),*) => {
+        {
+            let painted = crate::paint_string!($text, $($string),*);
+            println!("{}", painted);
+        }
+    };
+}
+
+#[macro_export]
+macro_rules! paint_string {
+    ($text:expr, $($string:expr),*) => {
         //\{(\w+|:)*}
         {
             use regex::{Captures, Regex};
@@ -10,7 +20,7 @@ macro_rules! paint {
             let mut strings = Vec::new();
             $(strings.push($string);)*
 
-            let _paint_string = |string: &str, color_name: &str| {
+            let paint_string = |string: &str, color_name: &str| {
                 BufferWriter::stderr(ColorChoice::Always);
 
                 let color_id = match color_name {
@@ -27,7 +37,7 @@ macro_rules! paint {
                 if strings.len() == 0 {
                     panic!("Invalid numbers of string parameters in paint macro.");
                 }
-                let painted_string = _paint_string(strings[0], &caps[1]);
+                let painted_string = paint_string(strings[0], &caps[1]);
                 strings.remove(0);
                 painted_string
             });
@@ -35,7 +45,7 @@ macro_rules! paint {
                 panic!("Invalid numbers of placeholders in paint macro.");
             }
 
-            println!("{}", output);
+            output
         }
     };
 }

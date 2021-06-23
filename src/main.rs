@@ -18,7 +18,7 @@ async fn main() {
         return;
     }
 
-    let res = match env[1].as_str() {
+    let output = match env[1].as_str() {
         "init" => init(),
         "save" => save(args),
         "create" => create(args),
@@ -37,7 +37,7 @@ async fn main() {
         _ => Err(Error::new(ErrorKind::InvalidInput, "Invalid command.")),
     };
 
-    if let Err(e) = res {
-        eprintln!("Error: {}", e)
+    if let Err(e) = output {
+        eprintln!("{}: {}", paint_string!("{red}", "Error"), e);
     }
 }
