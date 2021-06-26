@@ -1,6 +1,9 @@
-use crate::core::{
-    requester::{HeaderValue, Method, ProtternRequester},
-    user_account::UserAccountManager,
+use crate::{
+    core::{
+        requester::{HeaderValue, Method, ProtternRequester},
+        user_account::UserAccountManager,
+    },
+    paintln
 };
 use serde_derive::{Deserialize, Serialize};
 use std::io::{Error, ErrorKind};
@@ -55,6 +58,9 @@ If you already have a user account created, type "prottern login" to authenticat
 
         request
     };
+
+    paintln!("{gray}", "[Unpublishing Template]");
+
     match ProtternRequester::request(request).await {
         Ok(res) => {
             let res_json: UnpubResponse =

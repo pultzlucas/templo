@@ -4,6 +4,7 @@ use crate::{
         requester::{Method, ProtternRequester},
     },
     init,
+    paintln
 };
 use std::io::{Error, ErrorKind};
 
@@ -36,6 +37,9 @@ pub async fn get(args: &[String]) -> Result<(), Error> {
                 let route = format!("/templates/get/{}", template_name);
                 ProtternRequester::build_request(route.as_str(), Method::GET, "".to_string())
             };
+
+            paintln!("{gray}", "[Getting Template]");
+
             ProtternRequester::request(req).await?
         };
         serde_json::from_str(&response).expect("Error when parsing JSON.")

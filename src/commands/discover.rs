@@ -1,18 +1,24 @@
-use crate::core::{
-    repository::Template,
-    requester::{Method, ProtternRequester},
+use crate::{
+    core::{
+        repository::Template,
+        requester::{Method, ProtternRequester},
+    },
+    paintln,
 };
+
 use std::io::Error;
 
 pub async fn discover() -> Result<(), Error> {
-    let req = ProtternRequester::build_request("/templates", Method::GET, "".to_owned());
+    let templates = {
+        let req = ProtternRequester::build_request("/templates", Method::GET, "".to_owned());
 
-    match ProtternRequester::request(req).await {
-        Err(e) => return Err(e),
-        Ok(response) => {
-            show_templates(serde_json::from_str(&response).unwrap())
-        }
-    }
+        paintln!("{gray}", "[Searching Templates]");
+
+        let response = ProtternRequester::request(req).await?;
+        serde_json::from_str(&response).unwrap()
+    };
+
+    show_templates(templates);
 
     Ok(())
 }

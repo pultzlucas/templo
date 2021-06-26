@@ -1,6 +1,7 @@
 use crate::{
     core::{repository::TemplateManager, user_account::UserAccountManager},
     init,
+    paintln
 };
 use std::io::{Error, ErrorKind};
 
@@ -25,6 +26,7 @@ If you already have a user account created, type "prottern login" to authenticat
 
     let template = TemplateManager::get_template(&args[0])?;
 
+    paintln!("{gray}", "[Publishing Template]");
     match TemplateManager::publish_template(template).await {
         Err(e) => return Err(e),
         Ok(msg) => println!("{}", msg),

@@ -1,5 +1,32 @@
+/*black = 30,
+  red = 31,
+  green = 32,
+  yellow = 33,
+  blue = 34,
+  magenta = 35,
+  cyan = 36,
+  lightGray = 37,
+  darkGray = 90,
+  lightRed = 91,
+  lightgreen = 92,
+  lightYellow = 93,
+  lightblue = 94,
+  lightMagenta = 95,
+  lightCyan = 96,
+  white = 97 */
+
 #[macro_export]
 macro_rules! paint {
+    ($text:expr, $($string:expr),*) => {
+        {
+            let painted = crate::paint_string!($text, $($string),*);
+            print!("{}", painted);
+        }
+    };
+}
+
+#[macro_export]
+macro_rules! paintln {
     ($text:expr, $($string:expr),*) => {
         {
             let painted = crate::paint_string!($text, $($string),*);
@@ -7,6 +34,7 @@ macro_rules! paint {
         }
     };
 }
+
 
 #[macro_export]
 macro_rules! paint_string {
@@ -27,7 +55,8 @@ macro_rules! paint_string {
                     "red" => 31,
                     "green" => 32,
                     "yellow" => 33,
-                    _ => panic!("Invalid color name in paint macro.")
+                    "gray" => 90,
+                    _ => panic!("Invalid color in paint macro.")
                 };
                 format!("\x1b[1;{}m{}\x1b[0;0m", color_id, string)
             };

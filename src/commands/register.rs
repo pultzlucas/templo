@@ -1,6 +1,9 @@
-use crate::core::{
-    io::{InputType, ProtternInput},
-    user_account::{UserAccountData, UserAccountKey, UserAccountManager},
+use crate::{
+    core::{
+        io::{InputType, ProtternInput},
+        user_account::{UserAccountData, UserAccountKey, UserAccountManager},
+    },
+    paintln
 };
 use std::io::{Error, ErrorKind};
 
@@ -22,6 +25,7 @@ pub async fn register() -> Result<(), Error> {
     };
 
     // Requesting registration
+    paintln!("{gray}", "[Registering Account]");
     let res = UserAccountManager::register_user_account(&user_account).await;
     let user_account_registration: UserAccountKey = match res {
         Ok(res) => {

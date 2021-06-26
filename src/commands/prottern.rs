@@ -1,4 +1,4 @@
-use crate::{core::repository::template_repository_exists, paint};
+use crate::{core::repository::template_repository_exists, paintln};
 
 /* __   __   __
 \ \ /  \ / / 
@@ -20,11 +20,11 @@ pub fn prottern() {
     print!("{}", WELCOME_STRING);
 
     if !template_repository_exists() {
-        paint!(
+        paintln!(
             "Type \"{yellow}\" to create a template repository.",
             "prottern init"
         );
     }
 
-    paint!(r#"Type "{yellow}" for more information."#, "prottern help")
+    paintln!(r#"Type "{yellow}" for more information."#, "prottern help")
 }
