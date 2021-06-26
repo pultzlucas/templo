@@ -40,6 +40,7 @@ macro_rules! paintln {
 macro_rules! paint_string {
     ($text:expr, $($string:expr),*) => {
         //\{(\w+|:)*}
+        //"\033[48:5:208:0m%s\033[m\n"
         {
             use regex::{Captures, Regex};
             use termcolor::{BufferWriter, ColorChoice};

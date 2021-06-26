@@ -95,7 +95,6 @@ impl TemplateManager {
             req
         };
 
-
         match ProtternRequester::request(request).await {
             Err(e) => Err(e),
             Ok(res) => {
