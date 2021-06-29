@@ -1,9 +1,9 @@
 use super::{paths::TEMPLATES_PATH, DirPath, FileContent};
-use crate::core::repository::TemplateFormatter;
+use crate::core::{io::messages::error::INVALID_DIRECTORY_PATH, repository::TemplateFormatter};
 use fs_tree::FsTreeBuilder;
 use std::{
     fs,
-    io::Error,
+    io::{Error, ErrorKind},
     path::{Path, PathBuf},
 };
 
@@ -14,7 +14,7 @@ impl ProtternFileSystem {
         Path::new(TEMPLATES_PATH).join(template_name)
     }
 
-    pub fn extract_template_from<'a>(directory: String) -> Result<(String, String), String> {
+    pub fn extract_template_from<'a>(directory: String) -> Result<(String, String), Error> {
         let paths = ProtternFileSystem::dismount_dir(&directory)?;
         let mut formatted_paths: Vec<DirPath> = vec![];
         let mut content: Vec<FileContent> = vec![];
@@ -38,9 +38,9 @@ impl ProtternFileSystem {
         Ok((paths_bundle, content_bundle))
     }
 
-    pub fn dismount_dir<'a>(directory: &String) -> Result<Vec<DirPath>, String> {
+    pub fn dismount_dir<'a>(directory: &String) -> Result<Vec<DirPath>, Error> {
         if directory.contains(r"\") || directory.ends_with("/") {
-            return Err("Invalid directory path".to_string());
+            return Err(Error::new(ErrorKind::InvalidInput, INVALID_DIRECTORY_PATH));
         }
         let paths: Vec<DirPath> = {
             let fs_tree = FsTreeBuilder::new(directory).build();

@@ -1,10 +1,10 @@
 use crate::{
     core::{
+        io::messages::error::{INVALID_TEMPLATE_NAME, TEMPLATE_ALREADY_EXISTS},
         repository::{Template, TemplateManager},
         requester::{Method, ProtternRequester},
     },
-    init,
-    paintln
+    init, paintln,
 };
 use std::io::{Error, ErrorKind};
 
@@ -12,23 +12,16 @@ pub async fn get(args: &[String]) -> Result<(), Error> {
     init()?;
 
     if args.len() < 1 {
-        return Err(Error::new(
-            ErrorKind::InvalidInput,
-            "Template name must be specified.",
-        ));
+        return Err(Error::new(ErrorKind::InvalidInput, INVALID_TEMPLATE_NAME));
     }
 
     let template_name = &args[0];
 
     if TemplateManager::template_exists(&template_name) {
-        let err = Error::new(
+        return Err(Error::new(
             ErrorKind::AlreadyExists,
-            format!(
-                "Template \"{}\" already exists on repository.",
-                template_name
-            ),
-        );
-        return Err(err);
+            TEMPLATE_ALREADY_EXISTS,
+        ));
     }
 
     let template: Template = {

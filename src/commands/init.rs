@@ -6,12 +6,8 @@ use std::{fs, io::Error};
 
 pub fn init() -> Result<(), Error> {
     if !template_repository_exists() {
-        if let Err(e) = fs::create_dir_all(TEMPLATES_PATH) {
-            return Err(e);
-        }
+        fs::create_dir_all(TEMPLATES_PATH)?;
         println!("Repository was created.");
-
-        return Ok(());
     }
 
     Ok(())

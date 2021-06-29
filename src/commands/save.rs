@@ -1,6 +1,9 @@
 use crate::{
     core::{
         file_system::ProtternFileSystem,
+        io::messages::error::{
+            INVALID_DIRECTORY_PATH_NAME, INVALID_TEMPLATE_NAME, NOT_FOUND_USER_AUTH,
+        },
         repository::{Template, TemplateManager},
         user_account::UserAccountManager,
     },
@@ -15,26 +18,16 @@ pub fn save(args: &[String]) -> Result<(), Error> {
     init()?;
 
     if !UserAccountManager::user_auth_exists() {
-        let err = Error::new(
-            ErrorKind::NotFound,
-            r#"This process cannot be runned because You dont has an authenticated user account.
-Please type "prottern register" to register one.
-If you already have a user account created, type "prottern login" to authenticate it."#,
-        );
-        return Err(err);
+        return Err(Error::new(ErrorKind::NotFound, NOT_FOUND_USER_AUTH));
     }
-
     if args.len() < 1 {
         return Err(Error::new(
             ErrorKind::InvalidInput,
-            "Folder name must be specified.",
+            INVALID_DIRECTORY_PATH_NAME,
         ));
     }
     if args.len() < 2 {
-        return Err(Error::new(
-            ErrorKind::InvalidInput,
-            "Template name must be specified.",
-        ));
+        return Err(Error::new(ErrorKind::InvalidInput, INVALID_TEMPLATE_NAME));
     }
 
     let directory = args[0].clone();
@@ -56,14 +49,7 @@ If you already have a user account created, type "prottern login" to authenticat
         return Err(err);
     }
 
-    let (template_paths, template_content) =
-        match ProtternFileSystem::extract_template_from(directory) {
-            Ok(o) => o,
-            Err(e) => {
-                let err = Error::new(ErrorKind::Other, e);
-                return Err(err);
-            }
-        };
+    let (template_paths, template_content) = ProtternFileSystem::extract_template_from(directory)?;
 
     let template = Template::new(template_name, template_paths, template_content);
     TemplateManager::save_template(template)?;

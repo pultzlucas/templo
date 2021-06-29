@@ -1,5 +1,8 @@
 use crate::{
-    core::{io::ProtternOutput, repository::TemplateManager},
+    core::{
+        io::{messages::error::INVALID_TEMPLATE_NAME, ProtternOutput},
+        repository::TemplateManager,
+    },
     init, paint,
 };
 use std::io::{Error, ErrorKind};
@@ -8,10 +11,7 @@ pub fn describe(args: &[String]) -> Result<(), Error> {
     init()?;
 
     if args.len() < 1 {
-        return Err(Error::new(
-            ErrorKind::InvalidInput,
-            "Template name must be specified.",
-        ));
+        return Err(Error::new(ErrorKind::InvalidInput, INVALID_TEMPLATE_NAME));
     }
 
     let template = match TemplateManager::get_template(&args[0]) {

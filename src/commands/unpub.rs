@@ -1,9 +1,10 @@
 use crate::{
     core::{
+        io::messages::error::{INVALID_TEMPLATE_NAME, NOT_FOUND_USER_AUTH},
         requester::{HeaderValue, Method, ProtternRequester},
         user_account::UserAccountManager,
     },
-    paintln
+    paintln,
 };
 use serde_derive::{Deserialize, Serialize};
 use std::io::{Error, ErrorKind};
@@ -22,18 +23,11 @@ struct UnpubResponse {
 
 pub async fn unpub(args: &[String]) -> Result<(), Error> {
     if !UserAccountManager::user_auth_exists() {
-        let err = Error::new(
-            ErrorKind::NotFound,
-            r#"This process cannot be runned because You dont has an authenticated user account.
-Please type "prottern register" to register one.
-If you already have a user account created, type "prottern login" to authenticate it."#,
-        );
-        return Err(err);
+        return Err(Error::new(ErrorKind::NotFound, NOT_FOUND_USER_AUTH));
     }
 
     if args.len() < 1 {
-        let err = Error::new(ErrorKind::InvalidInput, "Template name must be specified.");
-        return Err(err);
+        return Err(Error::new(ErrorKind::InvalidInput, INVALID_TEMPLATE_NAME));
     }
 
     let current_user = UserAccountManager::get_user_account_data()?;
@@ -61,19 +55,15 @@ If you already have a user account created, type "prottern login" to authenticat
 
     paintln!("{gray}", "[Unpublishing Template]");
 
-    match ProtternRequester::request(request).await {
-        Ok(res) => {
-            let res_json: UnpubResponse =
-                serde_json::from_str(&res).expect("Error when parsing JSON.");
-            if !res_json.unpublished {
-                return Err(Error::new(ErrorKind::Other, res_json.message));
-            }
+    let response = ProtternRequester::request(request).await?;
 
-            println!("{}", res_json.message);
-        }
-
-        Err(e) => return Err(e),
+    let res_json: UnpubResponse =
+        serde_json::from_str(&response).expect("Error when parsing JSON.");
+    if !res_json.unpublished {
+        return Err(Error::new(ErrorKind::Other, res_json.message));
     }
+
+    println!("{}", res_json.message);
 
     Ok(())
 }
