@@ -6,7 +6,7 @@ use crate::core::{
 use serde_derive::{Deserialize, Serialize};
 use std::{
     fs,
-    io::{Error, ErrorKind},
+    io::{Error, ErrorKind, Write},
     path::Path,
 };
 
@@ -24,6 +24,61 @@ impl TemplateManager {
         let template_path = ProtternFileSystem::get_template_path(&template.name);
         let template_string = serde_json::to_string(&template).unwrap();
         ProtternFileSystem::write_base64_file(template_path, template_string)
+    }
+
+    pub fn create_template(template_name: &String, directory: &Path) -> Result<(), Error> {
+        let template = TemplateManager::get_template(template_name)?;
+        let template_paths = TemplateManager::deserialize_template_paths(template.paths);
+        let template_content = TemplateManager::deserialize_template_content(template.content);
+
+        // creating files and directories
+        for (path_type, path_name) in template_paths.into_iter() {
+            let real_path = Path::new(directory).join(path_name);
+            if path_type == "file" {
+                fs::write(&real_path, "")?;
+            }
+            if path_type == "dir" {
+                fs::create_dir(&real_path)?;
+            }
+        }
+
+        // writing the files content
+        for (file_name, content_buf) in template_content.into_iter() {
+            let real_file_path = Path::new(directory).join(file_name);
+            if real_file_path.exists() {
+                let mut file = fs::OpenOptions::new().write(true).open(real_file_path)?;
+                file.write(&content_buf[..])?;
+            }
+        }
+
+        Ok(())
+    }
+
+    fn deserialize_template_paths(paths: String) -> Vec<(String, String)> {
+        let template_paths_splitted: Vec<&str> = paths.split(";").collect();
+        template_paths_splitted
+            .into_iter()
+            .map(|path| {
+                let path_splitted: Vec<String> =
+                    path.split("|").map(|piece| piece.to_string()).collect();
+                (path_splitted[0].clone(), path_splitted[1].clone())
+            })
+            .collect()
+    }
+
+    fn deserialize_template_content<'a>(content: String) -> Vec<(String, Vec<u8>)> {
+        let template_content_splitted: Vec<&str> = content.split(";").collect();
+        template_content_splitted
+            .into_iter()
+            .map(|content| {
+                let content_splitted: Vec<String> =
+                    content.split("|").map(|piece| piece.to_string()).collect();
+                (
+                    content_splitted[0].clone(),
+                    base64::decode(content_splitted[1].clone()).unwrap(),
+                )
+            })
+            .collect()
     }
 
     pub fn get_template(template_name: &String) -> Result<Template, Error> {

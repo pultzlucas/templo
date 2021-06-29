@@ -16,13 +16,13 @@ pub fn templates() -> Result<(), Error> {
             .iter()
             .filter(|temp| temp.template_type == TemplateType::Remote)
             .collect();
-            //\033[48:5:208:0mLocal Templates%s\033[m
+
         println!("#[Local Templates]");
         print_template_list(local_templates);
         print!("\n");
+
         println!("#[Remote Templates]");
         print_template_list(remote_templates);
-
     } else {
         println!("Repository is empty.");
     }
