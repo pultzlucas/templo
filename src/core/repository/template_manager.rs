@@ -17,7 +17,7 @@ pub struct PublishResponse {
 }
 
 use super::Template;
-pub struct TemplateManager {}
+pub struct TemplateManager;
 
 impl TemplateManager {
     pub fn save_template(template: Template) -> Result<(), Error> {
@@ -27,7 +27,7 @@ impl TemplateManager {
     }
 
     pub fn create_template(template_name: &String, directory: &Path) -> Result<(), Error> {
-        let template = TemplateManager::get_template(template_name)?;
+        let template = TemplateManager::get_template(&template_name)?;
         let template_paths = TemplateManager::deserialize_template_paths(template.paths);
         let template_content = TemplateManager::deserialize_template_content(template.content);
 
@@ -54,33 +54,6 @@ impl TemplateManager {
         Ok(())
     }
 
-    fn deserialize_template_paths(paths: String) -> Vec<(String, String)> {
-        let template_paths_splitted: Vec<&str> = paths.split(";").collect();
-        template_paths_splitted
-            .into_iter()
-            .map(|path| {
-                let path_splitted: Vec<String> =
-                    path.split("|").map(|piece| piece.to_string()).collect();
-                (path_splitted[0].clone(), path_splitted[1].clone())
-            })
-            .collect()
-    }
-
-    fn deserialize_template_content<'a>(content: String) -> Vec<(String, Vec<u8>)> {
-        let template_content_splitted: Vec<&str> = content.split(";").collect();
-        template_content_splitted
-            .into_iter()
-            .map(|content| {
-                let content_splitted: Vec<String> =
-                    content.split("|").map(|piece| piece.to_string()).collect();
-                (
-                    content_splitted[0].clone(),
-                    base64::decode(content_splitted[1].clone()).unwrap(),
-                )
-            })
-            .collect()
-    }
-
     pub fn get_template(template_name: &String) -> Result<Template, Error> {
         let template = {
             let all_templates = match TemplateManager::get_all_templates() {
@@ -104,7 +77,7 @@ impl TemplateManager {
         Ok(template)
     }
 
-    pub fn get_all_templates<'a>() -> Option<Vec<Template>> {
+    pub fn get_all_templates() -> Option<Vec<Template>> {
         let templates: Vec<Template> = fs::read_dir(TEMPLATES_PATH)
             .unwrap()
             .map(|template| template.map(|e| e.path()))
@@ -166,10 +139,13 @@ impl TemplateManager {
     }
 
     pub fn delete_template(template_name: &String) -> Result<(), Error> {
-        if !TemplateManager::template_exists(template_name) {
+        if !TemplateManager::template_exists(&template_name) {
             let err = Error::new(
                 ErrorKind::NotFound,
-                format!("Not is possible find \"{}\" on repository", template_name),
+                format!(
+                    "Not is possible find \"{}\" on repository",
+                    template_name
+                ),
             );
             return Err(err);
         }
@@ -179,7 +155,10 @@ impl TemplateManager {
         if !has_permission_to.delete_template(&template_name) {
             let err = Error::new(
                 ErrorKind::PermissionDenied,
-                format!("You do not has permission to delete \"{}\".", template_name),
+                format!(
+                    "You do not has permission to delete \"{}\".",
+                    template_name
+                ),
             );
             return Err(err);
         }
@@ -199,6 +178,33 @@ impl TemplateManager {
             .map(|path| {
                 let path_splitted: Vec<&str> = path.split("|").collect();
                 (path_splitted[0].to_string(), path_splitted[1].to_string())
+            })
+            .collect()
+    }
+
+    fn deserialize_template_paths(paths: String) -> Vec<(String, String)> {
+        let template_paths_splitted: Vec<&str> = paths.split(";").collect();
+        template_paths_splitted
+            .into_iter()
+            .map(|path| {
+                let path_splitted: Vec<String> =
+                    path.split("|").map(|piece| piece.to_string()).collect();
+                (path_splitted[0].clone(), path_splitted[1].clone())
+            })
+            .collect()
+    }
+
+    fn deserialize_template_content(content: String) -> Vec<(String, Vec<u8>)> {
+        let template_content_splitted: Vec<&str> = content.split(";").collect();
+        template_content_splitted
+            .into_iter()
+            .map(|content| {
+                let content_splitted: Vec<String> =
+                    content.split("|").map(|piece| piece.to_string()).collect();
+                (
+                    content_splitted[0].clone(),
+                    base64::decode(content_splitted[1].clone()).unwrap(),
+                )
             })
             .collect()
     }

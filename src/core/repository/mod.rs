@@ -1,10 +1,10 @@
 mod template_manager;
 mod template;
-mod template_bundler;
+mod template_formatter;
 
 pub use template::*;
 pub use template_manager::TemplateManager;
-pub use template_bundler::TemplateFormatter;
+pub use template_formatter::TemplateFormatter;
 
 use crate::core::file_system::paths::TEMPLATES_PATH;
 use std::path::Path;
