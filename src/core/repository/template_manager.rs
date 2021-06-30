@@ -1,7 +1,10 @@
-use crate::core::{
-    file_system::{paths::TEMPLATES_PATH, ProtternFileSystem},
-    requester::{HeaderValue, Method, ProtternRequester},
-    user_account::{UserAccountManager, UserPermissions},
+use crate::{
+    core::{
+        file_system::{paths::TEMPLATES_PATH, ProtternFileSystem},
+        requester::{HeaderValue, Method, ProtternRequester},
+        user_account::{UserAccountManager, UserPermissions},
+    },
+    paint_string,
 };
 use serde_derive::{Deserialize, Serialize};
 use std::{
@@ -36,9 +39,11 @@ impl TemplateManager {
             let real_path = Path::new(directory).join(path_name);
             if path_type == "file" {
                 fs::write(&real_path, "")?;
+                println!("{} {:?}", paint_string!("{gray}", "file:"), real_path);
             }
             if path_type == "dir" {
                 fs::create_dir(&real_path)?;
+                println!(" {} {:?}", paint_string!("{gray}", "dir:"), real_path);
             }
         }
 
@@ -142,10 +147,7 @@ impl TemplateManager {
         if !TemplateManager::template_exists(&template_name) {
             let err = Error::new(
                 ErrorKind::NotFound,
-                format!(
-                    "Not is possible find \"{}\" on repository",
-                    template_name
-                ),
+                format!("Not is possible find \"{}\" on repository", template_name),
             );
             return Err(err);
         }
@@ -155,10 +157,7 @@ impl TemplateManager {
         if !has_permission_to.delete_template(&template_name) {
             let err = Error::new(
                 ErrorKind::PermissionDenied,
-                format!(
-                    "You do not has permission to delete \"{}\".",
-                    template_name
-                ),
+                format!("You do not has permission to delete \"{}\".", template_name),
             );
             return Err(err);
         }

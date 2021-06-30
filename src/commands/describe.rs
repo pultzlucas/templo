@@ -3,7 +3,7 @@ use crate::{
         io::{messages::error::INVALID_TEMPLATE_NAME, ProtternOutput},
         repository::TemplateManager,
     },
-    init, paint,
+    init, paintln, paint
 };
 use std::io::{Error, ErrorKind};
 
@@ -19,16 +19,24 @@ pub fn describe(args: &[String]) -> Result<(), Error> {
         Err(e) => return Err(Error::new(ErrorKind::NotFound, e)),
     };
 
-    paint!("--- {yellow} ---", "name");
+    paint!("{gray}\n", "____________________________");
+    paintln!("{gray} name {gray}", "--------", "--------------");
     println!("{}", template.name);
-    paint!("--- {yellow} ---", "type");
-    println!("{:?}", template.template_type);
-    paint!("--- {yellow} ---", "owner");
-    println!("{}", template.owner);
-    paint!("--- {yellow} ---", "created at");
-    println!("{}", template.created_at);
-    paint!("--- {yellow} ---", "paths");
+    paint!("{gray}\n", "____________________________");
 
+    paintln!("{gray} type {gray}", "--------", "--------------");
+    println!("{:?}", template.template_type);
+    paint!("{gray}\n", "____________________________");
+
+    paintln!("{gray} owner {gray}", "--------", "-------------");
+    println!("{}", template.owner);
+    paint!("{gray}\n", "____________________________");
+
+    paintln!("{gray} created at {gray}", "--------", "--------");
+    println!("{}", template.created_at);
+    paint!("{gray}\n", "____________________________");
+
+    paintln!("{gray} paths {gray}", "--------", "-------------");
     let template_paths: Vec<&str> = template.paths.split(";").collect();
     ProtternOutput::print_template_paths(template_paths);
 

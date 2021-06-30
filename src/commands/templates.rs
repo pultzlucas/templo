@@ -1,6 +1,6 @@
 use crate::{
     core::repository::{Template, TemplateManager, TemplateType},
-    init,
+    init, paint, paintln,
 };
 use std::io::Error;
 
@@ -17,11 +17,10 @@ pub fn templates() -> Result<(), Error> {
             .filter(|temp| temp.template_type == TemplateType::Remote)
             .collect();
 
-        println!("#[Local Templates]");
+        paintln!("{yellow} Local Templates", ">>");
         print_template_list(local_templates);
         print!("\n");
-
-        println!("#[Remote Templates]");
+        paintln!("{yellow} Remote Templates", ">>");
         print_template_list(remote_templates);
     } else {
         println!("Repository is empty.");
@@ -32,6 +31,7 @@ pub fn templates() -> Result<(), Error> {
 
 fn print_template_list(list: Vec<&Template>) {
     for temp in list.iter() {
-        println!("- {}", temp.name);
+        paint!("   {gray} ", "|");
+        println!("{}", temp.name);
     }
 }

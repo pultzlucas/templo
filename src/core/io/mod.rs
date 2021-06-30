@@ -1,9 +1,5 @@
 mod input;
 mod output;
-mod paint;
-pub mod messages;
 
-pub use input::{ProtternInput, InputType};
-pub use output::ProtternOutput;
-
-
+pub use input::*;
+pub use output::*;
