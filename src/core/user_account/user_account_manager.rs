@@ -4,10 +4,7 @@ use crate::core::{
     requester::{Method, ProtternRequester},
 };
 use serde_derive::{Deserialize, Serialize};
-use std::{
-    io::{Error, ErrorKind},
-    path::Path,
-};
+use std::{io::Error, path::Path};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct RegisterResponse {
@@ -47,10 +44,7 @@ impl UserAccountManager {
 
     pub fn get_user_account_data() -> Result<UserAccountKey, Error> {
         let user_account = ProtternFileSystem::read_base64_file(USER_ACCOUNT_AUTH_PATH)?;
-        match serde_json::from_str(&user_account) {
-            Ok(u) => Ok(u),
-            Err(e) => Err(Error::new(ErrorKind::Other, e.to_string())),
-        }
+        Ok(serde_json::from_str(&user_account).expect("Error when parsing user account object."))
     }
 
     pub async fn register_user_account(

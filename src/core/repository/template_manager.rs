@@ -114,10 +114,7 @@ impl TemplateManager {
         let current_user = UserAccountManager::get_user_account_data()?;
 
         let request = {
-            let body = match serde_json::to_string(&template) {
-                Err(e) => return Err(Error::new(ErrorKind::Other, e.to_string())),
-                Ok(t) => t,
-            };
+            let body = serde_json::to_string(&template).expect("Error when parsing template.");
             let mut req = ProtternRequester::build_request("/templates/pub", Method::POST, body);
             let headers = req.headers_mut();
             headers.insert(
@@ -128,19 +125,16 @@ impl TemplateManager {
             req
         };
 
-        match ProtternRequester::request(request).await {
-            Err(e) => Err(e),
-            Ok(res) => {
-                let res_json: PublishResponse =
-                    serde_json::from_str(&res).expect("Error when parsing JSON.");
+        let response = ProtternRequester::request(request).await?;
 
-                if !res_json.published {
-                    return Err(Error::new(ErrorKind::PermissionDenied, res_json.message));
-                }
+        let res_json: PublishResponse =
+            serde_json::from_str(&response).expect("Error when parsing JSON.");
 
-                Ok(res_json.message)
-            }
+        if !res_json.published {
+            return Err(Error::new(ErrorKind::PermissionDenied, res_json.message));
         }
+
+        Ok(res_json.message)
     }
 
     pub fn delete_template(template_name: &String) -> Result<(), Error> {

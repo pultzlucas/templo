@@ -1,34 +1,29 @@
 use crate::{
     core::{
         io::{InputType, ProtternInput},
-        user_account::{UserAccountKey, UserAccountManager},
+        user_account::UserAccountManager,
     },
-    paintln
+    paintln,
 };
 
 use std::io::{Error, ErrorKind};
 
 pub async fn login() -> Result<(), Error> {
-    // Authenticating user account
     let response = {
         let (username, password) = (
             ProtternInput::get("Username: ", InputType::Text).unwrap(),
             ProtternInput::get("Password: ", InputType::Password).unwrap(),
         );
         paintln!("{gray}", "[Authenticating Account]");
-        UserAccountManager::authenticate_user_account(username, password).await
+        UserAccountManager::authenticate_user_account(username, password).await?
     };
 
-    let user_account_auth: UserAccountKey = match response {
-        Ok(response) => {
-            if !response.authenticated {
-                return Err(Error::new(ErrorKind::AlreadyExists, response.message));
-            }
+    if !response.authenticated {
+        return Err(Error::new(ErrorKind::AlreadyExists, response.message));
+    }
 
-            serde_json::from_str(&response.user).unwrap()
-        }
-        Err(e) => return Err(e),
-    };
+    let user_account_auth =
+        serde_json::from_str(&response.user).expect("Error when parsing user account object.");
 
     UserAccountManager::save_user_account(user_account_auth)?;
 

@@ -21,10 +21,8 @@ pub async fn publish(args: &[String]) -> Result<(), Error> {
     let template = TemplateManager::get_template(&args[0])?;
 
     paintln!("{gray}", "[Publishing Template]");
-    match TemplateManager::publish_template(template).await {
-        Err(e) => return Err(e),
-        Ok(msg) => println!("{}", msg),
-    }
+    let msg = TemplateManager::publish_template(template).await?;
+    println!("{}", msg);
 
     Ok(())
 }

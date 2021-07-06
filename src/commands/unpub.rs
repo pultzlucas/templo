@@ -37,10 +37,7 @@ pub async fn unpub(args: &[String]) -> Result<(), Error> {
             template_name: args[0].to_string(),
             user: current_user.username,
         };
-        match serde_json::to_string(&body) {
-            Err(e) => return Err(Error::new(ErrorKind::Other, e.to_string())),
-            Ok(t) => t,
-        }
+        serde_json::to_string(&body).expect("Error when parsing request body to string.")
     };
 
     let request = {
