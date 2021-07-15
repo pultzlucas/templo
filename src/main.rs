@@ -28,7 +28,7 @@ async fn main() {
         "profile" => profile(),
         "help" => help(),
         "version" => version(),
-        "register" => register().await,
+        "signup" => signup().await,
         "login" => login().await,
         "pub" => publish(args).await,
         "unpub" => unpub(args).await,

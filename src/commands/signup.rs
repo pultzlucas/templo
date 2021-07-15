@@ -3,13 +3,13 @@ use crate::{
         io::{InputType, ProtternInput},
         user_account::{UserAccountData, UserAccountKey, UserAccountManager},
     },
-    paintln
+    paintln,
 };
 use std::io::{Error, ErrorKind};
 
 type RegisterFields = (String, String, String, String);
 
-pub async fn register() -> Result<(), Error> {
+pub async fn signup() -> Result<(), Error> {
     let user_account = {
         let inputs = (
             ProtternInput::get("Username: ", InputType::Text).unwrap(),
@@ -18,7 +18,7 @@ pub async fn register() -> Result<(), Error> {
             ProtternInput::get("Confirm your password: ", InputType::Password).unwrap(),
         );
 
-        validate_register_inputs(&inputs)?;
+        validate_signup_inputs(&inputs)?;
 
         let (username, email, password, _) = inputs;
         UserAccountData::new(username, email, password)
@@ -26,17 +26,12 @@ pub async fn register() -> Result<(), Error> {
 
     // Requesting registration
     paintln!("{gray}", "[Registering Account]");
-    let res = UserAccountManager::register_user_account(&user_account).await;
-    let user_account_registration: UserAccountKey = match res {
-        Ok(res) => {
-            if !res.registered {
-                return Err(Error::new(ErrorKind::AlreadyExists, res.message));
-            }
+    let res = UserAccountManager::signup_user_account(&user_account).await?;
+    if !res.registered {
+        return Err(Error::new(ErrorKind::AlreadyExists, res.message));
+    }
 
-            serde_json::from_str(&res.user).unwrap()
-        }
-        Err(e) => return Err(e),
-    };
+    let user_account_registration: UserAccountKey = serde_json::from_str(&res.user).unwrap();
 
     UserAccountManager::save_user_account(user_account_registration)?;
 
@@ -45,7 +40,7 @@ pub async fn register() -> Result<(), Error> {
     Ok(())
 }
 
-fn validate_register_inputs(
+fn validate_signup_inputs(
     (username, email, password, password2): &RegisterFields,
 ) -> Result<(), Error> {
     let err = |msg: &str| Err(Error::new(ErrorKind::InvalidInput, msg));

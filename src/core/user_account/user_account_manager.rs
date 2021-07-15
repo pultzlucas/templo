@@ -47,7 +47,7 @@ impl UserAccountManager {
         Ok(serde_json::from_str(&user_account).expect("Error when parsing user account object."))
     }
 
-    pub async fn register_user_account(
+    pub async fn signup_user_account(
         user_account: &UserAccountData,
     ) -> Result<RegisterResponse, Error> {
         let response = {
