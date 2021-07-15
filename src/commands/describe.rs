@@ -19,7 +19,25 @@ pub fn describe(args: &[String]) -> Result<(), Error> {
         Err(e) => return Err(Error::new(ErrorKind::NotFound, e)),
     };
 
-    paint!("{gray}\n", "____________________________");
+    paintln!("{yellow} name", ">>");
+    paint!("   {gray} ", "|");
+    println!("{}\n", template.name);
+
+    paintln!("{yellow} type", ">>");
+    paint!("   {gray} ", "|");
+    println!("{:?}\n", template.template_type);
+
+    paintln!("{yellow} owner", ">>");
+    paint!("   {gray} ", "|");
+    println!("{}\n", template.owner);
+
+    paintln!("{yellow} created at", ">>");
+    paint!("   {gray} ", "|");
+    println!("{}\n", template.created_at);
+
+    paintln!("{yellow} paths", ">>");
+
+    /* paint!("{gray}\n", "____________________________");
     paintln!("{gray} name {gray}", "--------", "--------------");
     println!("{}", template.name);
     paint!("{gray}\n", "____________________________");
@@ -36,7 +54,8 @@ pub fn describe(args: &[String]) -> Result<(), Error> {
     println!("{}", template.created_at);
     paint!("{gray}\n", "____________________________");
 
-    paintln!("{gray} paths {gray}", "--------", "-------------");
+    paintln!("{gray} paths {gray}", "--------", "-------------"); */
+
     let template_paths: Vec<&str> = template.paths.split(";").collect();
     ProtternOutput::print_template_paths(template_paths);
 
