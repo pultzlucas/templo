@@ -5,7 +5,7 @@ use crate::{
             INVALID_DIRECTORY_PATH_NAME, INVALID_TEMPLATE_NAME, NOT_FOUND_USER_AUTH,
         },
         repository::RepositoryConnection,
-        template::Template,
+        template::{Template, TemplateMiner},
         user_account::UserAccountManager,
     },
     init,
@@ -50,7 +50,8 @@ pub fn save(args: &[String]) -> Result<(), Error> {
         return Err(err);
     }
 
-    let (template_paths, template_content) = ProtternFileSystem::extract_template_from(directory)?;
+    let miner = TemplateMiner::new(directory);
+    let (template_paths, template_content) = miner.extract_template_content()?;
 
     let template = Template::new(template_name, template_paths, template_content);
     RepositoryConnection::new().save_template(template)?;

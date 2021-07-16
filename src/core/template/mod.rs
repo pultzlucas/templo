@@ -1,7 +1,9 @@
 mod manager;
 mod miner;
-mod formatter;
+mod bundler;
 mod template;
 
 pub use template::*;
 pub use manager::*;
+pub use miner::*;
+pub use bundler::*;
