@@ -1,17 +1,18 @@
 use crate::{
     core::{
-        repository::RepositoryConnection,
+        file_system::{DirPath, FileContent},
+        io::ProtternOutput,
         requester::{HeaderValue, Method, ProtternRequester},
         user_account::{UserAccountManager, UserPermissions},
-        io::ProtternOutput
     },
-    paint_string, paint, paintln
+    paint, paint_string, paintln,
 };
+use regex::Regex;
 use serde_derive::{Deserialize, Serialize};
 use std::{
     fs,
     io::{Error, ErrorKind, Write},
-    path::Path,
+    path::{Path, MAIN_SEPARATOR},
 };
 
 #[derive(Deserialize, Serialize)]
@@ -21,14 +22,18 @@ pub struct PublishResponse {
 }
 
 use super::Template;
-pub struct TemplateManager;
+pub struct TemplateManager {
+    template: Template,
+}
 
 impl TemplateManager {
-    pub fn create_template(template_name: &String, directory: &Path) -> Result<(), Error> {
-        let repository = RepositoryConnection::new();
-        let template = repository.get_template(&template_name)?;
-        let template_paths = TemplateManager::deserialize_template_paths(template.paths);
-        let template_content = TemplateManager::deserialize_template_content(template.content);
+    pub fn new(template: Template) -> Self {
+        Self { template }
+    }
+
+    pub fn create_template(&self, directory: &Path) -> Result<(), Error> {
+        let template_paths = TemplateManager::deserialize_template_paths(self.template.paths.clone());
+        let template_content = TemplateManager::deserialize_template_content(self.template.content.clone());
 
         // creating files and directories
         for (path_type, path_name) in template_paths.into_iter() {
@@ -55,14 +60,14 @@ impl TemplateManager {
         Ok(())
     }
 
-    pub async fn publish_template(template: Template) -> Result<String, Error> {
+    pub async fn publish_template(&self) -> Result<String, Error> {
         let has_permission_to = UserPermissions::new();
-        if !has_permission_to.publish_template(&template.name) {
+        if !has_permission_to.publish_template(&self.template.name) {
             let err = Error::new(
                 ErrorKind::PermissionDenied,
                 format!(
                     "You do not has permission to publish \"{}\".",
-                    template.name
+                    self.template.name
                 ),
             );
             return Err(err);
@@ -71,7 +76,7 @@ impl TemplateManager {
         let current_user = UserAccountManager::get_user_account_data()?;
 
         let request = {
-            let body = serde_json::to_string(&template).expect("Error when parsing template.");
+            let body = serde_json::to_string(&self.template).expect("Error when parsing template.");
             let mut req = ProtternRequester::build_request("/templates/pub", Method::POST, body);
             let headers = req.headers_mut();
             headers.insert(
@@ -82,16 +87,16 @@ impl TemplateManager {
             req
         };
 
-        let response = ProtternRequester::request(request).await?;
+        let response: PublishResponse = {
+            let raw_response = ProtternRequester::request(request).await?;
+            serde_json::from_str(&raw_response).expect("Error when parsing JSON.")
+        };
 
-        let res_json: PublishResponse =
-            serde_json::from_str(&response).expect("Error when parsing JSON.");
-
-        if !res_json.published {
-            return Err(Error::new(ErrorKind::PermissionDenied, res_json.message));
+        if !response.published {
+            return Err(Error::new(ErrorKind::PermissionDenied, response.message));
         }
 
-        Ok(res_json.message)
+        Ok(response.message)
     }
 
     pub fn split_template_paths(template_paths: Vec<&str>) -> Vec<(String, String)> {
@@ -104,26 +109,68 @@ impl TemplateManager {
             .collect()
     }
 
-    pub fn describe_template(template: &Template){
+    pub fn describe_template(&self) {
         paintln!("{yellow} name", ">>");
         paint!("   {gray} ", "|");
-        println!("{}\n", template.name);
-    
+        println!("{}\n", self.template.name);
         paintln!("{yellow} type", ">>");
         paint!("   {gray} ", "|");
-        println!("{:?}\n", template.template_type);
-    
+        println!("{:?}\n", self.template.template_type);
         paintln!("{yellow} owner", ">>");
         paint!("   {gray} ", "|");
-        println!("{}\n", template.owner);
-    
+        println!("{}\n", self.template.owner);
         paintln!("{yellow} created at", ">>");
         paint!("   {gray} ", "|");
-        println!("{}\n", template.created_at);
-    
+        println!("{}\n", self.template.created_at);
         paintln!("{yellow} paths", ">>");
-        let template_paths: Vec<&str> = template.paths.split(";").collect();
+        let template_paths: Vec<&str> = self.template.paths.split(";").collect();
         ProtternOutput::print_template_paths(template_paths);
+    }
+
+    pub fn format_path<'a>(dir: &'a String, path: DirPath<'a>) -> DirPath<'a> {
+        let mut regex = Regex::new(&dir).unwrap();
+
+        if dir == "." {
+            regex = Regex::new(r"\.$").unwrap();
+        }
+
+        let formatted_path = {
+            let path_pieces: Vec<&str> = path.name.split(MAIN_SEPARATOR).collect();
+            let right_path_pieces: Vec<&str> = path_pieces
+                .into_iter()
+                .filter(|path_piece| !regex.is_match(path_piece) && *path_piece != ".")
+                .collect();
+            right_path_pieces.join(MAIN_SEPARATOR.to_string().as_str())
+        };
+
+        DirPath::new(formatted_path, path.path_type)
+    }
+
+    pub fn bundle_paths(paths: Vec<DirPath>) -> String {
+        let paths: Vec<String> = paths
+            .into_iter()
+            .map(|path| {
+                if path.path_type == "file" {
+                    return format!("file|{}", &path.name);
+                }
+                if path.path_type == "dir" {
+                    return format!("dir|{}", &path.name);
+                }
+
+                panic!("Error when saving.")
+            })
+            .filter(|path| path != "dir|")
+            .collect();
+
+        paths.join(";").to_string()
+    }
+
+    pub fn bundle_content(file_contents: Vec<FileContent>) -> String {
+        let content_vec: Vec<String> = file_contents
+            .into_iter()
+            .map(|fc| format!("{}|{}", fc.file, base64::encode(fc.content)))
+            .collect();
+        content_vec.join(";").to_string()
     }
 
     fn deserialize_template_paths(paths: String) -> Vec<(String, String)> {

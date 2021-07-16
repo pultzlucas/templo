@@ -4,6 +4,7 @@ use crate::{
             INVALID_DIRECTORY_PATH_NAME, INVALID_DIRECTORY_PATH_TYPE, INVALID_TEMPLATE_NAME,
         },
         template::TemplateManager,
+        repository::RepositoryConnection
     },
     init,
 };
@@ -37,7 +38,12 @@ pub fn create(args: &[String]) -> Result<(), Error> {
     if !directory.exists() {
         fs::create_dir_all(directory)?;
     }
-    TemplateManager::create_template(template_name, directory)?;
+
+    let repository = RepositoryConnection::new();
+    let template = repository.get_template(&template_name)?;
+    let manager = TemplateManager::new(template);
+
+    manager.create_template(directory)?;
 
     println!("Project was created.");
     Ok(())

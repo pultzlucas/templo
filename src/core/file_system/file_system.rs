@@ -1,5 +1,5 @@
 use super::{paths::TEMPLATES_PATH, DirPath, FileContent};
-use crate::core::{io::messages::error::INVALID_DIRECTORY_PATH, template::TemplateFormatter};
+use crate::core::{io::messages::error::INVALID_DIRECTORY_PATH, template::TemplateManager};
 use fs_tree::FsTreeBuilder;
 use std::{
     fs,
@@ -21,7 +21,7 @@ impl ProtternFileSystem {
 
         for path in paths.into_iter() {
             let is_file = &path.path_type == &"file";
-            let fp = TemplateFormatter::format_path(&directory, path.clone());
+            let fp = TemplateManager::format_path(&directory, path.clone());
             if is_file {
                 let file_content = fs::read_to_string(path.name.to_string()).unwrap();
 
@@ -33,8 +33,8 @@ impl ProtternFileSystem {
             formatted_paths.push(fp);
         }
 
-        let paths_bundle = TemplateFormatter::bundle_paths(formatted_paths);
-        let content_bundle = TemplateFormatter::bundle_content(content);
+        let paths_bundle = TemplateManager::bundle_paths(formatted_paths);
+        let content_bundle = TemplateManager::bundle_content(content);
         Ok((paths_bundle, content_bundle))
     }
 

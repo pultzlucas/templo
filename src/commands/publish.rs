@@ -21,9 +21,12 @@ pub async fn publish(args: &[String]) -> Result<(), Error> {
 
     let repository = RepositoryConnection::new();
     let template = repository.get_template(&args[0])?;
+    let manager = TemplateManager::new(template);
 
     paintln!("{gray}", "[Publishing Template]");
-    let msg = TemplateManager::publish_template(template).await?;
+
+    let msg = manager.publish_template().await?;
+
     println!("{}", msg);
 
     Ok(())
