@@ -1,7 +1,7 @@
 use crate::{
     core::{
         io::messages::error::{INVALID_TEMPLATE_NAME, TEMPLATE_ALREADY_EXISTS},
-        repository::{Template, TemplateManager},
+        template::{Template, TemplateManager},
         requester::{Method, ProtternRequester},
     },
     init, paintln,

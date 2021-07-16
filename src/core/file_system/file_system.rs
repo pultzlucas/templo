@@ -1,5 +1,5 @@
 use super::{paths::TEMPLATES_PATH, DirPath, FileContent};
-use crate::core::{io::messages::error::INVALID_DIRECTORY_PATH, repository::TemplateFormatter};
+use crate::core::{io::messages::error::INVALID_DIRECTORY_PATH, template::TemplateFormatter};
 use fs_tree::FsTreeBuilder;
 use std::{
     fs,

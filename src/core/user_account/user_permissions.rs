@@ -1,4 +1,4 @@
-use crate::core::repository::{TemplateManager, TemplateType};
+use crate::core::template::{TemplateManager, TemplateType};
 use super::{UserAccountKey, UserAccountManager};
 
 pub struct UserPermissions {

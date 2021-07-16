@@ -1,5 +1,5 @@
 use crate::{
-    core::repository::{Template, TemplateManager, TemplateType},
+    core::template::{Template, TemplateManager, TemplateType},
     init, paint, paintln,
 };
 use std::io::Error;

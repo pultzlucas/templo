@@ -3,7 +3,7 @@ pub mod paint;
 
 pub struct ProtternOutput;
 use crate::{
-    core::repository::TemplateManager,
+    core::template::TemplateManager,
     paint
 };
 

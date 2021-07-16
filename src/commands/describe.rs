@@ -1,7 +1,7 @@
 use crate::{
     core::{
         io::{messages::error::INVALID_TEMPLATE_NAME, ProtternOutput},
-        repository::TemplateManager,
+        template::TemplateManager,
     },
     init, paintln, paint
 };
@@ -36,26 +36,6 @@ pub fn describe(args: &[String]) -> Result<(), Error> {
     println!("{}\n", template.created_at);
 
     paintln!("{yellow} paths", ">>");
-
-    /* paint!("{gray}\n", "____________________________");
-    paintln!("{gray} name {gray}", "--------", "--------------");
-    println!("{}", template.name);
-    paint!("{gray}\n", "____________________________");
-
-    paintln!("{gray} type {gray}", "--------", "--------------");
-    println!("{:?}", template.template_type);
-    paint!("{gray}\n", "____________________________");
-
-    paintln!("{gray} owner {gray}", "--------", "-------------");
-    println!("{}", template.owner);
-    paint!("{gray}\n", "____________________________");
-
-    paintln!("{gray} created at {gray}", "--------", "--------");
-    println!("{}", template.created_at);
-    paint!("{gray}\n", "____________________________");
-
-    paintln!("{gray} paths {gray}", "--------", "-------------"); */
-
     let template_paths: Vec<&str> = template.paths.split(";").collect();
     ProtternOutput::print_template_paths(template_paths);
 

@@ -1,6 +1,6 @@
 use crate::{
     core::{
-        repository::Template,
+        template::Template,
         requester::{Method, ProtternRequester},
     },
     paintln,

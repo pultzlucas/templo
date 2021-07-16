@@ -1,7 +1,7 @@
 use crate::{
     core::{
         io::messages::error::{INVALID_TEMPLATE_NAME, NOT_FOUND_USER_AUTH},
-        repository::TemplateManager,
+        template::TemplateManager,
         user_account::UserAccountManager,
     },
     init,

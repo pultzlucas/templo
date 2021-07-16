@@ -3,7 +3,7 @@ use crate::{
         io::messages::error::{
             INVALID_DIRECTORY_PATH_NAME, INVALID_DIRECTORY_PATH_TYPE, INVALID_TEMPLATE_NAME,
         },
-        repository::TemplateManager,
+        template::TemplateManager,
     },
     init,
 };

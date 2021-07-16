@@ -4,7 +4,7 @@ use crate::{
         io::messages::error::{
             INVALID_DIRECTORY_PATH_NAME, INVALID_TEMPLATE_NAME, NOT_FOUND_USER_AUTH,
         },
-        repository::{Template, TemplateManager},
+        template::{Template, TemplateManager},
         user_account::UserAccountManager,
     },
     init,
