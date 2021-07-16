@@ -1,5 +1,7 @@
-mod template_manager;
+mod manager;
+mod miner;
+mod formatter;
 mod template;
 
 pub use template::*;
-pub use template_manager::*;
+pub use manager::*;
