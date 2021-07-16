@@ -39,20 +39,21 @@ pub async fn unpub(args: &[String]) -> Result<(), Error> {
         };
         serde_json::to_string(&body).expect("Error when parsing request body to string.")
     };
-
-    let request = {
-        let mut request = ProtternRequester::build_request("/templates/unpub", Method::POST, body);
-        request.headers_mut().insert(
+    
+    let requester = ProtternRequester::new();
+    let req = {
+        let mut req = requester.build_request("/templates/unpub", Method::POST, body);
+        req.headers_mut().insert(
             "authorization",
             HeaderValue::from_str(current_user.key.as_str()).expect("Error when set headers."),
         );
 
-        request
+        req
     };
 
     paintln!("{gray}", "[Unpublishing Template]");
 
-    let response = ProtternRequester::request(request).await?;
+    let response = requester.request(req).await?;
 
     let res_json: UnpubResponse =
         serde_json::from_str(&response).expect("Error when parsing JSON.");

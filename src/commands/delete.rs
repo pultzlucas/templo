@@ -19,7 +19,8 @@ pub fn delete(args: &[String]) -> Result<(), Error> {
         return Err(Error::new(ErrorKind::InvalidInput, INVALID_TEMPLATE_NAME));
     }
 
-    RepositoryConnection::new().delete_template(&args[0])?;
+    let template_name = &args[0];
+    RepositoryConnection::new().delete_template(template_name)?;
 
     println!("Template was deleted.");
 

@@ -14,7 +14,11 @@ struct NotFoundResponse {
 pub struct ProtternRequester;
 
 impl ProtternRequester {
-    pub fn build_request(route: &str, method: Method, body: String) -> Request<hyper::Body> {
+    pub fn new() -> Self {
+        Self {}
+    }
+
+    pub fn build_request(&self, route: &str, method: Method, body: String) -> Request<hyper::Body> {
         let url = format!("{}{}", BASE_URL, route);
         let req = Request::builder();
         req.method(method)
@@ -24,7 +28,7 @@ impl ProtternRequester {
             .expect("Internal error when building request.")
     }
 
-    pub async fn request(req: hyper::Request<hyper::Body>) -> Result<String, Error> {
+    pub async fn request(&self, req: hyper::Request<hyper::Body>) -> Result<String, Error> {
         let response = {
             let https = HttpsConnector::new();
             let client = Client::builder().build::<_, hyper::Body>(https);

@@ -28,14 +28,15 @@ pub async fn get(args: &[String]) -> Result<(), Error> {
 
     let template: Template = {
         let response = {
+            let requester = ProtternRequester::new();
             let req = {
                 let route = format!("/templates/get/{}", template_name);
-                ProtternRequester::build_request(route.as_str(), Method::GET, "".to_string())
+                requester.build_request(route.as_str(), Method::GET, "".to_string())
             };
 
             paintln!("{gray}", "[Getting Template]");
 
-            ProtternRequester::request(req).await?
+            requester.request(req).await?
         };
         serde_json::from_str(&response).expect("Error when parsing JSON.")
     };

@@ -1,10 +1,9 @@
 use crate::{
     core::{
-        io::{messages::error::INVALID_TEMPLATE_NAME},
-        repository::RepositoryConnection,
-        template::TemplateManager
+        io::messages::error::INVALID_TEMPLATE_NAME, repository::RepositoryConnection,
+        template::TemplateManager,
     },
-    init
+    init,
 };
 use std::io::{Error, ErrorKind};
 
@@ -15,9 +14,10 @@ pub fn describe(args: &[String]) -> Result<(), Error> {
         return Err(Error::new(ErrorKind::InvalidInput, INVALID_TEMPLATE_NAME));
     }
 
-    let repository = RepositoryConnection::new();
-
-    let template = repository.get_template(&args[0])?;
+    let template = {
+        let repository = RepositoryConnection::new();
+        repository.get_template(&args[0])?
+    };
     let manager = TemplateManager::new(template);
     manager.describe_template();
 

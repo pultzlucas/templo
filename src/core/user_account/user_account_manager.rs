@@ -52,8 +52,9 @@ impl UserAccountManager {
     ) -> Result<RegisterResponse, Error> {
         let response = {
             let body = serde_json::to_string(user_account)?;
-            let request = ProtternRequester::build_request("/user/register", Method::POST, body);
-            ProtternRequester::request(request).await?
+            let requester = ProtternRequester::new();
+            let request = requester.build_request("/user/register", Method::POST, body);
+            requester.request(request).await?
         };
         Ok(serde_json::from_str(&response).unwrap())
     }
@@ -64,8 +65,9 @@ impl UserAccountManager {
     ) -> Result<AuthResponse, Error> {
         let response = {
             let body = serde_json::to_string(&AuthRequestBody { username, password }).unwrap();
-            let request = ProtternRequester::build_request("/user/login", Method::POST, body);
-            ProtternRequester::request(request).await?
+            let requester = ProtternRequester::new();
+            let request = requester.build_request("/user/login", Method::POST, body);
+            requester.request(request).await?
         };
 
         Ok(serde_json::from_str(&response)?)

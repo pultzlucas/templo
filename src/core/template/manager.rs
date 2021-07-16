@@ -73,10 +73,10 @@ impl TemplateManager {
         }
 
         let current_user = UserAccountManager::get_user_account_data()?;
-
+        let requester = ProtternRequester::new();
         let request = {
             let body = serde_json::to_string(&self.template).expect("Error when parsing template.");
-            let mut req = ProtternRequester::build_request("/templates/pub", Method::POST, body);
+            let mut req = requester.build_request("/templates/pub", Method::POST, body);
             let headers = req.headers_mut();
             headers.insert(
                 "authorization",
@@ -87,7 +87,7 @@ impl TemplateManager {
         };
 
         let response: PublishResponse = {
-            let raw_response = ProtternRequester::request(request).await?;
+            let raw_response = requester.request(request).await?;
             serde_json::from_str(&raw_response).expect("Error when parsing JSON.")
         };
 
