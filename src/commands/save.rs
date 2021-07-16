@@ -4,7 +4,8 @@ use crate::{
         io::messages::error::{
             INVALID_DIRECTORY_PATH_NAME, INVALID_TEMPLATE_NAME, NOT_FOUND_USER_AUTH,
         },
-        template::{Template, TemplateManager},
+        repository::RepositoryConnection,
+        template::Template,
         user_account::UserAccountManager,
     },
     init,
@@ -52,7 +53,7 @@ pub fn save(args: &[String]) -> Result<(), Error> {
     let (template_paths, template_content) = ProtternFileSystem::extract_template_from(directory)?;
 
     let template = Template::new(template_name, template_paths, template_content);
-    TemplateManager::save_template(template)?;
+    RepositoryConnection::new().save_template(template)?;
 
     println!("Template was saved successfully.");
 

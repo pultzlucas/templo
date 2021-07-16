@@ -1,11 +1,11 @@
 use crate::core::{
     file_system::paths::TEMPLATES_PATH,
-    repository::template_repository_exists
+    repository::RepositoryConnection
 };
 use std::{fs, io::Error};
 
 pub fn init() -> Result<(), Error> {
-    if !template_repository_exists() {
+    if !RepositoryConnection::repository_exists() {
         fs::create_dir_all(TEMPLATES_PATH)?;
         println!("Repository was created.");
     }

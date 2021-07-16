@@ -2,6 +2,7 @@ use crate::{
     core::{
         io::messages::error::{INVALID_TEMPLATE_NAME, NOT_FOUND_USER_AUTH},
         template::TemplateManager,
+        repository::RepositoryConnection,
         user_account::UserAccountManager,
     },
     init, paintln,
@@ -18,7 +19,8 @@ pub async fn publish(args: &[String]) -> Result<(), Error> {
         return Err(Error::new(ErrorKind::InvalidInput, INVALID_TEMPLATE_NAME));
     }
 
-    let template = TemplateManager::get_template(&args[0])?;
+    let repository = RepositoryConnection::new();
+    let template = repository.get_template(&args[0])?;
 
     paintln!("{gray}", "[Publishing Template]");
     let msg = TemplateManager::publish_template(template).await?;

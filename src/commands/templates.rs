@@ -1,12 +1,16 @@
 use crate::{
-    core::template::{Template, TemplateManager, TemplateType},
+    core::{
+        template::{Template, TemplateType},
+        repository::RepositoryConnection
+    },
     init, paint, paintln,
 };
 use std::io::Error;
 
 pub fn templates() -> Result<(), Error> {
     init()?;
-    if let Some(templates) = TemplateManager::get_all_templates() {
+    let repository = RepositoryConnection::new();
+    if let Some(templates) = repository.get_all_templates() {
         let local_templates: Vec<&Template> = templates
             .iter()
             .filter(|temp| temp.template_type == TemplateType::Local)

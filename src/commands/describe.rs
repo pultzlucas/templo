@@ -1,7 +1,7 @@
 use crate::{
     core::{
         io::{messages::error::INVALID_TEMPLATE_NAME, ProtternOutput},
-        template::TemplateManager,
+        repository::RepositoryConnection
     },
     init, paintln, paint
 };
@@ -14,7 +14,9 @@ pub fn describe(args: &[String]) -> Result<(), Error> {
         return Err(Error::new(ErrorKind::InvalidInput, INVALID_TEMPLATE_NAME));
     }
 
-    let template = match TemplateManager::get_template(&args[0]) {
+    let repository = RepositoryConnection::new();
+
+    let template = match repository.get_template(&args[0]) {
         Ok(t) => t,
         Err(e) => return Err(Error::new(ErrorKind::NotFound, e)),
     };

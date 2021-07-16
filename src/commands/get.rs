@@ -1,7 +1,8 @@
 use crate::{
     core::{
         io::messages::error::{INVALID_TEMPLATE_NAME, TEMPLATE_ALREADY_EXISTS},
-        template::{Template, TemplateManager},
+        template::{Template},
+        repository::RepositoryConnection,
         requester::{Method, ProtternRequester},
     },
     init, paintln,
@@ -16,8 +17,9 @@ pub async fn get(args: &[String]) -> Result<(), Error> {
     }
 
     let template_name = &args[0];
+    let repository = RepositoryConnection::new();
 
-    if TemplateManager::template_exists(&template_name) {
+    if repository.template_exists(&template_name) {
         return Err(Error::new(
             ErrorKind::AlreadyExists,
             TEMPLATE_ALREADY_EXISTS,
@@ -38,7 +40,7 @@ pub async fn get(args: &[String]) -> Result<(), Error> {
         serde_json::from_str(&response).expect("Error when parsing JSON.")
     };
 
-    TemplateManager::save_template(template)?;
+    RepositoryConnection::new().save_template(template)?;
 
     println!("Template was installed.");
 
