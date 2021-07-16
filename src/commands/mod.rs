@@ -6,7 +6,7 @@ pub const COMMANDS: [(&str, &str);13] = [
     ("templates", "Returns all templates existents on repository."),
     ("describe", "Describes a template."),
     ("profile", "Returns the current user account info."),
-    ("register", "Registers an user account."),
+    ("signup", "Registers an user account."),
     ("login", "Authenticates an user account"),
     ("pub", "Publishes a template."),
     ("unpub", "Unpublishes a template."),

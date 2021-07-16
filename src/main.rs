@@ -18,23 +18,26 @@ async fn main() {
         return;
     }
 
-    let output = match env[1].as_str() {
-        "init" => init(),
-        "save" => save(args),
-        "create" => create(args),
-        "delete" => delete(args),
-        "templates" => templates(),
-        "describe" => describe(args),
-        "profile" => profile(),
-        "help" => help(),
-        "version" => version(),
-        "signup" => signup().await,
-        "login" => login().await,
-        "pub" => publish(args).await,
-        "unpub" => unpub(args).await,
-        "get" => get(args).await,
-        "discover" => discover().await,
-        _ => Err(Error::new(ErrorKind::InvalidInput, "Invalid command.")),
+    let output = {
+        let command = env[1].as_str();
+        match command {
+            "init" => init(),
+            "save" => save(args),
+            "create" => create(args),
+            "delete" => delete(args),
+            "templates" => templates(),
+            "describe" => describe(args),
+            "profile" => profile(),
+            "help" => help(),
+            "version" => version(),
+            "signup" => signup().await,
+            "login" => login().await,
+            "pub" => publish(args).await,
+            "unpub" => unpub(args).await,
+            "get" => get(args).await,
+            "discover" => discover().await,
+            _ => Err(Error::new(ErrorKind::InvalidInput, "Invalid command.")),
+        }
     };
 
     if let Err(e) = output {

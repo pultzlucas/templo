@@ -17,11 +17,7 @@ pub fn describe(args: &[String]) -> Result<(), Error> {
 
     let repository = RepositoryConnection::new();
 
-    let template = match repository.get_template(&args[0]) {
-        Ok(t) => t,
-        Err(e) => return Err(Error::new(ErrorKind::NotFound, e)),
-    };
-
+    let template = repository.get_template(&args[0])?;
     TemplateManager::describe_template(&template);
 
     Ok(())
