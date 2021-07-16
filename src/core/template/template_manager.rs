@@ -3,8 +3,9 @@ use crate::{
         repository::RepositoryConnection,
         requester::{HeaderValue, Method, ProtternRequester},
         user_account::{UserAccountManager, UserPermissions},
+        io::ProtternOutput
     },
-    paint_string,
+    paint_string, paint, paintln
 };
 use serde_derive::{Deserialize, Serialize};
 use std::{
@@ -101,6 +102,28 @@ impl TemplateManager {
                 (path_splitted[0].to_string(), path_splitted[1].to_string())
             })
             .collect()
+    }
+
+    pub fn describe_template(template: &Template){
+        paintln!("{yellow} name", ">>");
+        paint!("   {gray} ", "|");
+        println!("{}\n", template.name);
+    
+        paintln!("{yellow} type", ">>");
+        paint!("   {gray} ", "|");
+        println!("{:?}\n", template.template_type);
+    
+        paintln!("{yellow} owner", ">>");
+        paint!("   {gray} ", "|");
+        println!("{}\n", template.owner);
+    
+        paintln!("{yellow} created at", ">>");
+        paint!("   {gray} ", "|");
+        println!("{}\n", template.created_at);
+    
+        paintln!("{yellow} paths", ">>");
+        let template_paths: Vec<&str> = template.paths.split(";").collect();
+        ProtternOutput::print_template_paths(template_paths);
     }
 
     fn deserialize_template_paths(paths: String) -> Vec<(String, String)> {
