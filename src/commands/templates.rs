@@ -1,14 +1,14 @@
 use crate::{
     core::{
+        repository::{create_repository_if_not_exists, RepositoryConnection},
         template::{Template, TemplateType},
-        repository::RepositoryConnection
     },
-    init, paint, paintln,
+    paint, paintln,
 };
 use std::io::Error;
 
 pub fn templates() -> Result<(), Error> {
-    init()?;
+    create_repository_if_not_exists()?;
     let repository = RepositoryConnection::new();
     if let Some(templates) = repository.get_all_templates() {
         let local_templates: Vec<&Template> = templates

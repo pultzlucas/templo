@@ -1,12 +1,9 @@
-use crate::{
-    core::{
-        io::messages::error::{
-            INVALID_DIRECTORY_PATH_NAME, INVALID_DIRECTORY_PATH_TYPE, INVALID_TEMPLATE_NAME,
-        },
-        template::TemplateManager,
-        repository::RepositoryConnection
+use crate::core::{
+    io::messages::error::{
+        INVALID_DIRECTORY_PATH_NAME, INVALID_DIRECTORY_PATH_TYPE, INVALID_TEMPLATE_NAME,
     },
-    init,
+    repository::{create_repository_if_not_exists, RepositoryConnection},
+    template::TemplateManager,
 };
 use std::{
     fs,
@@ -15,7 +12,7 @@ use std::{
 };
 
 pub fn create(args: &[String]) -> Result<(), Error> {
-    init()?;
+    create_repository_if_not_exists()?;
 
     if args.len() < 1 {
         return Err(Error::new(ErrorKind::InvalidInput, INVALID_TEMPLATE_NAME));

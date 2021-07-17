@@ -21,7 +21,6 @@ async fn main() {
     let output = {
         let command = env[1].as_str();
         match command {
-            "init" => init(),
             "save" => save(args),
             "create" => create(args),
             "delete" => delete(args),

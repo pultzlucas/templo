@@ -1,14 +1,11 @@
-use crate::{
-    core::{
-        io::messages::error::INVALID_TEMPLATE_NAME, repository::RepositoryConnection,
-        template::TemplateManager,
-    },
-    init,
+use crate::core::{
+    io::messages::error::INVALID_TEMPLATE_NAME, repository::create_repository_if_not_exists,
+    repository::RepositoryConnection, template::TemplateManager,
 };
 use std::io::{Error, ErrorKind};
 
 pub fn describe(args: &[String]) -> Result<(), Error> {
-    init()?;
+    create_repository_if_not_exists()?;
 
     if args.len() < 1 {
         return Err(Error::new(ErrorKind::InvalidInput, INVALID_TEMPLATE_NAME));

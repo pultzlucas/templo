@@ -1,15 +1,13 @@
-use crate::{
-    core::{
-        io::messages::error::{INVALID_TEMPLATE_NAME, NOT_FOUND_USER_AUTH},
-        repository::RepositoryConnection,
-        user_account::UserAccountManager,
-    },
-    init,
+use crate::core::{
+    io::messages::error::{INVALID_TEMPLATE_NAME, NOT_FOUND_USER_AUTH},
+    repository::{RepositoryConnection, create_repository_if_not_exists},
+    user_account::UserAccountManager,
 };
+
 use std::io::{Error, ErrorKind};
 
 pub fn delete(args: &[String]) -> Result<(), Error> {
-    init()?;
+    create_repository_if_not_exists()?;
 
     if !UserAccountManager::user_auth_exists() {
         return Err(Error::new(ErrorKind::NotFound, NOT_FOUND_USER_AUTH));

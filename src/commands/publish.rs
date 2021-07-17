@@ -2,15 +2,15 @@ use crate::{
     core::{
         io::messages::error::{INVALID_TEMPLATE_NAME, NOT_FOUND_USER_AUTH},
         template::TemplateManager,
-        repository::RepositoryConnection,
+        repository::{RepositoryConnection, create_repository_if_not_exists},
         user_account::UserAccountManager,
     },
-    init, paintln,
+    paintln,
 };
 use std::io::{Error, ErrorKind};
 
 pub async fn publish(args: &[String]) -> Result<(), Error> {
-    init()?;
+    create_repository_if_not_exists()?;
     if !UserAccountManager::user_auth_exists() {
         return Err(Error::new(ErrorKind::NotFound, NOT_FOUND_USER_AUTH));
     }

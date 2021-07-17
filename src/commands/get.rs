@@ -1,16 +1,16 @@
 use crate::{
     core::{
         io::messages::error::{INVALID_TEMPLATE_NAME, TEMPLATE_ALREADY_EXISTS},
-        template::{Template},
-        repository::RepositoryConnection,
+        repository::{create_repository_if_not_exists, RepositoryConnection},
         requester::{Method, ProtternRequester},
+        template::Template,
     },
-    init, paintln,
+    paintln,
 };
 use std::io::{Error, ErrorKind};
 
 pub async fn get(args: &[String]) -> Result<(), Error> {
-    init()?;
+    create_repository_if_not_exists()?;
 
     if args.len() < 1 {
         return Err(Error::new(ErrorKind::InvalidInput, INVALID_TEMPLATE_NAME));

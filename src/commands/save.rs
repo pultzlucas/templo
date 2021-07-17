@@ -1,14 +1,11 @@
-use crate::{
-    core::{
-        file_system::ProtternFileSystem,
-        io::messages::error::{
-            INVALID_DIRECTORY_PATH_NAME, INVALID_TEMPLATE_NAME, NOT_FOUND_USER_AUTH,
-        },
-        repository::RepositoryConnection,
-        template::{Template, TemplateMiner},
-        user_account::UserAccountManager,
+use crate::core::{
+    file_system::ProtternFileSystem,
+    io::messages::error::{
+        INVALID_DIRECTORY_PATH_NAME, INVALID_TEMPLATE_NAME, NOT_FOUND_USER_AUTH,
     },
-    init,
+    repository::{RepositoryConnection, create_repository_if_not_exists},
+    template::{Template, TemplateMiner},
+    user_account::UserAccountManager,
 };
 use std::{
     io::{Error, ErrorKind},
@@ -16,7 +13,7 @@ use std::{
 };
 
 pub fn save(args: &[String]) -> Result<(), Error> {
-    init()?;
+    create_repository_if_not_exists()?;
 
     if !UserAccountManager::user_auth_exists() {
         return Err(Error::new(ErrorKind::NotFound, NOT_FOUND_USER_AUTH));

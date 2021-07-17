@@ -15,7 +15,6 @@ pub const COMMANDS: [(&str, &str);14] = [
     ("discover", "Show all public templates."),
 ];
 
-mod init;
 mod prottern;
 mod save;
 mod delete;
@@ -33,7 +32,6 @@ mod profile;
 mod help;
 mod version;
 
-pub use init::*;
 pub use prottern::*;
 pub use save::*;
 pub use delete::*;
