@@ -1,6 +1,6 @@
 use crate::core::{
     file_system::{paths::TEMPLATES_PATH, ProtternFileSystem},
-    template::Template,
+    template::{Template, TemplateType},
     user_account::UserPermissions,
 };
 use std::{
@@ -9,11 +9,29 @@ use std::{
     path::Path,
 };
 
-pub struct RepositoryConnection;
+#[derive(Clone)]
+pub struct RepositoryConnection {
+    templates: Vec<Template>,
+}
 
 impl RepositoryConnection {
     pub fn new() -> Self {
-        Self {}
+        let templates = RepositoryConnection::get_all_templates();
+        Self { templates }
+    }
+
+    fn get_all_templates() -> Vec<Template> {
+        let templates: Vec<Template> = fs::read_dir(TEMPLATES_PATH)
+            .unwrap()
+            .map(|template| template.map(|e| e.path()))
+            .map(|template_file| {
+                let template_file_string =
+                    ProtternFileSystem::read_base64_file(template_file.unwrap()).unwrap();
+                serde_json::from_str(template_file_string.as_str()).unwrap()
+            })
+            .collect();
+
+        templates
     }
 
     pub fn save_template(&self, template: Template) -> Result<(), Error> {
@@ -26,29 +44,15 @@ impl RepositoryConnection {
         Path::new(TEMPLATES_PATH).join(template_name).exists()
     }
 
-    pub fn get_all_templates(&self) -> Option<Vec<Template>> {
-        let templates: Vec<Template> = fs::read_dir(TEMPLATES_PATH)
-            .unwrap()
-            .map(|template| template.map(|e| e.path()))
-            .map(|template_file| {
-                let template_file_string =
-                    ProtternFileSystem::read_base64_file(template_file.unwrap()).unwrap();
-                serde_json::from_str(template_file_string.as_str()).unwrap()
-            })
-            .collect();
-        if templates.is_empty() {
-            return None;
-        }
-        Some(templates)
-    }
-
     pub fn get_template(&self, template_name: &String) -> Result<Template, Error> {
         let template = {
-            let all_templates = match self.get_all_templates() {
-                Some(t) => t,
-                None => return Err(Error::new(ErrorKind::NotFound, "Repository is empty.")),
-            };
-            let matched_template = all_templates
+            if self.is_empty() {
+                return Err(Error::new(ErrorKind::NotFound, "Repository is empty."));
+            }
+
+            let matched_template = self
+                .templates
+                .clone()
                 .into_iter()
                 .find(|temp| temp.name == *template_name);
             match matched_template {
@@ -63,6 +67,21 @@ impl RepositoryConnection {
         };
 
         Ok(template)
+    }
+
+    pub fn get_remote_templates(&self) -> Vec<Template> {
+        self.templates
+            .clone()
+            .into_iter()
+            .filter(|temp| temp.template_type == TemplateType::Remote)
+            .collect()
+    }
+    pub fn get_local_templates(&self) -> Vec<Template> {
+        self.templates
+            .clone()
+            .into_iter()
+            .filter(|temp| temp.template_type == TemplateType::Local)
+            .collect()
     }
 
     pub fn delete_template(&self, template_name: &String) -> Result<(), Error> {
@@ -87,5 +106,9 @@ impl RepositoryConnection {
         let template_path = Path::new(TEMPLATES_PATH).join(template_name);
         fs::remove_file(template_path)?;
         Ok(())
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.templates.len() == 0
     }
 }
