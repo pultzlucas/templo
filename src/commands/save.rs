@@ -38,14 +38,14 @@ pub fn save(args: &[String]) -> Result<(), Error> {
     if template_path.exists() {
         let err = Error::new(
             ErrorKind::AlreadyExists,
-            format!("Template \"{}\" already exists.", &template_name),
+            format!(r#"Template "{}" already exists."#, &template_name),
         );
         return Err(err);
     }
     if !Path::new(&directory).exists() {
         let err = Error::new(
             ErrorKind::InvalidInput,
-            format!("Directory {} not exists.", directory),
+            format!(r#"Directory "{}" not exists."#, directory),
         );
         return Err(err);
     }

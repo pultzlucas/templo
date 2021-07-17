@@ -1,4 +1,4 @@
-pub const COMMANDS: [(&str, &str);13] = [
+pub const COMMANDS: [(&str, &str);14] = [
     ("init", "Creates a local repository."),
     ("save", "Saves a template from directory."),
     ("create", "Creates a project from template."),
@@ -8,6 +8,7 @@ pub const COMMANDS: [(&str, &str);13] = [
     ("profile", "Returns the current user account info."),
     ("signup", "Registers an user account."),
     ("login", "Authenticates an user account"),
+    ("logout", "Logoff current user account authenticated"),
     ("pub", "Publishes a template."),
     ("unpub", "Unpublishes a template."),
     ("get", "Installes a public template"),
@@ -23,6 +24,7 @@ mod describe;
 mod create;
 mod signup;
 mod login;
+mod logout;
 mod publish;
 mod unpub;
 mod get;
@@ -40,6 +42,7 @@ pub use describe::*;
 pub use create::*;
 pub use signup::*;
 pub use login::*;
+pub use logout::*;
 pub use publish::*;
 pub use unpub::*;
 pub use get::*;

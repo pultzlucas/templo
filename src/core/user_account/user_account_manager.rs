@@ -4,7 +4,7 @@ use crate::core::{
     requester::{Method, ProtternRequester},
 };
 use serde_derive::{Deserialize, Serialize};
-use std::{io::Error, path::Path};
+use std::{io::Error, path::Path, fs};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct RegisterResponse {
@@ -53,7 +53,7 @@ impl UserAccountManager {
         let response = {
             let body = serde_json::to_string(user_account)?;
             let requester = ProtternRequester::new();
-            let request = requester.build_request("/user/register", Method::POST, body);
+            let request = requester.build_request("/user/signup", Method::POST, body);
             requester.request(request).await?
         };
         Ok(serde_json::from_str(&response).unwrap())
@@ -75,5 +75,9 @@ impl UserAccountManager {
 
     pub fn user_auth_exists() -> bool {
         Path::new(USER_ACCOUNT_AUTH_PATH).exists()
+    }
+
+    pub fn logout_current() -> Result<(), Error> {
+        fs::remove_file(USER_ACCOUNT_AUTH_PATH)
     }
 }

@@ -30,6 +30,7 @@ async fn main() {
             "profile" => profile(),
             "help" => help(),
             "version" => version(),
+            "logout" => logout(),
             "signup" => signup().await,
             "login" => login().await,
             "pub" => publish(args).await,
