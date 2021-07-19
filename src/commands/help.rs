@@ -12,7 +12,7 @@ pub fn help() -> Result<(), Error> {
 }
 
 fn print_commands() {
-    for (name, description) in COMMANDS.iter() {
-        println!("{:>9}\t{}", name, description);
+    for command_info in COMMANDS.iter() {
+        println!("{:>9}\t{}", command_info.name, command_info.description);
     }
 }

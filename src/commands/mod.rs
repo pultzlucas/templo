@@ -1,50 +1,99 @@
-pub const COMMANDS: [(&str, &str);14] = [
-    ("init", "Creates a local repository."),
-    ("save", "Saves a template from directory."),
-    ("create", "Creates a project from template."),
-    ("delete", "Deletes a template."),
-    ("templates", "Returns all templates existents on repository."),
-    ("describe", "Describes a template."),
-    ("profile", "Returns the current user account info."),
-    ("signup", "Registers an user account."),
-    ("login", "Authenticates an user account"),
-    ("logout", "Logoff current user account authenticated"),
-    ("pub", "Publishes a template."),
-    ("unpub", "Unpublishes a template."),
-    ("get", "Installes a public template"),
-    ("discover", "Show all public templates."),
+pub struct CommandInfo {
+    name: &'static str,
+    description: &'static str,
+}
+
+pub const COMMANDS: [CommandInfo; 13] = [
+    CommandInfo {
+        name: "save",
+        description: "Saves a template from directory."
+    },
+    CommandInfo {
+        name: "create",
+        description: "Creates a project from template."
+    },
+    CommandInfo {
+        name: "delete",
+        description: "Deletes a template."
+    },
+    CommandInfo {
+        name: "templates",
+        description: "Returns all templates existents on repository."
+    },
+    CommandInfo {
+        name: "describe",
+        description: "Describes a template."
+    },
+    CommandInfo {
+        name: "profile",
+        description: "Returns the current user account info."
+    },
+    CommandInfo {
+        name: "signup",
+        description: "Registers an user account."
+    },
+    CommandInfo {
+        name: "login",
+        description: "Authenticates an user account"
+    },
+    CommandInfo {
+        name: "logout",
+        description: "Logoff current user account authenticated"
+    },
+    CommandInfo {
+        name: "pub",
+        description: "Publishes a template."
+    },
+    CommandInfo {
+        name: "unpub",
+        description: "Unpublishes a template."
+    },
+    CommandInfo {
+        name: "get",
+        description: "Installes a public template"
+    },
+    CommandInfo {
+        name: "discover",
+        description: "Show all public templates."
+    }
 ];
 
-mod prottern;
-mod save;
-mod delete;
-mod templates;
-mod describe;
+/* use std::io::Error;
+pub trait Command {
+    fn info() -> CommandInfo;
+    fn exec(args: &[String]) -> Result<(), Error>;
+} */
+
 mod create;
-mod signup;
+mod delete;
+mod describe;
+mod discover;
+mod get;
+mod help;
 mod login;
 mod logout;
-mod publish;
-mod unpub;
-mod get;
-mod discover;
 mod profile;
-mod help;
+mod prottern;
+mod publish;
+mod save;
+mod signup;
+mod templates;
+mod unpub;
 mod version;
 
-pub use prottern::*;
-pub use save::*;
-pub use delete::*;
-pub use templates::*;
-pub use describe::*;
 pub use create::*;
-pub use signup::*;
+pub use delete::*;
+pub use describe::*;
+pub use discover::*;
+pub use get::*;
+pub use help::*;
 pub use login::*;
 pub use logout::*;
-pub use publish::*;
-pub use unpub::*;
-pub use get::*;
-pub use discover::*;
 pub use profile::*;
-pub use help::*;
+pub use prottern::*;
+pub use publish::*;
+pub use save::*;
+pub use signup::*;
+pub use templates::*;
+pub use unpub::*;
 pub use version::*;
