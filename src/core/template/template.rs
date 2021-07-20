@@ -36,4 +36,8 @@ impl Template {
             template_type
         }
     }
+
+    pub fn has_content(&self) -> bool {
+        self.content != ""
+    }
 }

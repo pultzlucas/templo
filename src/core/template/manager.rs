@@ -11,7 +11,7 @@ use serde_derive::{Deserialize, Serialize};
 use std::{
     fs,
     io::{Error, ErrorKind, Write},
-    path::{Path},
+    path::Path,
 };
 
 #[derive(Deserialize, Serialize)]
@@ -31,8 +31,8 @@ impl TemplateManager {
     }
 
     pub fn create_template(&self, directory: &Path) -> Result<(), Error> {
-        let template_paths = TemplateManager::deserialize_template_paths(self.template.paths.clone());
-        let template_content = TemplateManager::deserialize_template_content(self.template.content.clone());
+        let template_paths =
+            TemplateManager::deserialize_template_paths(self.template.paths.clone());
 
         // creating files and directories
         for (path_type, path_name) in template_paths.into_iter() {
@@ -47,14 +47,19 @@ impl TemplateManager {
             }
         }
 
-        // writing the files content
-        for (file_name, content_buf) in template_content.into_iter() {
-            let real_file_path = Path::new(directory).join(file_name);
-            if real_file_path.exists() {
-                let mut file = fs::OpenOptions::new().write(true).open(real_file_path)?;
-                file.write(&content_buf[..])?;
+        if self.template.has_content() {
+            let template_content =
+                TemplateManager::deserialize_template_content(self.template.content.clone());
+
+            // writing the files content
+            for (file_name, content_buf) in template_content.into_iter() {
+                let real_file_path = Path::new(directory).join(file_name);
+                if real_file_path.exists() {
+                    let mut file = fs::OpenOptions::new().write(true).open(real_file_path)?;
+                    file.write(&content_buf[..])?;
+                }
             }
-        }
+        };
 
         Ok(())
     }
