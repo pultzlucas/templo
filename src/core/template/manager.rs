@@ -2,7 +2,7 @@ use crate::{
     core::{
         io::ProtternOutput,
         requester::{HeaderValue, Method, ProtternRequester},
-        user_account::{UserAccountManager, UserPermissions},
+        user_account::UserAccountManager,
     },
     paint, paint_string, paintln,
 };
@@ -65,18 +65,6 @@ impl TemplateManager {
     }
 
     pub async fn publish_template(&self) -> Result<String, Error> {
-        let has_permission_to = UserPermissions::new();
-        if !has_permission_to.publish_template(&self.template.name) {
-            let err = Error::new(
-                ErrorKind::PermissionDenied,
-                format!(
-                    "You do not has permission to publish \"{}\".",
-                    self.template.name
-                ),
-            );
-            return Err(err);
-        }
-
         let current_user = UserAccountManager::get_user_account_data()?;
         let requester = ProtternRequester::new();
         let request = {

@@ -20,9 +20,8 @@ pub fn delete(args: &[String]) -> Result<(), Error> {
     let templates_name = &args[0..];
     for name in templates_name.iter() {
         RepositoryConnection::new().delete_template(name)?;
-        println!("Template {} was deleted.", name);
+        println!("Template \"{}\" was deleted.", name);
     }
-
 
     Ok(())
 }

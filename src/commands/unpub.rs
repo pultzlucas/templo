@@ -29,39 +29,40 @@ pub async fn unpub(args: &[String]) -> Result<(), Error> {
     if args.len() < 1 {
         return Err(Error::new(ErrorKind::InvalidInput, INVALID_TEMPLATE_NAME));
     }
-
-    let current_user = UserAccountManager::get_user_account_data()?;
-
-    let body = {
-        let body = UnpubRequestBody {
-            template_name: args[0].to_string(),
-            user: current_user.username,
-        };
-        serde_json::to_string(&body).expect("Error when parsing request body to string.")
-    };
     
+    let templates_name = &args[0..];
     let requester = ProtternRequester::new();
-    let req = {
-        let mut req = requester.build_request("/templates/unpub", Method::POST, body);
-        req.headers_mut().insert(
-            "authorization",
-            HeaderValue::from_str(current_user.key.as_str()).expect("Error when set headers."),
-        );
+    
+    for name in templates_name.iter() {
+        let current_user = UserAccountManager::get_user_account_data()?;
+        let body = {
+            let body = UnpubRequestBody {
+                template_name: name.to_string(),
+                user: current_user.username,
+            };
+            serde_json::to_string(&body).expect("Error when parsing request body to string.")
+        };
 
-        req
-    };
+        let req = {
+            let mut req = requester.build_request("/templates/unpub", Method::POST, body);
+            req.headers_mut().insert(
+                "authorization",
+                HeaderValue::from_str(current_user.key.as_str()).expect("Error when set headers."),
+            );
+            req
+        };
+        paintln!("{gray}", "[Unpublishing Template]");
+        let response = requester.request(req).await?;
 
-    paintln!("{gray}", "[Unpublishing Template]");
+        let res_json: UnpubResponse =
+            serde_json::from_str(&response).expect("Error when parsing JSON.");
 
-    let response = requester.request(req).await?;
+        if !res_json.unpublished {
+            return Err(Error::new(ErrorKind::Other, res_json.message));
+        }
 
-    let res_json: UnpubResponse =
-        serde_json::from_str(&response).expect("Error when parsing JSON.");
-    if !res_json.unpublished {
-        return Err(Error::new(ErrorKind::Other, res_json.message));
+        println!("{}", res_json.message);
     }
-
-    println!("{}", res_json.message);
 
     Ok(())
 }
