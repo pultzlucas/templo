@@ -24,7 +24,7 @@ async fn main() {
             "save" => save(args),
             "create" | "gen" => create(args),
             "delete" | "del" => delete(args),
-            "temps" => templates(),
+            "repo" | "repository" => repository(),
             "desc" => describe(args),
             "profile" => profile(),
             "help" | "h" => help(),

@@ -7,7 +7,7 @@ use crate::{
 };
 use std::io::Error;
 
-pub fn templates() -> Result<(), Error> {
+pub fn repository() -> Result<(), Error> {
     create_repository_if_not_exists()?;
     let repository = RepositoryConnection::new();
 

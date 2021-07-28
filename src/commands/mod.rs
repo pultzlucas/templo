@@ -77,7 +77,7 @@ mod prottern;
 mod publish;
 mod save;
 mod signup;
-mod templates;
+mod repository;
 mod unpub;
 mod version;
 
@@ -94,6 +94,6 @@ pub use prottern::*;
 pub use publish::*;
 pub use save::*;
 pub use signup::*;
-pub use templates::*;
+pub use repository::*;
 pub use unpub::*;
 pub use version::*;
