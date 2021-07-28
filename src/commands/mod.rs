@@ -53,7 +53,7 @@ pub const COMMANDS: [CommandInfo; 13] = [
         description: "Installes a public template"
     },
     CommandInfo {
-        name: "discover",
+        name: "explore",
         description: "Show all public templates."
     }
 ];
@@ -67,7 +67,7 @@ pub trait Command {
 mod create;
 mod delete;
 mod describe;
-mod discover;
+mod explore;
 mod get;
 mod help;
 mod login;
@@ -84,7 +84,7 @@ mod version;
 pub use create::*;
 pub use delete::*;
 pub use describe::*;
-pub use discover::*;
+pub use explore::*;
 pub use get::*;
 pub use help::*;
 pub use login::*;

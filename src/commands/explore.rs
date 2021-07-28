@@ -8,7 +8,7 @@ use crate::{
 
 use std::io::Error;
 
-pub async fn discover() -> Result<(), Error> {
+pub async fn explore() -> Result<(), Error> {
     let templates: Vec<Template> = {
         let requester = ProtternRequester::new();
         let req = requester.build_request("/templates", Method::GET, "".to_owned());
