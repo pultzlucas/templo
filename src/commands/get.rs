@@ -16,34 +16,36 @@ pub async fn get(args: &[String]) -> Result<(), Error> {
         return Err(Error::new(ErrorKind::InvalidInput, INVALID_TEMPLATE_NAME));
     }
 
-    let template_name = &args[0];
+    let templates_name = &args[0..];
     let repository = RepositoryConnection::new();
 
-    if repository.template_exists(&template_name) {
-        return Err(Error::new(
-            ErrorKind::AlreadyExists,
-            TEMPLATE_ALREADY_EXISTS,
-        ));
+    // Verify if some template already exists in repository
+    for name in templates_name.iter() {
+        if repository.template_exists(name) {
+            return Err(Error::new(
+                ErrorKind::AlreadyExists,
+                TEMPLATE_ALREADY_EXISTS,
+            ));
+        }
     }
 
-    let template: Template = {
-        let response = {
-            let requester = ProtternRequester::new();
-            let req = {
-                let route = format!("/templates/get/{}", template_name);
-                requester.build_request(route.as_str(), Method::GET, "".to_string())
+    // If All right the templates will be installed
+    for name in templates_name.iter() {
+        let template: Template = {
+            let response = {
+                let requester = ProtternRequester::new();
+                let req = {
+                    let route = format!("/templates/get/{}", name);
+                    requester.build_request(route.as_str(), Method::GET, "".to_string())
+                };
+                paintln!("{gray}", "[Getting Template]");
+                requester.request(req).await?
             };
-
-            paintln!("{gray}", "[Getting Template]");
-
-            requester.request(req).await?
+            serde_json::from_str(&response).expect("Error when parsing JSON.")
         };
-        serde_json::from_str(&response).expect("Error when parsing JSON.")
-    };
-
-    RepositoryConnection::new().save_template(template)?;
-
-    println!("Template was installed.");
+        RepositoryConnection::new().save_template(template)?;
+        println!("Template {} was installed.", name);
+    }
 
     Ok(())
 }
