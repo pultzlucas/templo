@@ -17,10 +17,12 @@ pub fn delete(args: &[String]) -> Result<(), Error> {
         return Err(Error::new(ErrorKind::InvalidInput, INVALID_TEMPLATE_NAME));
     }
 
-    let template_name = &args[0];
-    RepositoryConnection::new().delete_template(template_name)?;
+    let templates_name = &args[0..];
+    for name in templates_name.iter() {
+        RepositoryConnection::new().delete_template(name)?;
+        println!("Template {} was deleted.", name);
+    }
 
-    println!("Template was deleted.");
 
     Ok(())
 }
