@@ -1,5 +1,7 @@
 use crate::core::user_account::UserAccountManager;
 use chrono::prelude::Utc;
+use std::fmt::{Display, Result, Formatter};
+use tabled::Tabled;
 
 use serde_derive::{Deserialize, Serialize};
 
@@ -8,6 +10,24 @@ pub enum TemplateType {
     Local,
     Remote
 }
+
+impl Display for TemplateType {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
+        match *self {
+            TemplateType::Local => write!(f, "Local"),
+            TemplateType::Remote => write!(f, "Remote"),
+        }
+    }
+}
+
+#[derive(Tabled)]
+pub struct TemplateDisplayInfo {
+    template_name: String,
+    owner: String,
+    template_type: TemplateType,
+    created_at: String
+}
+
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Template {
@@ -34,6 +54,15 @@ impl Template {
             owner,
             created_at,
             template_type
+        }
+    }
+
+    pub fn display_info(&self) -> TemplateDisplayInfo {
+        TemplateDisplayInfo {
+            template_name: self.name.clone(),
+            owner: self.owner.clone(),
+            template_type: self.template_type.clone(),
+            created_at: self.created_at.clone()
         }
     }
 

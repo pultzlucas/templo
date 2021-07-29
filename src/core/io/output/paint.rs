@@ -66,7 +66,7 @@ macro_rules! paint_string {
                 if strings.len() == 0 {
                     panic!("Invalid numbers of string parameters in paint macro.");
                 }
-                let painted_string = paint_string(strings[0], &caps[1]);
+                let painted_string = paint_string(&strings[0], &caps[1]);
                 strings.remove(0);
                 painted_string
             });
@@ -74,7 +74,7 @@ macro_rules! paint_string {
                 panic!("Invalid numbers of placeholders in paint macro.");
             }
 
-            output
+            output.to_string()
         }
     };
 }

@@ -498,6 +498,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "papergrid"
+version = "0.1.21"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "117aab6154bbd707e4cca766c7df1d3d247f3bf3052a76709583713c356d6baf"
+dependencies = [
+ "unicode-width",
+]
+
+[[package]]
 name = "parking_lot"
 version = "0.10.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -593,6 +602,7 @@ dependencies = [
  "serde",
  "serde_derive",
  "serde_json",
+ "tabled",
  "termcolor",
  "tokio",
 ]
@@ -826,6 +836,27 @@ dependencies = [
 ]
 
 [[package]]
+name = "tabled"
+version = "0.2.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "78e44c818a29312cb5f5b9b38aa72b37ad31b687dd32c5c50e737cc9f0385f20"
+dependencies = [
+ "papergrid",
+ "tabled_derive",
+]
+
+[[package]]
+name = "tabled_derive"
+version = "0.1.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "295be2fd92b0c382818e4c5271594cd5232651ef3826c4e9963f204113eccec0"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
 name = "tempfile"
 version = "3.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -945,6 +976,12 @@ name = "try-lock"
 version = "0.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "59547bce71d9c38b83d9c0e92b6066c4253371f15005def0c30d9657f50c7642"
+
+[[package]]
+name = "unicode-width"
+version = "0.1.8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9337591893a19b88d8d87f2cec1e73fad5cdfd10e5a6f349f498ad6ea2ffb1e3"
 
 [[package]]
 name = "unicode-xid"
