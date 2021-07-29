@@ -34,6 +34,10 @@ impl RepositoryConnection {
         templates
     }
 
+    pub fn total_templates(&self) -> usize {
+        RepositoryConnection::get_all_templates().len()
+    }
+
     pub fn save_template(&self, template: Template) -> Result<(), Error> {
         let template_path = ProtternFileSystem::get_template_path(&template.name);
         let template_string = serde_json::to_string(&template).unwrap();

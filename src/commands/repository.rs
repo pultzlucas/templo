@@ -1,8 +1,6 @@
-use crate::core::{
-    repository::{create_repository_if_not_exists, RepositoryConnection},
-};
+use crate::core::repository::{create_repository_if_not_exists, RepositoryConnection};
 use std::io::Error;
-use tabled::{Style, Table, Disable};
+use tabled::{Disable, Style, Table};
 
 pub fn repository() -> Result<(), Error> {
     create_repository_if_not_exists()?;
@@ -18,10 +16,11 @@ pub fn repository() -> Result<(), Error> {
     let all_templates = [local_templates, remote_templates].concat();
 
     let template_tb = Table::new(all_templates)
-        .with(Style::pseudo())
-        .with(Disable::Column(4..));
+        .with(Disable::Column(4..))
+        .with(Style::pseudo());
 
-    print!("{}", template_tb);
+        println!("{}", template_tb);
+        println!("Total templates: {}", repository.total_templates());
 
     Ok(())
 }
