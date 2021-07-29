@@ -1,10 +1,11 @@
 use crate::{
     core::{
-        io::ProtternOutput,
+        /* io::ProtternOutput, */
         requester::{HeaderValue, Method, ProtternRequester},
         user_account::UserAccountManager,
+        file_system::DirPath,
     },
-    paint, paint_string, paintln,
+    /* paint ,*/ paint_string, /* paintln */
 };
 
 use serde_derive::{Deserialize, Serialize};
@@ -92,7 +93,7 @@ impl TemplateManager {
     }
 
     pub fn describe_template(&self) {
-        paintln!("{yellow} name", ">>");
+        /* paintln!("{yellow} name", ">>");
         paint!("   {gray} ", "|");
         println!("{}\n", self.template.name);
         paintln!("{yellow} type", ">>");
@@ -104,9 +105,12 @@ impl TemplateManager {
         paintln!("{yellow} created at", ">>");
         paint!("   {gray} ", "|");
         println!("{}\n", self.template.created_at);
-        paintln!("{yellow} paths", ">>");
+        paintln!("{yellow} paths", ">>"); */
         let template_paths: Vec<&str> = self.template.paths.split(";").collect();
-        ProtternOutput::print_template_paths(template_paths);
+        for path in template_paths.into_iter() {
+            let (path_name, _) = DirPath::deserialize(path.to_string());
+            println!("{}", path_name);
+        }
     }
 
     fn deserialize_template_paths(paths: String) -> Vec<(String, String)> {

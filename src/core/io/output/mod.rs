@@ -1,8 +1,8 @@
 pub mod messages;
 pub mod paint;
 
-pub struct ProtternOutput;
-use crate::{
+/* pub struct ProtternOutput; */
+/* use crate::{
     core::template::TemplateBundler,
     paint
 };
@@ -16,3 +16,4 @@ impl ProtternOutput {
         }
     }
 }
+ */
