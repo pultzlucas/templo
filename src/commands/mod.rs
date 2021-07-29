@@ -1,59 +1,62 @@
+use tabled::Tabled;
+
+#[derive(Tabled)]
 pub struct CommandInfo {
-    name: &'static str,
+    command: &'static str,
     description: &'static str,
 }
 
 pub const COMMANDS: [CommandInfo; 13] = [
     CommandInfo {
-        name: "save",
+        command: "save",
         description: "Saves a template from directory."
     },
     CommandInfo {
-        name: "create | gen",
+        command: "create/gen",
         description: "Creates a project from template."
     },
     CommandInfo {
-        name: "del",
+        command: "del",
         description: "Deletes a template."
     },
     CommandInfo {
-        name: "repository | repo",
+        command: "repository/repo",
         description: "Returns all templates existents on repository."
     },
     CommandInfo {
-        name: "desc",
+        command: "desc",
         description: "Describes a template."
     },
     CommandInfo {
-        name: "profile",
+        command: "profile",
         description: "Returns the current user account info."
     },
     CommandInfo {
-        name: "signup",
+        command: "signup",
         description: "Registers an user account."
     },
     CommandInfo {
-        name: "login",
+        command: "login",
         description: "Authenticates an user account"
     },
     CommandInfo {
-        name: "logout",
+        command: "logout",
         description: "Logoff current user account authenticated"
     },
     CommandInfo {
-        name: "pub",
+        command: "pub",
         description: "Publishes a template."
     },
     CommandInfo {
-        name: "unpub",
+        command: "unpub",
         description: "Unpublishes a template."
     },
     CommandInfo {
-        name: "get",
+        command: "get",
         description: "Installes a public template"
     },
     CommandInfo {
-        name: "explore",
+        command: "explore",
         description: "Show all public templates."
     }
 ];
