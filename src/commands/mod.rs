@@ -9,19 +9,19 @@ pub const COMMANDS: [CommandInfo; 13] = [
         description: "Saves a template from directory."
     },
     CommandInfo {
-        name: "create",
+        name: "create | gen",
         description: "Creates a project from template."
     },
     CommandInfo {
-        name: "delete",
+        name: "del",
         description: "Deletes a template."
     },
     CommandInfo {
-        name: "templates",
+        name: "repository | repo",
         description: "Returns all templates existents on repository."
     },
     CommandInfo {
-        name: "describe",
+        name: "desc",
         description: "Describes a template."
     },
     CommandInfo {

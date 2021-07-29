@@ -13,6 +13,6 @@ pub fn help() -> Result<(), Error> {
 
 fn print_commands() {
     for command_info in COMMANDS.iter() {
-        println!("{:>9}\t{}", command_info.name, command_info.description);
+        println!("{:>20}\t{}", command_info.name, command_info.description);
     }
 }
