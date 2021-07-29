@@ -1,9 +1,8 @@
 use crate::core::{
     repository::{create_repository_if_not_exists, RepositoryConnection},
-    template::TemplateDisplayInfo,
 };
 use std::io::Error;
-use tabled::{Style, Table};
+use tabled::{Style, Table, Disable};
 
 pub fn repository() -> Result<(), Error> {
     create_repository_if_not_exists()?;
@@ -16,13 +15,11 @@ pub fn repository() -> Result<(), Error> {
 
     let local_templates = repository.get_local_templates();
     let remote_templates = repository.get_remote_templates();
-    let all_templates: Vec<TemplateDisplayInfo> = [local_templates, remote_templates]
-        .concat()
-        .into_iter()
-        .map(|temp| temp.display_info())
-        .collect();
+    let all_templates = [local_templates, remote_templates].concat();
 
-    let template_tb = Table::new(all_templates).with(Style::pseudo());
+    let template_tb = Table::new(all_templates)
+        .with(Style::pseudo())
+        .with(Disable::Column(4..));
 
     print!("{}", template_tb);
 

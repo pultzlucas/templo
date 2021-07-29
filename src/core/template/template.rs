@@ -28,12 +28,12 @@ pub struct TemplateDisplayInfo {
     created_at: String
 }
 
-
+#[derive(Tabled)]
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Template {
     pub name: String,
-    pub template_type: TemplateType, 
     pub owner: String,
+    pub template_type: TemplateType, 
     pub created_at: String,
     pub paths: String,
     pub content: String,
@@ -54,15 +54,6 @@ impl Template {
             owner,
             created_at,
             template_type
-        }
-    }
-
-    pub fn display_info(&self) -> TemplateDisplayInfo {
-        TemplateDisplayInfo {
-            template_name: self.name.clone(),
-            owner: self.owner.clone(),
-            template_type: self.template_type.clone(),
-            created_at: self.created_at.clone()
         }
     }
 
