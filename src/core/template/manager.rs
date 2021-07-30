@@ -1,9 +1,9 @@
 use crate::{
     core::{
+        file_system::DirPath,
         /* io::ProtternOutput, */
         requester::{HeaderValue, Method, ProtternRequester},
         user_account::UserAccountManager,
-        file_system::DirPath,
     },
     /* paint ,*/ paint_string, /* paintln */
 };
@@ -23,93 +23,78 @@ pub struct PublishResponse {
 
 use super::Template;
 pub struct TemplateManager {
-    template: Template,
+    templates: Vec<Template>,
 }
 
 impl TemplateManager {
-    pub fn new(template: Template) -> Self {
-        Self { template }
+    pub fn new(templates: Vec<Template>) -> Self {
+        Self { templates }
     }
 
-    pub fn create_template(&self, directory: &Path) -> Result<(), Error> {
-        let template_paths =
-            TemplateManager::deserialize_template_paths(self.template.paths.clone());
-
-        // creating files and directories
-        for (path_type, path_name) in template_paths.into_iter() {
-            let real_path = Path::new(directory).join(path_name);
-            if path_type == "file" {
-                fs::write(&real_path, "")?;
-                println!("{} {:?}", paint_string!("{gray}", "file:"), real_path);
-            }
-            if path_type == "dir" {
-                fs::create_dir(&real_path)?;
-                println!(" {} {:?}", paint_string!("{gray}", "dir:"), real_path);
-            }
-        }
-
-        if self.template.has_content() {
-            let template_content =
-                TemplateManager::deserialize_template_content(self.template.content.clone());
-
-            // writing the files content
-            for (file_name, content_buf) in template_content.into_iter() {
-                let real_file_path = Path::new(directory).join(file_name);
-                if real_file_path.exists() {
-                    let mut file = fs::OpenOptions::new().write(true).open(real_file_path)?;
-                    file.write(&content_buf[..])?;
+    pub fn gen_templates(&self, directory: &Path) -> Result<(), Error> {
+        for template in self.templates.iter() {
+            let template_paths =
+                TemplateManager::deserialize_template_paths(template.paths.clone());
+            // creating files and directories
+            for (path_type, path_name) in template_paths.into_iter() {
+                let real_path = Path::new(directory).join(path_name);
+                if path_type == "file" {
+                    fs::write(&real_path, "")?;
+                    println!("{} {:?}", paint_string!("{gray}", "file:"), real_path);
+                }
+                if path_type == "dir" {
+                    fs::create_dir(&real_path)?;
+                    println!(" {} {:?}", paint_string!("{gray}", "dir:"), real_path);
                 }
             }
-        };
+            if template.has_content() {
+                let template_content =
+                    TemplateManager::deserialize_template_content(template.content.clone());
+                // writing the files content
+                for (file_name, content_buf) in template_content.into_iter() {
+                    let real_file_path = Path::new(directory).join(file_name);
+                    if real_file_path.exists() {
+                        let mut file = fs::OpenOptions::new().write(true).open(real_file_path)?;
+                        file.write(&content_buf[..])?;
+                    }
+                }
+            };
+        }
 
         Ok(())
     }
 
-    pub async fn publish_template(&self) -> Result<String, Error> {
+    pub async fn publish_templates(&self) -> Result<String, Error> {
         let current_user = UserAccountManager::get_user_account_data()?;
         let requester = ProtternRequester::new();
+
         let request = {
-            let body = serde_json::to_string(&self.template).expect("Error when parsing template.");
+            let body = serde_json::to_string(&self.templates).expect("Error when parsing template.");
             let mut req = requester.build_request("/templates/pub", Method::POST, body);
             let headers = req.headers_mut();
             headers.insert(
                 "authorization",
                 HeaderValue::from_str(current_user.key.as_str()).expect("Error when set headers."),
             );
-
             req
         };
-
         let response: PublishResponse = {
             let raw_response = requester.request(request).await?;
             serde_json::from_str(&raw_response).expect("Error when parsing JSON.")
         };
-
         if !response.published {
             return Err(Error::new(ErrorKind::PermissionDenied, response.message));
         }
-
         Ok(response.message)
     }
 
-    pub fn describe_template(&self) {
-        /* paintln!("{yellow} name", ">>");
-        paint!("   {gray} ", "|");
-        println!("{}\n", self.template.name);
-        paintln!("{yellow} type", ">>");
-        paint!("   {gray} ", "|");
-        println!("{:?}\n", self.template.template_type);
-        paintln!("{yellow} owner", ">>");
-        paint!("   {gray} ", "|");
-        println!("{}\n", self.template.owner);
-        paintln!("{yellow} created at", ">>");
-        paint!("   {gray} ", "|");
-        println!("{}\n", self.template.created_at);
-        paintln!("{yellow} paths", ">>"); */
-        let template_paths: Vec<&str> = self.template.paths.split(";").collect();
-        for path in template_paths.into_iter() {
-            let (path_name, _) = DirPath::deserialize(path.to_string());
-            println!("{}", path_name);
+    pub fn describe_templates(&self) {
+        for template in self.templates.iter() {
+            let template_paths: Vec<&str> = template.paths.split(";").collect();
+            for path in template_paths.into_iter() {
+                let (path_name, _) = DirPath::deserialize(path.to_string());
+                println!("{}", path_name);
+            }
         }
     }
 

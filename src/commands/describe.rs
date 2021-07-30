@@ -15,8 +15,8 @@ pub fn describe(args: &[String]) -> Result<(), Error> {
         let repository = RepositoryConnection::new();
         repository.get_template(&args[0])?
     };
-    let manager = TemplateManager::new(template);
-    manager.describe_template();
+    let manager = TemplateManager::new(vec![template]);
+    manager.describe_templates();
 
     Ok(())
 }

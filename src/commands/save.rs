@@ -51,7 +51,7 @@ pub fn save(args: &[String]) -> Result<(), Error> {
     let (template_paths, template_content) = miner.extract_template_content()?;
 
     let template = Template::new(template_name, template_paths, template_content);
-    RepositoryConnection::new().save_template(template)?;
+    RepositoryConnection::new().save_template(&template)?;
 
     println!("Template was saved successfully.");
 

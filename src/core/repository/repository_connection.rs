@@ -38,9 +38,9 @@ impl RepositoryConnection {
         RepositoryConnection::get_all_templates().len()
     }
 
-    pub fn save_template(&self, template: Template) -> Result<(), Error> {
+    pub fn save_template(&self, template: &Template) -> Result<(), Error> {
         let template_path = ProtternFileSystem::get_template_path(&template.name);
-        let template_string = serde_json::to_string(&template).unwrap();
+        let template_string = serde_json::to_string(template).unwrap();
         ProtternFileSystem::write_base64_file(template_path, template_string)
     }
 

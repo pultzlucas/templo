@@ -11,7 +11,7 @@ use std::io::{Error, ErrorKind};
 
 #[derive(Deserialize, Serialize)]
 struct UnpubRequestBody {
-    template_name: String,
+    templates_name: Vec<String>,
     user: String,
 }
 
@@ -29,40 +29,70 @@ pub async fn unpub(args: &[String]) -> Result<(), Error> {
     if args.len() < 1 {
         return Err(Error::new(ErrorKind::InvalidInput, INVALID_TEMPLATE_NAME));
     }
-    
     let templates_name = &args[0..];
     let requester = ProtternRequester::new();
-    
-    for name in templates_name.iter() {
-        let current_user = UserAccountManager::get_user_account_data()?;
-        let body = {
-            let body = UnpubRequestBody {
-                template_name: name.to_string(),
-                user: current_user.username,
-            };
-            serde_json::to_string(&body).expect("Error when parsing request body to string.")
+
+
+    // Unpub templates
+    let current_user = UserAccountManager::get_user_account_data()?;
+    let body = {
+        let body = UnpubRequestBody {
+            templates_name: templates_name.to_vec(),
+            user: current_user.username,
         };
+        serde_json::to_string(&body).expect("Error when parsing request body to string.")
+    };
 
-        let req = {
-            let mut req = requester.build_request("/templates/unpub", Method::POST, body);
-            req.headers_mut().insert(
-                "authorization",
-                HeaderValue::from_str(current_user.key.as_str()).expect("Error when set headers."),
-            );
-            req
-        };
-        paintln!("{gray}", "[Unpublishing Template]");
-        let response = requester.request(req).await?;
+    let req = {
+        let mut req = requester.build_request("/templates/unpub", Method::POST, body);
+        req.headers_mut().insert(
+            "authorization",
+            HeaderValue::from_str(current_user.key.as_str()).expect("Error when set headers."),
+        );
+        req
+    };
+    paintln!("{gray}", "[Unpublishing Templates]");
+    let response = requester.request(req).await?;
 
-        let res_json: UnpubResponse =
-            serde_json::from_str(&response).expect("Error when parsing JSON.");
+    let res_json: UnpubResponse =
+        serde_json::from_str(&response).expect("Error when parsing JSON.");
 
-        if !res_json.unpublished {
-            return Err(Error::new(ErrorKind::Other, res_json.message));
-        }
-
-        println!("{}", res_json.message);
+    if !res_json.unpublished {
+        return Err(Error::new(ErrorKind::Other, res_json.message));
     }
 
+    println!("{}", res_json.message);
+
+    /*     for name in templates_name.iter() {
+           let current_user = UserAccountManager::get_user_account_data()?;
+           let body = {
+               let body = UnpubRequestBody {
+                   template_name: name.to_string(),
+                   user: current_user.username,
+               };
+               serde_json::to_string(&body).expect("Error when parsing request body to string.")
+           };
+
+           let req = {
+               let mut req = requester.build_request("/templates/unpub", Method::POST, body);
+               req.headers_mut().insert(
+                   "authorization",
+                   HeaderValue::from_str(current_user.key.as_str()).expect("Error when set headers."),
+               );
+               req
+           };
+           paintln!("{gray}", "[Unpublishing Template]");
+           let response = requester.request(req).await?;
+
+           let res_json: UnpubResponse =
+               serde_json::from_str(&response).expect("Error when parsing JSON.");
+
+           if !res_json.unpublished {
+               return Err(Error::new(ErrorKind::Other, res_json.message));
+           }
+
+           println!("{}", res_json.message);
+       }
+    */
     Ok(())
 }

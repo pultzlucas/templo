@@ -38,9 +38,9 @@ pub fn create(args: &[String]) -> Result<(), Error> {
 
     let repository = RepositoryConnection::new();
     let template = repository.get_template(&template_name)?;
-    let manager = TemplateManager::new(template);
+    let manager = TemplateManager::new(vec![template]);
 
-    manager.create_template(directory)?;
+    manager.gen_templates(directory)?;
 
     println!("Project was created.");
     Ok(())

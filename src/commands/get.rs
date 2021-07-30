@@ -7,7 +7,23 @@ use crate::{
     },
     paintln,
 };
+use serde_derive::{Deserialize, Serialize};
+use serde_json;
 use std::io::{Error, ErrorKind};
+use std::str;
+
+#[derive(Deserialize, Serialize, Clone, Debug)]
+struct GetRequestBody {
+    templates_name: Vec<String>,
+}
+
+
+#[derive(Deserialize, Serialize, Clone, Debug)]
+struct GetResponseBody {
+    message: String,
+    getted: bool,
+    templates: Vec<Template>
+}
 
 pub async fn get(args: &[String]) -> Result<(), Error> {
     create_repository_if_not_exists()?;
@@ -29,15 +45,35 @@ pub async fn get(args: &[String]) -> Result<(), Error> {
         }
     }
 
-    // If All right the templates will be installed
+    let response: GetResponseBody = {
+        let response = {
+            let requester = ProtternRequester::new();
+            let req = {
+                let body: GetRequestBody = GetRequestBody {
+                    templates_name: templates_name.to_vec(),
+                };
+                let body_as_string: String = serde_json::to_string(&body).unwrap();
+                println!("{:?}", body);
+                requester.build_request("/templates/get", Method::GET, body_as_string)
+            };
+            paintln!("{gray}", "[Getting Templates]");
+            requester.request(req).await?
+        };
+        serde_json::from_str(&response).expect("Error when parsing JSON.")
+    };
+
+    // Save templates in repository
+    for temp in response.templates.iter() {
+        RepositoryConnection::new().save_template(&temp)?;
+        println!("Template {} was installed.", temp.name);
+    }
+
+    /* // If All right the templates will be installed
     for name in templates_name.iter() {
         let template: Template = {
             let response = {
                 let requester = ProtternRequester::new();
-                let req = {
-                    let route = format!("/templates/get/{}", name);
-                    requester.build_request(route.as_str(), Method::GET, "".to_string())
-                };
+                let req = requester.build_request("/templates/get", Method::GET, "".to_string());
                 paintln!("{gray}", "[Getting Template]");
                 requester.request(req).await?
             };
@@ -45,7 +81,7 @@ pub async fn get(args: &[String]) -> Result<(), Error> {
         };
         RepositoryConnection::new().save_template(template)?;
         println!("Template {} was installed.", name);
-    }
+    } */
 
     Ok(())
 }
