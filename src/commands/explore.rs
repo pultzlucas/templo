@@ -5,8 +5,8 @@ use crate::{
     },
     paintln,
 };
-
 use std::io::Error;
+use tabled::{Disable, Style, Table};
 
 pub async fn explore() -> Result<(), Error> {
     let templates: Vec<Template> = {
@@ -19,9 +19,12 @@ pub async fn explore() -> Result<(), Error> {
         serde_json::from_str(&response).unwrap()
     };
 
-    for template in templates.into_iter() {
-        println!("- {}", template.name);
-    }
+    let templates_tb = Table::new(templates)
+        .with(Disable::Column(4..))
+        .with(Disable::Column(3..4))
+        .with(Style::pseudo());
+
+    print!("{}", templates_tb);
 
     Ok(())
 }
