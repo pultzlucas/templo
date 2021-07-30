@@ -53,7 +53,6 @@ pub async fn get(args: &[String]) -> Result<(), Error> {
                     templates_name: templates_name.to_vec(),
                 };
                 let body_as_string: String = serde_json::to_string(&body).unwrap();
-                println!("{:?}", body);
                 requester.build_request("/templates/get", Method::GET, body_as_string)
             };
             paintln!("{gray}", "[Getting Templates]");
@@ -67,21 +66,6 @@ pub async fn get(args: &[String]) -> Result<(), Error> {
         RepositoryConnection::new().save_template(&temp)?;
         println!("Template {} was installed.", temp.name);
     }
-
-    /* // If All right the templates will be installed
-    for name in templates_name.iter() {
-        let template: Template = {
-            let response = {
-                let requester = ProtternRequester::new();
-                let req = requester.build_request("/templates/get", Method::GET, "".to_string());
-                paintln!("{gray}", "[Getting Template]");
-                requester.request(req).await?
-            };
-            serde_json::from_str(&response).expect("Error when parsing JSON.")
-        };
-        RepositoryConnection::new().save_template(template)?;
-        println!("Template {} was installed.", name);
-    } */
 
     Ok(())
 }
