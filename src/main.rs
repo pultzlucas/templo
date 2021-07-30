@@ -25,7 +25,7 @@ async fn main() {
             "generate" | "gen" => generate(args),
             "delete" | "del" => delete(args),
             "repo" | "repository" => repository(),
-            "desc" => describe(args),
+            "describe" | "desc" => describe(args),
             "profile" => profile(),
             "help" | "h" => help(),
             "version" | "v" => version(),

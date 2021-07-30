@@ -16,7 +16,7 @@ pub const COMMANDS: [CommandInfo; 13] = [
         description: "Generates a project from template."
     },
     CommandInfo {
-        command: "del",
+        command: "delete/del",
         description: "Deletes a template."
     },
     CommandInfo {
@@ -24,7 +24,7 @@ pub const COMMANDS: [CommandInfo; 13] = [
         description: "Returns all templates existents on repository."
     },
     CommandInfo {
-        command: "desc",
+        command: "describe/desc",
         description: "Describes a template."
     },
     CommandInfo {
