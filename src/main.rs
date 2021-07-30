@@ -22,7 +22,7 @@ async fn main() {
         let command = env[1].as_str();
         match command {
             "save" => save(args),
-            "create" | "gen" => create(args),
+            "generate" | "gen" => generate(args),
             "delete" | "del" => delete(args),
             "repo" | "repository" => repository(),
             "desc" => describe(args),

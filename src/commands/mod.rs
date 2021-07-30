@@ -12,8 +12,8 @@ pub const COMMANDS: [CommandInfo; 13] = [
         description: "Saves a template from directory."
     },
     CommandInfo {
-        command: "create/gen",
-        description: "Creates a project from template."
+        command: "generate/gen",
+        description: "Generates a project from template."
     },
     CommandInfo {
         command: "del",
@@ -67,7 +67,7 @@ pub trait Command {
     fn exec(args: &[String]) -> Result<(), Error>;
 } */
 
-mod create;
+mod generate;
 mod delete;
 mod describe;
 mod explore;
@@ -84,7 +84,7 @@ mod repository;
 mod unpub;
 mod version;
 
-pub use create::*;
+pub use generate::*;
 pub use delete::*;
 pub use describe::*;
 pub use explore::*;

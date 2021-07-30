@@ -11,7 +11,7 @@ use std::{
     path::Path,
 };
 
-pub fn create(args: &[String]) -> Result<(), Error> {
+pub fn generate(args: &[String]) -> Result<(), Error> {
     create_repository_if_not_exists()?;
 
     if args.len() < 1 {
