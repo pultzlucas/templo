@@ -6,7 +6,7 @@ pub struct CommandInfo {
     description: &'static str,
 }
 
-pub const COMMANDS: [CommandInfo; 13] = [
+pub const COMMANDS: [CommandInfo; 14] = [
     CommandInfo {
         command: "save",
         description: "Saves a template from directory."
@@ -37,11 +37,11 @@ pub const COMMANDS: [CommandInfo; 13] = [
     },
     CommandInfo {
         command: "login",
-        description: "Authenticates an user account"
+        description: "Authenticates an user account."
     },
     CommandInfo {
         command: "logout",
-        description: "Logoff current user account authenticated"
+        description: "Logoff current user account authenticated."
     },
     CommandInfo {
         command: "pub",
@@ -53,11 +53,15 @@ pub const COMMANDS: [CommandInfo; 13] = [
     },
     CommandInfo {
         command: "get",
-        description: "Installes a public template"
+        description: "Installes a public template."
     },
     CommandInfo {
         command: "explore",
         description: "Show all public templates."
+    },
+    CommandInfo {
+        command: "documentation/docs",
+        description: "Open the Prottern documentation."
     }
 ];
 
@@ -83,6 +87,7 @@ mod signup;
 mod repository;
 mod unpub;
 mod version;
+mod documentation;
 
 pub use generate::*;
 pub use delete::*;
@@ -100,3 +105,4 @@ pub use signup::*;
 pub use repository::*;
 pub use unpub::*;
 pub use version::*;
+pub use documentation::*;

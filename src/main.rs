@@ -30,6 +30,7 @@ async fn main() {
             "help" | "h" => help(),
             "version" | "v" => version(),
             "logout" => logout(),
+            "documentation" | "docs" => documentation(),
             "signup" => signup().await,
             "login" => login().await,
             "pub" => publish(args).await,
