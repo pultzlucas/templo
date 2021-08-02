@@ -9,6 +9,7 @@ use std::{
     fs,
     io::{Error, ErrorKind},
     path::Path,
+    time::Instant,
 };
 
 pub fn generate(args: &[String]) -> Result<(), Error> {
@@ -36,12 +37,16 @@ pub fn generate(args: &[String]) -> Result<(), Error> {
         fs::create_dir_all(directory)?;
     }
 
+    // Get template from repository
+    let start = Instant::now(); // start timing process
     let repository = RepositoryConnection::new();
     let template = repository.get_template(&template_name)?;
     let manager = TemplateManager::new(vec![template]);
 
+    // Generate template
     manager.gen_templates(directory)?;
-
-    println!("Project was created.");
+    println!("Template \"{}\" was generated.", template_name);
+    let end = Instant::now(); // stop timing process
+    println!("Done in {:.2?}", end.duration_since(start));
     Ok(())
 }

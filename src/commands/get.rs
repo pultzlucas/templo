@@ -7,22 +7,25 @@ use crate::{
     },
     paintln,
 };
+
 use serde_derive::{Deserialize, Serialize};
 use serde_json;
-use std::io::{Error, ErrorKind};
-use std::str;
+use std::{
+    io::{Error, ErrorKind},
+    str,
+    time::Instant,
+};
 
 #[derive(Deserialize, Serialize, Clone, Debug)]
 struct GetRequestBody {
     templates_name: Vec<String>,
 }
 
-
 #[derive(Deserialize, Serialize, Clone, Debug)]
 struct GetResponseBody {
     message: String,
     getted: bool,
-    templates: Vec<Template>
+    templates: Vec<Template>,
 }
 
 pub async fn get(args: &[String]) -> Result<(), Error> {
@@ -45,6 +48,8 @@ pub async fn get(args: &[String]) -> Result<(), Error> {
         }
     }
 
+    // Getting templates
+    let start = Instant::now(); // start timing process
     let response: GetResponseBody = {
         let response = {
             let requester = ProtternRequester::new();
@@ -66,6 +71,9 @@ pub async fn get(args: &[String]) -> Result<(), Error> {
         RepositoryConnection::new().save_template(&temp)?;
         println!("Template {} was installed.", temp.name);
     }
+
+    let end = Instant::now(); // stop timing process
+    println!("Done in {:.2?}", end.duration_since(start));
 
     Ok(())
 }

@@ -4,7 +4,7 @@ use crate::core::{
     requester::{Method, ProtternRequester},
 };
 use serde_derive::{Deserialize, Serialize};
-use std::{io::Error, path::Path, fs};
+use std::{fs, io::Error, path::Path};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct RegisterResponse {

@@ -14,8 +14,6 @@ struct Version {
 }
 
 pub fn help() -> Result<(), Error> {
-    //println!("Version:\n{}v\n", VERSION);
-    //println!("Respository:\n{}\n", REPOSITORY);
     print!(
         "{}",
         Table::new(&[Version { version: VERSION }]).with(Style::pseudo())
@@ -41,7 +39,4 @@ fn print_commands() {
         .with(Style::psql());
 
     print!("{}", commands_tb);
-    /* for command_info in COMMANDS.iter() {
-        println!("{:>20}\t{}", command_info.name, command_info.description);
-    } */
 }

@@ -11,10 +11,13 @@ pub fn describe(args: &[String]) -> Result<(), Error> {
         return Err(Error::new(ErrorKind::InvalidInput, INVALID_TEMPLATE_NAME));
     }
 
+    // Get template from repository
     let template = {
         let repository = RepositoryConnection::new();
         repository.get_template(&args[0])?
     };
+
+    // Describe template
     let manager = TemplateManager::new(vec![template]);
     manager.describe_templates();
 

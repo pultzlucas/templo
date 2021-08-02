@@ -1,10 +1,13 @@
 use crate::core::{
     io::messages::error::{INVALID_TEMPLATE_NAME, NOT_FOUND_USER_AUTH},
-    repository::{RepositoryConnection, create_repository_if_not_exists},
+    repository::{create_repository_if_not_exists, RepositoryConnection},
     user_account::UserAccountManager,
 };
 
-use std::io::{Error, ErrorKind};
+use std::{
+    io::{Error, ErrorKind},
+    time::Instant,
+};
 
 pub fn delete(args: &[String]) -> Result<(), Error> {
     create_repository_if_not_exists()?;
@@ -18,10 +21,14 @@ pub fn delete(args: &[String]) -> Result<(), Error> {
     }
 
     let templates_name = &args[0..];
+
+    // Deleting templates
+    let start = Instant::now(); // start timing process
     for name in templates_name.iter() {
         RepositoryConnection::new().delete_template(name)?;
         println!("Template \"{}\" was deleted.", name);
     }
-
+    let end = Instant::now(); // stop timing process
+    println!("Done in {:.2?}", end.duration_since(start));
     Ok(())
 }

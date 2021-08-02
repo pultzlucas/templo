@@ -3,13 +3,14 @@ use crate::core::{
     io::messages::error::{
         INVALID_DIRECTORY_PATH_NAME, INVALID_TEMPLATE_NAME, NOT_FOUND_USER_AUTH,
     },
-    repository::{RepositoryConnection, create_repository_if_not_exists},
+    repository::{create_repository_if_not_exists, RepositoryConnection},
     template::{Template, TemplateMiner},
     user_account::UserAccountManager,
 };
 use std::{
     io::{Error, ErrorKind},
     path::Path,
+    time::Instant,
 };
 
 pub fn save(args: &[String]) -> Result<(), Error> {
@@ -47,13 +48,18 @@ pub fn save(args: &[String]) -> Result<(), Error> {
         return Err(err);
     }
 
+    // Mine template from directory
+    let start = Instant::now(); // start timing process
+
     let miner = TemplateMiner::new(directory);
     let (template_paths, template_content) = miner.extract_template_content()?;
-
     let template = Template::new(template_name, template_paths, template_content);
-    RepositoryConnection::new().save_template(&template)?;
 
+    //save template in repository
+    RepositoryConnection::new().save_template(&template)?;
     println!("Template was saved successfully.");
+    let end = Instant::now(); // stop timing process
+    println!("Done in {:.2?}", end.duration_since(start));
 
     Ok(())
 }

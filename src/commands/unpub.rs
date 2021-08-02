@@ -8,6 +8,7 @@ use crate::{
 };
 use serde_derive::{Deserialize, Serialize};
 use std::io::{Error, ErrorKind};
+use std::time::Instant;
 
 #[derive(Deserialize, Serialize)]
 struct UnpubRequestBody {
@@ -32,18 +33,16 @@ pub async fn unpub(args: &[String]) -> Result<(), Error> {
     let templates_name = &args[0..];
     let requester = ProtternRequester::new();
 
-
-    // Unpub templates
-    let current_user = UserAccountManager::get_user_account_data()?;
-    let body = {
-        let body = UnpubRequestBody {
-            templates_name: templates_name.to_vec(),
-            user: current_user.username,
-        };
-        serde_json::to_string(&body).expect("Error when parsing request body to string.")
-    };
-
+    // unpub request body
     let req = {
+        let current_user = UserAccountManager::get_user_account_data()?;
+        let body = {
+            let body = UnpubRequestBody {
+                templates_name: templates_name.to_vec(),
+                user: current_user.username,
+            };
+            serde_json::to_string(&body).expect("Error when parsing request body to string.")
+        };
         let mut req = requester.build_request("/templates/unpub", Method::POST, body);
         req.headers_mut().insert(
             "authorization",
@@ -51,9 +50,11 @@ pub async fn unpub(args: &[String]) -> Result<(), Error> {
         );
         req
     };
+
+    // unpub templates
+    let start = Instant::now(); // start timing process
     paintln!("{gray}", "[Unpublishing Templates]");
     let response = requester.request(req).await?;
-
     let res_json: UnpubResponse =
         serde_json::from_str(&response).expect("Error when parsing JSON.");
 
@@ -62,6 +63,8 @@ pub async fn unpub(args: &[String]) -> Result<(), Error> {
     }
 
     println!("{}", res_json.message);
+    let end = Instant::now(); // stop timing process
+    println!("Done in {:.2?}", end.duration_since(start));
 
     Ok(())
 }
