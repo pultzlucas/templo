@@ -9,7 +9,7 @@ Prottern is a platform and a tool that provide you more flexibility at software 
 ***
 
 ### Installation
-<a href="https://github.com/Lucas-Lopes-Pultz/prottern-rust/releases/download/v0.1.0-beta/Prottern-v0.1.0-beta.zip" rel="external">Download Prottern Binary</a>
+<a href="https://github.com/Lucas-Lopes-Pultz/prottern/releases/download/v0.1.0-beta/Prottern-v0.1.0-beta.zip" rel="external">Download Prottern Binary</a>
 ***
 
 ### Getting Started
