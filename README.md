@@ -4,12 +4,12 @@ Prottern is a platform and a tool that provide you more flexibility at software 
 - CLI Simple to use
 - Ships only a single executable file
 - Possibility to publish templates over the web for other people uses
-- Is built in Rust ❤
+- Is built in Rust
 
 ***
 
 ### Installation
-<a href="bin/prottern.exe" download="prottern.exe" type="application/x-msdownload">Download Prottern executable</a>
+<a href="https://github.com/Lucas-Lopes-Pultz/prottern-rust/releases/download/v0.1.0-beta/Prottern-v0.1.0-beta.zip" rel="external">Download Prottern Binary</a>
 ***
 
 ### Getting Started
@@ -21,5 +21,7 @@ Next verify if Prottern was installed typing
 ```command
 $ prottern
 ```
+
+If Prottern was intalled a welcome message will appear in your console. 🎉
 
 If Prottern was intalled a welcome message will appear in your console. 🎉
