@@ -23,5 +23,3 @@ $ prottern
 ```
 
 If Prottern was intalled a welcome message will appear in your console. 🎉
-
-If Prottern was intalled a welcome message will appear in your console. 🎉
