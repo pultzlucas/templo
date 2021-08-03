@@ -16,7 +16,9 @@ Prottern is a platform and a tool that provide you more flexibility at software 
 
 To Get started you first need to download prottern.
 
-Next verify if Prottern was installed typing
+if you downloaded the Prottern's binary, you need to add the binary path on [Windows PATH variable](https://docs.microsoft.com/en-us/previous-versions/office/developer/sharepoint-2010/ee537574(v=office.14)) before continue.
+
+Next verify if Prottern was installed...
 
 ```command
 $ prottern
