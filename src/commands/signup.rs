@@ -14,7 +14,7 @@ pub async fn signup() -> Result<(), Error> {
     let user_account = {
         let inputs = (
             ProtternInput::get("Username: ", InputType::Text).unwrap(),
-            ProtternInput::get("Email: ", InputType::Text).unwrap(),
+            ProtternInput::get("Email (this is public): ", InputType::Text).unwrap(),
             ProtternInput::get("Password: ", InputType::Password).unwrap(),
             ProtternInput::get("Confirm your password: ", InputType::Password).unwrap(),
         );

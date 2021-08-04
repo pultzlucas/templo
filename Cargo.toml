@@ -1,10 +1,10 @@
 [package]
 name = "prottern"
-version = "0.1.0"
+version = "0.1.0-beta"
 authors = ["Lucas-Lopes-Pultz <pultzlucas@gmail.com>"]
 edition = "2018"
 license = "MIT"
-repository = "https://github.com/Lucas-Lopes-Pultz/prottern-rust"
+repository = "https://github.com/Lucas-Lopes-Pultz/prottern"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
