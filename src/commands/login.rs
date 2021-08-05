@@ -1,8 +1,6 @@
 use crate::{
-    core::{
-        io::{InputType, ProtternInput},
-        user_account::UserAccountManager,
-    },
+    cli::input::{get, InputType},
+    core::user_account::UserAccountManager,
     paintln,
 };
 
@@ -11,8 +9,8 @@ use std::time::Instant;
 
 pub async fn login() -> Result<(), Error> {
     let (username, password) = (
-        ProtternInput::get("Username: ", InputType::Text).unwrap(),
-        ProtternInput::get("Password: ", InputType::Password).unwrap(),
+        get("Username: ", InputType::Text).unwrap(),
+        get("Password: ", InputType::Password).unwrap(),
     );
 
     // Making authentication

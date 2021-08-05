@@ -1,8 +1,6 @@
 use crate::{
-    core::{
-        io::{InputType, ProtternInput},
-        user_account::{UserAccountData, UserAccountKey, UserAccountManager},
-    },
+    cli::input::{get, InputType},
+    core::user_account::{UserAccountData, UserAccountKey, UserAccountManager},
     paintln,
 };
 use std::io::{Error, ErrorKind};
@@ -13,10 +11,10 @@ type RegisterFields = (String, String, String, String);
 pub async fn signup() -> Result<(), Error> {
     let user_account = {
         let inputs = (
-            ProtternInput::get("Username: ", InputType::Text).unwrap(),
-            ProtternInput::get("Email (this is public): ", InputType::Text).unwrap(),
-            ProtternInput::get("Password: ", InputType::Password).unwrap(),
-            ProtternInput::get("Confirm your password: ", InputType::Password).unwrap(),
+            get("Username: ", InputType::Text).unwrap(),
+            get("Email (this is public): ", InputType::Text).unwrap(),
+            get("Password: ", InputType::Password).unwrap(),
+            get("Confirm your password: ", InputType::Password).unwrap(),
         );
 
         validate_signup_inputs(&inputs)?;

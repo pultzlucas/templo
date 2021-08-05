@@ -1,6 +1,6 @@
 use crate::{
+    cli::output::messages::error::{INVALID_TEMPLATE_NAME, NOT_FOUND_USER_AUTH},
     core::{
-        io::messages::error::{INVALID_TEMPLATE_NAME, NOT_FOUND_USER_AUTH},
         requester::{HeaderValue, Method, ProtternRequester},
         user_account::UserAccountManager,
     },

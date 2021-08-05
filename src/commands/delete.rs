@@ -1,9 +1,10 @@
-use crate::core::{
-    io::messages::error::{INVALID_TEMPLATE_NAME, NOT_FOUND_USER_AUTH},
-    repository::{create_repository_if_not_exists, RepositoryConnection},
-    user_account::UserAccountManager,
+use crate::{
+    cli::output::messages::error::{INVALID_TEMPLATE_NAME, NOT_FOUND_USER_AUTH},
+    core::{
+        repository::{create_repository_if_not_exists, RepositoryConnection},
+        user_account::UserAccountManager,
+    },
 };
-
 use std::{
     io::{Error, ErrorKind},
     time::Instant,

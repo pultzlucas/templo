@@ -1,4 +1,6 @@
-use crate::core::{io::messages::error::NOT_FOUND_USER_AUTH, user_account::UserAccountManager};
+use crate::{
+    cli::output::messages::error::NOT_FOUND_USER_AUTH, core::user_account::UserAccountManager,
+};
 use std::io::{Error, ErrorKind};
 
 pub fn profile() -> Result<(), Error> {

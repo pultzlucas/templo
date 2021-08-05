@@ -1,10 +1,12 @@
-use crate::core::{
-    io::messages::error::{INVALID_TEMPLATE_NAME, NOT_FOUND_USER_AUTH},
-    repository::{create_repository_if_not_exists, RepositoryConnection},
-    template::{Template, TemplateManager},
-    user_account::{UserAccountManager, UserPermissions},
-};
 use crate::paintln;
+use crate::{
+    cli::output::messages::error::{INVALID_TEMPLATE_NAME, NOT_FOUND_USER_AUTH},
+    core::{
+        repository::{create_repository_if_not_exists, RepositoryConnection},
+        template::{Template, TemplateManager},
+        user_account::{UserAccountManager, UserPermissions},
+    },
+};
 use std::io::{Error, ErrorKind};
 use std::time::Instant;
 

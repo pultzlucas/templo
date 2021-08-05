@@ -1,8 +1,5 @@
 use super::TemplateBundler;
-use crate::core::{
-    file_system::{DirPath, FileContent},
-    io::messages::error::INVALID_DIRECTORY_PATH
-};
+use crate::core::file_system::{DirPath, FileContent};
 use fs_tree::FsTreeBuilder;
 use std::{
     fs,
@@ -44,7 +41,10 @@ impl TemplateMiner {
 
     fn dismount_dir<'a>(&self) -> Result<Vec<DirPath>, Error> {
         if self.directory.contains(r"\") || self.directory.ends_with("/") {
-            return Err(Error::new(ErrorKind::InvalidInput, INVALID_DIRECTORY_PATH));
+            return Err(Error::new(
+                ErrorKind::InvalidInput,
+                "Invalid directory path.",
+            ));
         }
         let paths: Vec<DirPath> = {
             let fs_tree = FsTreeBuilder::new(&self.directory).build();

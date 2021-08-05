@@ -1,11 +1,13 @@
-use crate::core::{
-    file_system::ProtternFileSystem,
-    io::messages::error::{
+use crate::{
+    cli::output::messages::error::{
         INVALID_DIRECTORY_PATH_NAME, INVALID_TEMPLATE_NAME, NOT_FOUND_USER_AUTH,
     },
-    repository::{create_repository_if_not_exists, RepositoryConnection},
-    template::{Template, TemplateMiner},
-    user_account::UserAccountManager,
+    core::{
+        file_system::ProtternFileSystem,
+        repository::{create_repository_if_not_exists, RepositoryConnection},
+        template::{Template, TemplateMiner},
+        user_account::UserAccountManager,
+    },
 };
 use std::{
     io::{Error, ErrorKind},

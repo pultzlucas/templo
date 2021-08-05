@@ -1,6 +1,7 @@
 extern crate tokio;
 mod commands;
 mod core;
+mod cli;
 
 #[cfg(test)]
 mod tests;

@@ -1,6 +1,9 @@
-use crate::core::{
-    io::messages::error::INVALID_TEMPLATE_NAME, repository::create_repository_if_not_exists,
-    repository::RepositoryConnection, template::TemplateManager,
+use crate::{
+    cli::output::messages::error::INVALID_TEMPLATE_NAME,
+    core::{
+        repository::{create_repository_if_not_exists, RepositoryConnection},
+        template::TemplateManager,
+    }
 };
 use std::io::{Error, ErrorKind};
 
