@@ -3,9 +3,6 @@ mod commands;
 mod core;
 mod cli;
 
-#[cfg(test)]
-mod tests;
-
 use commands::*;
 use std::{
     env,
