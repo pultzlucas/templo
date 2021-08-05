@@ -2,6 +2,9 @@ extern crate tokio;
 mod commands;
 mod core;
 
+#[cfg(test)]
+mod tests;
+
 use commands::*;
 use std::{
     env,

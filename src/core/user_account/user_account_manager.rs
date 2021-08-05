@@ -1,4 +1,3 @@
-use super::user_account_data::UserAccountData;
 use crate::core::{
     file_system::{paths::USER_ACCOUNT_AUTH_PATH, ProtternFileSystem},
     requester::{Method, ProtternRequester},
@@ -32,6 +31,23 @@ pub struct UserAccountKey {
     pub email: String,
     pub password: String,
     pub key: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct UserAccountData {
+    pub username: String,
+    pub email: String,
+    pub password: String,
+}
+
+impl UserAccountData {
+    pub fn new(username: String, email: String, password: String) -> Self {
+        Self {
+            username,
+            email,
+            password,
+        }
+    }
 }
 
 pub struct UserAccountManager {}
