@@ -1,6 +1,6 @@
 use super::TemplateBundler;
 use crate::core::errors::invalid_input_error;
-use crate::core::file_system::{DirPath, FileContent};
+use crate::core::file_system::{DirPath, FileContent, pathbuf_to_string};
 use fs_tree::FsTreeBuilder;
 use serde_derive::{Deserialize, Serialize};
 use std::{
@@ -38,10 +38,6 @@ pub fn extract_files_from_paths(paths: Vec<PathBuf>) -> Vec<File> {
 
 fn format_pathbuf(path: PathBuf) -> PathBuf {
     Path::new(&pathbuf_to_string(path).replace(r"\", "/")).to_path_buf()
-}
-
-fn pathbuf_to_string(path: PathBuf) -> String {
-    path.as_os_str().to_str().unwrap().to_string()
 }
 
 fn valid_directory_path(directory: &str) -> Result<(), Error> {
