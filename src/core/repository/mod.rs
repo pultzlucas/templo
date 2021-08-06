@@ -4,6 +4,7 @@ use std::io::Error;
 use std::fs;
 
 mod repository_connection;
+mod serde;
 pub use repository_connection::*;
 
 pub fn repository_exists() -> bool {

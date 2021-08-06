@@ -2,10 +2,11 @@ use crate::core::template::{miner, TemplateType};
 use crate::core::user_account::UserAccountManager;
 use chrono::prelude::Utc;
 use regex::Regex;
+use serde_derive::{Deserialize, Serialize};
 use std::io::Error;
 use std::path::PathBuf;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Deserialize, Serialize)]
 pub struct Template {
     pub metadata: TempMetadata,
     pub name: String,
@@ -20,7 +21,7 @@ pub struct TempData {
     pub contents: Vec<miner::File>,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Deserialize, Serialize)]
 pub struct TempMetadata {
     pub owner: String,
     pub created_at: String,
@@ -96,7 +97,6 @@ mod tests {
                     Path::new("./src/core/tests/tree_files_only/file_text.txt").to_path_buf()
                 ],
                 contents: vec![crate::core::template::miner::File {
-                    path: Path::new("./src/core/tests/tree_files_only/file_text.txt").to_path_buf(),
                     filename: "./src/core/tests/tree_files_only/file_text.txt".to_string(),
                     content: "Lorem ipsum dolor\r\n\r\n123123123123\r\n\r\n{(-@#$%¨¨&*)}"
                         .to_string()

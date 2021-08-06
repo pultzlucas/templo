@@ -2,15 +2,15 @@ use super::TemplateBundler;
 use crate::core::errors::invalid_input_error;
 use crate::core::file_system::{DirPath, FileContent};
 use fs_tree::FsTreeBuilder;
+use serde_derive::{Deserialize, Serialize};
 use std::{
     fs,
     io::{Error, ErrorKind},
     path::{Path, PathBuf},
 };
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 pub struct File {
-    pub path: PathBuf,
     pub filename: String,
     pub content: String,
 }
@@ -30,7 +30,6 @@ pub fn extract_files_from_paths(paths: Vec<PathBuf>) -> Vec<File> {
         .into_iter()
         .filter(|path| path.is_file())
         .map(|file| File {
-            path: file.clone(),
             filename: pathbuf_to_string(file.clone()),
             content: fs::read_to_string(file).unwrap(),
         })
@@ -159,7 +158,6 @@ mod tests {
         assert_eq!(
             contents,
             vec![File {
-                path: Path::new("./src/core/tests/tree_files_only/file_text.txt").to_path_buf(),
                 filename: "./src/core/tests/tree_files_only/file_text.txt".to_string(),
                 content: "Lorem ipsum dolor\r\n\r\n123123123123\r\n\r\n{(-@#$%¨¨&*)}".to_string()
             }]
