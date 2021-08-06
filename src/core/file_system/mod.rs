@@ -22,14 +22,8 @@ impl<'a> DirPath<'a> {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
 pub struct FileContent {
-    pub file: String,
+    pub filename: String,
     pub content: String,
-}
-
-impl FileContent {
-    pub fn new(file: String, content: String) -> Self {
-        Self { file, content }
-    }
 }

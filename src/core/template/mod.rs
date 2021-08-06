@@ -1,9 +1,9 @@
 mod manager;
-mod miner;
+pub mod miner;
+pub mod maker;
 mod bundler;
 
 pub use manager::*;
-pub use miner::*;
 pub use bundler::*;
 
 use crate::core::user_account::UserAccountManager;

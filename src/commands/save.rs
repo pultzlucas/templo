@@ -5,7 +5,7 @@ use crate::{
     core::{
         file_system::ProtternFileSystem,
         repository::{create_repository_if_not_exists, RepositoryConnection},
-        template::{Template, TemplateMiner},
+        template::{Template, miner::TemplateMiner},
         user_account::UserAccountManager,
     },
 };

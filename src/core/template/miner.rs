@@ -1,10 +1,56 @@
 use super::TemplateBundler;
+use crate::core::errors::invalid_input_error;
 use crate::core::file_system::{DirPath, FileContent};
 use fs_tree::FsTreeBuilder;
 use std::{
     fs,
     io::{Error, ErrorKind},
+    path::{Path, PathBuf},
 };
+
+#[derive(Clone, Debug, PartialEq)]
+pub struct File {
+    pub path: PathBuf,
+    pub filename: String,
+    pub content: String,
+}
+
+pub fn extract_paths_from(directory: &str) -> Result<Vec<PathBuf>, Error> {
+    valid_directory_path(directory)?;
+    let fs_tree = FsTreeBuilder::new(directory).build();
+    let vec_fs_tree: Vec<PathBuf> = fs_tree
+        .into_iter()
+        .map(|path| format_pathbuf(path.unwrap()))
+        .collect();
+    Ok(vec_fs_tree)
+}
+
+pub fn extract_files_from_paths(paths: Vec<PathBuf>) -> Vec<File> {
+    paths
+        .into_iter()
+        .filter(|path| path.is_file())
+        .map(|file| File {
+            path: file.clone(),
+            filename: pathbuf_to_string(file.clone()),
+            content: fs::read_to_string(file).unwrap(),
+        })
+        .collect()
+}
+
+fn format_pathbuf(path: PathBuf) -> PathBuf {
+    Path::new(&pathbuf_to_string(path).replace(r"\", "/")).to_path_buf()
+}
+
+fn pathbuf_to_string(path: PathBuf) -> String {
+    path.as_os_str().to_str().unwrap().to_string()
+}
+
+fn valid_directory_path(directory: &str) -> Result<(), Error> {
+    if directory.contains(r"\") || directory.ends_with("/") {
+        return Err(invalid_input_error("Invalid directory path."));
+    }
+    Ok(())
+}
 
 pub struct TemplateMiner {
     directory: String,
@@ -27,7 +73,10 @@ impl TemplateMiner {
                 let file_content = fs::read_to_string(path.name.to_string()).unwrap();
 
                 if !file_content.is_empty() {
-                    content.push(FileContent::new(fp.clone().name, file_content));
+                    content.push(FileContent {
+                        filename: fp.clone().name,
+                        content: file_content,
+                    });
                 }
             }
 

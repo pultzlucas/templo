@@ -56,7 +56,7 @@ impl TemplateBundler {
     pub fn bundle_content(file_contents: Vec<FileContent>) -> String {
         let content_vec: Vec<String> = file_contents
             .into_iter()
-            .map(|fc| format!("{}|{}", fc.file, base64::encode(fc.content)))
+            .map(|fc| format!("{}|{}", fc.filename, base64::encode(fc.content)))
             .collect();
         content_vec.join(";").to_string()
     }
