@@ -1,7 +1,8 @@
+mod bundler;
 mod manager;
 pub mod miner;
 pub mod maker;
-mod bundler;
+pub mod serde;
 
 pub use manager::*;
 pub use bundler::*;
