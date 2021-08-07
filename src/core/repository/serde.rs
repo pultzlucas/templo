@@ -1,10 +1,11 @@
-use crate::core::file_system::pathbuf_to_string;
+use crate::core::utils::errors::std_error;
+use crate::core::utils::path::pathbuf_to_string;
 use crate::core::template::maker::{TempMetadata, Template};
 use crate::core::template::miner::File;
 use base64;
 use serde_derive::{Deserialize, Serialize};
 use serde_json;
-use std::io::{Error, ErrorKind};
+use std::io::Error;
 use std::path::{Path, PathBuf};
 
 #[derive(Serialize, Deserialize)]
@@ -28,17 +29,11 @@ pub fn serialize_template(template: Template) -> Result<String, Error> {
         }
     };
 
-    match serde_json::to_string(&temp_pre_serde) {
-        Ok(t) => Ok(t),
-        Err(e) => Err(Error::new(ErrorKind::Other, e.to_string())),
-    }
+    std_error(serde_json::to_string(&temp_pre_serde))
 }
 
 pub fn deserialize_template(temp_str: &str) -> Result<Template, Error> {
-    let temp_pre_serde: TempPreSerde = match serde_json::from_str(temp_str) {
-        Ok(t) => t,
-        Err(e) => return Err(Error::new(ErrorKind::Other, e.to_string())),
-    };
+    let temp_pre_serde: TempPreSerde = std_error(serde_json::from_str(temp_str))?;
 
     let template = {
         let metadata: TempMetadata = {

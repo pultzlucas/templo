@@ -1,6 +1,6 @@
 use super::TemplateBundler;
-use crate::core::errors::invalid_input_error;
-use crate::core::file_system::{DirPath, FileContent, pathbuf_to_string};
+use crate::core::file_system::{DirPath, FileContent};
+use crate::core::utils::path::{format_pathbuf, pathbuf_to_string, valid_directory_path};
 use fs_tree::FsTreeBuilder;
 use serde_derive::{Deserialize, Serialize};
 use std::{
@@ -34,17 +34,6 @@ pub fn extract_files_from_paths(paths: Vec<PathBuf>) -> Vec<File> {
             content: fs::read_to_string(file).unwrap(),
         })
         .collect()
-}
-
-fn format_pathbuf(path: PathBuf) -> PathBuf {
-    Path::new(&pathbuf_to_string(path).replace(r"\", "/")).to_path_buf()
-}
-
-fn valid_directory_path(directory: &str) -> Result<(), Error> {
-    if directory.contains(r"\") || directory.ends_with("/") {
-        return Err(invalid_input_error("Invalid directory path."));
-    }
-    Ok(())
 }
 
 pub struct TemplateMiner {

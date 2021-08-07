@@ -25,10 +25,6 @@ impl<'a> DirPath<'a> {
     }
 }
 
-pub fn pathbuf_to_string(path: PathBuf) -> String {
-    path.as_os_str().to_str().unwrap().to_string()
-}
-
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
 pub struct FileContent {
     pub filename: String,
