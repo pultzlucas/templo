@@ -16,7 +16,7 @@ struct TempPreSerde {
     contents: String,
 }
 
-pub fn serialize_template(template: &Template) -> Result<String, Error> {
+pub fn serialize_template(template: Template) -> Result<String, Error> {
     let temp_pre_serde = {
         let metadata_as_string = base64::encode(serde_json::to_string(&template.metadata).unwrap());
         let paths_as_string = serialize_paths(template.paths);
@@ -120,7 +120,7 @@ fn decode_base64(b64: String) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::core::template::maker::{TempMetadata, Template};
+    use crate::core::template::{TempMetadata, Template};
     use crate::core::template::TemplateType;
     use std::path::Path;
 
@@ -200,7 +200,7 @@ mod tests {
             }],
         };
 
-        let temp_as_string = serialize_template(&template).unwrap();
+        let temp_as_string = serialize_template(template).unwrap();
         assert_eq!(
             temp_as_string,
             r#"{"metadata":"eyJvd25lciI6IlVzZXJuYW1lIiwiY3JlYXRlZF9hdCI6IjEyMzEyMzEyMzEyMyIsInRlbXBsYXRlX3R5cGUiOiJMb2NhbCJ9","name":"temp-name","paths":"dir|./src/core/tests/tree_files_only;file|./src/core/tests/tree_files_only/.file4;file|./src/core/tests/tree_files_only/file-2;file|./src/core/tests/tree_files_only/file1;file|./src/core/tests/tree_files_only/file_3;file|./src/core/tests/tree_files_only/file_text.txt","contents":"Li9zcmMvY29yZS90ZXN0cy90cmVlX2ZpbGVzX29ubHkvZmlsZV90ZXh0LnR4dHxMb3JlbSBpcHN1bSBkb2xvcg0KDQoxMjMxMjMxMjMxMjMNCg0KeygtQCMkJcKowqgmKil9"}"#

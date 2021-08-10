@@ -1,3 +1,4 @@
+use crate::core::template::serde::{deserialize_template, serialize_template};
 use crate::core::{
     file_system::{
         paths::{get_template_path, TEMPLATES_PATH},
@@ -7,7 +8,6 @@ use crate::core::{
     user_account::UserPermissions,
     utils::errors::{not_found_error, permission_denied_error},
 };
-use crate::core::template::serde::serialize_template;
 use std::{fs, io::Error, path::Path};
 
 #[derive(Clone)]
@@ -19,11 +19,9 @@ impl RepositoryConnection {
     pub fn new() -> Self {
         let templates: Vec<Template> = fs::read_dir(TEMPLATES_PATH)
             .unwrap()
-            .map(|template| template.map(|e| e.path()))
-            .map(|template_file| {
-                let template_file_string = read_base64_file(template_file.unwrap()).unwrap();
-                serde_json::from_str(template_file_string.as_str()).unwrap()
-            })
+            .map(|template| template.map(|e| e.path()).unwrap())
+            .map(|file| read_base64_file(file).unwrap())
+            .map(|temp_string| deserialize_template(&temp_string).unwrap())
             .collect();
 
         Self { templates }
@@ -35,7 +33,7 @@ impl RepositoryConnection {
 
     pub fn save_template(&self, template: Template) -> Result<(), Error> {
         let template_path = get_template_path(&template.name);
-        let template_string = serialize_template(&template)?;
+        let template_string = serialize_template(template)?;
         write_base64_file(template_path, template_string)
     }
 
@@ -80,7 +78,7 @@ impl RepositoryConnection {
         self.templates
             .clone()
             .into_iter()
-            .filter(|temp| temp.template_type == temp_type)
+            .filter(|temp| temp.metadata.template_type == temp_type)
             .collect()
     }
 
