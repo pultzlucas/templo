@@ -3,7 +3,7 @@ use crate::{
     cli::output::messages::error::{INVALID_TEMPLATE_NAME, NOT_FOUND_USER_AUTH},
     core::{
         repository::{create_repository_if_not_exists, RepositoryConnection},
-        template::{Template, TemplateManager},
+        template::Template,
         user_account::{UserAccountManager, UserPermissions},
     },
 };

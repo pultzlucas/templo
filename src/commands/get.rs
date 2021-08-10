@@ -67,8 +67,8 @@ pub async fn get(args: &[String]) -> Result<(), Error> {
     };
 
     // Save templates in repository
-    for temp in response.templates.iter() {
-        RepositoryConnection::new().save_template(&temp)?;
+    for temp in response.templates.into_iter() {
+        RepositoryConnection::new().save_template(temp.clone())?;
         println!("Template {} was installed.", temp.name);
     }
 

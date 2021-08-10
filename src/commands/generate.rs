@@ -1,11 +1,9 @@
+use crate::core::utils::errors::invalid_input_error;
 use crate::{
     cli::output::messages::error::{
         INVALID_DIRECTORY_PATH_NAME, INVALID_DIRECTORY_PATH_TYPE, INVALID_TEMPLATE_NAME,
     },
-    core::{
-        repository::{create_repository_if_not_exists, RepositoryConnection},
-        template::TemplateManager,
-    },
+    core::repository::{create_repository_if_not_exists, RepositoryConnection},
 };
 use std::{
     fs,
@@ -18,22 +16,16 @@ pub fn generate(args: &[String]) -> Result<(), Error> {
     create_repository_if_not_exists()?;
 
     if args.len() < 1 {
-        return Err(Error::new(ErrorKind::InvalidInput, INVALID_TEMPLATE_NAME));
+        return Err(invalid_input_error(INVALID_TEMPLATE_NAME));
     }
 
     if args.len() < 2 {
-        return Err(Error::new(
-            ErrorKind::InvalidInput,
-            INVALID_DIRECTORY_PATH_NAME,
-        ));
+        return Err(invalid_input_error(INVALID_DIRECTORY_PATH_NAME));
     }
     let template_name = &args[0];
     let directory = Path::new(&args[1]);
     if directory.extension() != None {
-        return Err(Error::new(
-            ErrorKind::InvalidInput,
-            INVALID_DIRECTORY_PATH_TYPE,
-        ));
+        return Err(invalid_input_error(INVALID_DIRECTORY_PATH_TYPE));
     }
     if !directory.exists() {
         fs::create_dir_all(directory)?;
