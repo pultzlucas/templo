@@ -7,12 +7,10 @@ pub mod serde;
 pub use manager::*;
 pub use bundler::*;
 
-use crate::core::user_account::UserAccountManager;
-use chrono::prelude::Utc;
-use regex::Regex;
 use serde_derive::{Deserialize, Serialize};
 use std::fmt::{Display, Formatter, Result};
 use tabled::Tabled;
+use std::path::PathBuf;
 
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
 pub enum TemplateType {
@@ -29,6 +27,22 @@ impl Display for TemplateType {
     }
 }
 
+#[derive(Debug, PartialEq, Deserialize, Serialize, Clone)]
+pub struct Template {
+    pub metadata: TempMetadata,
+    pub name: String,
+    pub paths: Vec<PathBuf>,
+    pub contents: Vec<miner::File>,
+}
+
+#[derive(Debug, PartialEq, Deserialize, Serialize, Clone)]
+pub struct TempMetadata {
+    pub owner: String,
+    pub created_at: String,
+    pub template_type: TemplateType,
+}
+
+
 #[derive(Tabled)]
 pub struct TemplateDisplayInfo {
     template_name: String,
@@ -37,7 +51,7 @@ pub struct TemplateDisplayInfo {
     created_at: String,
 }
 
-#[derive(Tabled, Debug, Serialize, Deserialize, Clone)]
+/* #[derive(Tabled, Debug, Serialize, Deserialize, Clone)]
 pub struct Template {
     pub name: String,
     pub owner: String,
@@ -76,3 +90,4 @@ impl Template {
         self.content != ""
     }
 }
+ */

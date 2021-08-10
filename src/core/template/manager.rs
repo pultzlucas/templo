@@ -1,12 +1,13 @@
 use crate::{
     core::{
         file_system::DirPath,
-        /* io::ProtternOutput, */
         requester::{HeaderValue, Method, ProtternRequester},
         user_account::UserAccountManager,
     },
-    /* paint ,*/ paint_string, /* paintln */
+    paint_string,
 };
+
+use super::serde::{deserialize_template, serialize_template}
 
 use serde_derive::{Deserialize, Serialize};
 use std::{
@@ -34,7 +35,7 @@ impl TemplateManager {
     pub fn gen_templates(&self, directory: &Path) -> Result<(), Error> {
         for template in self.templates.iter() {
             let template_paths =
-                TemplateManager::deserialize_template_paths(template.paths.clone());
+                TemplateManager::deserialize_template_paths(template.paths);
             // creating files and directories
             for (path_type, path_name) in template_paths.into_iter() {
                 let real_path = Path::new(directory).join(path_name);
@@ -47,9 +48,9 @@ impl TemplateManager {
                     println!(" {} {:?}", paint_string!("{gray}", "dir:"), real_path);
                 }
             }
-            if template.has_content() {
+            if template.paths != "" {
                 let template_content =
-                    TemplateManager::deserialize_template_content(template.content.clone());
+                    TemplateManager::deserialize_template_content(&template.content);
                 // writing the files content
                 for (file_name, content_buf) in template_content.into_iter() {
                     let real_file_path = Path::new(directory).join(file_name);
@@ -69,7 +70,8 @@ impl TemplateManager {
         let requester = ProtternRequester::new();
 
         let request = {
-            let body = serde_json::to_string(&self.templates).expect("Error when parsing template.");
+            let body =
+                serde_json::to_string(&self.templates).expect("Error when parsing template.");
             let mut req = requester.build_request("/templates/pub", Method::POST, body);
             let headers = req.headers_mut();
             headers.insert(

@@ -1,30 +1,14 @@
-use crate::core::template::{miner, TemplateType};
+use crate::core::template::{miner, TempMetadata, Template, TemplateType};
 use crate::core::user_account::UserAccountManager;
 use crate::core::utils::date::get_date_now_string;
-use serde_derive::{Deserialize, Serialize};
 use std::io::Error;
 use std::path::PathBuf;
 
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
-pub struct Template {
-    pub metadata: TempMetadata,
-    pub name: String,
-    pub paths: Vec<PathBuf>,
-    pub contents: Vec<miner::File>,
-}
-
 #[derive(Debug, PartialEq)]
-pub struct TempData {
-    pub name: String,
-    pub paths: Vec<PathBuf>,
-    pub contents: Vec<miner::File>,
-}
-
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
-pub struct TempMetadata {
-    pub owner: String,
-    pub created_at: String,
-    pub template_type: TemplateType,
+struct TempData {
+    name: String,
+    paths: Vec<PathBuf>,
+    contents: Vec<miner::File>,
 }
 
 pub fn create_template(temp_name: String, dir_path: String) -> Result<Template, Error> {

@@ -1,9 +1,13 @@
 use crate::core::{
-    file_system::{paths::TEMPLATES_PATH, ProtternFileSystem},
+    file_system::{
+        paths::{get_template_path, TEMPLATES_PATH},
+        read_base64_file, write_base64_file,
+    },
     template::{Template, TemplateType},
     user_account::UserPermissions,
     utils::errors::{not_found_error, permission_denied_error},
 };
+use crate::core::template::serde::serialize_template;
 use std::{fs, io::Error, path::Path};
 
 #[derive(Clone)]
@@ -13,32 +17,26 @@ pub struct RepositoryConnection {
 
 impl RepositoryConnection {
     pub fn new() -> Self {
-        let templates = RepositoryConnection::get_all_templates();
-        Self { templates }
-    }
-
-    fn get_all_templates() -> Vec<Template> {
         let templates: Vec<Template> = fs::read_dir(TEMPLATES_PATH)
             .unwrap()
             .map(|template| template.map(|e| e.path()))
             .map(|template_file| {
-                let template_file_string =
-                    ProtternFileSystem::read_base64_file(template_file.unwrap()).unwrap();
+                let template_file_string = read_base64_file(template_file.unwrap()).unwrap();
                 serde_json::from_str(template_file_string.as_str()).unwrap()
             })
             .collect();
 
-        templates
+        Self { templates }
     }
 
     pub fn total_templates(&self) -> usize {
-        RepositoryConnection::get_all_templates().len()
+        self.templates.len()
     }
 
-    pub fn save_template(&self, template: &Template) -> Result<(), Error> {
-        let template_path = ProtternFileSystem::get_template_path(&template.name);
-        let template_string = serde_json::to_string(template).unwrap();
-        ProtternFileSystem::write_base64_file(template_path, template_string)
+    pub fn save_template(&self, template: Template) -> Result<(), Error> {
+        let template_path = get_template_path(&template.name);
+        let template_string = serialize_template(&template)?;
+        write_base64_file(template_path, template_string)
     }
 
     pub fn template_exists(&self, template_name: &String) -> bool {
