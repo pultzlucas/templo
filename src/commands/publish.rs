@@ -2,13 +2,13 @@ use crate::paintln;
 use crate::{
     cli::output::messages::error::{INVALID_TEMPLATE_NAME, NOT_FOUND_USER_AUTH},
     core::{
-        repository::local,
-        template::{Template, TemplateManager},
+        repository::{local, remote},
+        template::Template,
         user_account::{UserAccountManager, UserPermissions},
-        utils::errors::{invalid_input_error, not_found_error},
+        utils::errors::{invalid_input_error, not_found_error, permission_denied_error},
     },
 };
-use std::io::{Error, ErrorKind};
+use std::io::Error;
 use std::time::Instant;
 
 pub async fn publish(args: &[String]) -> Result<(), Error> {
@@ -27,14 +27,13 @@ pub async fn publish(args: &[String]) -> Result<(), Error> {
     for name in templates_name.iter() {
         let has_permission_to = UserPermissions::new();
         if !has_permission_to.publish_template(name) {
-            return Err(Error::new(
-                ErrorKind::PermissionDenied,
-                format!("You do not has permission to publish \"{}\".", name),
-            ));
+            return Err(permission_denied_error(&format!(
+                "You do not has permission to publish \"{}\".",
+                name
+            )));
         }
     }
 
-    // If all right the templates will be published
     let start = Instant::now(); // start timing process
 
     // Get templates from repository
@@ -43,10 +42,9 @@ pub async fn publish(args: &[String]) -> Result<(), Error> {
         .map(|name| local::get_template(name))
         .collect();
 
-    // Publish templates
-    let manager = TemplateManager::new(templates?);
     paintln!("{gray}", "[Publishing Templates]");
-    let msg = manager.publish_templates().await?;
+
+    let msg = remote::publish_templates(templates?).await?;
     println!("{}", msg);
     let end = Instant::now(); // stop timing process
     println!("Done in {:.2?}", end.duration_since(start));

@@ -1,22 +1,7 @@
-use crate::core::utils::errors::{permission_denied_error, std_error};
-use crate::{
-    core::{
-        requester::{build_request, request, HeaderValue, Method},
-        user_account::UserAccountManager,
-        utils::path::pathbuf_to_string,
-    },
-    paint_string,
-};
-use serde_derive::{Deserialize, Serialize};
+use super::Template;
+use crate::{core::utils::path::pathbuf_to_string, paint_string};
 use std::{fs, io::Error, path::Path};
 
-#[derive(Deserialize, Serialize)]
-pub struct PublishResponse {
-    pub published: bool,
-    pub message: String,
-}
-
-use super::Template;
 pub struct TemplateManager {
     templates: Vec<Template>,
 }
@@ -56,29 +41,5 @@ impl TemplateManager {
         }
 
         Ok(())
-    }
-
-    pub async fn publish_templates(&self) -> Result<String, Error> {
-        let current_user = UserAccountManager::get_user_account_data()?;
-
-        let req = {
-            let body = std_error(serde_json::to_string(&self.templates))?;
-            let mut req = build_request("/templates/pub", Method::POST, body);
-            let headers = req.headers_mut();
-            headers.insert(
-                "authorization",
-                std_error(HeaderValue::from_str(current_user.key.as_str()))?,
-            );
-            req
-        };
-
-        let response: PublishResponse = {
-            let res = request(req).await?;
-            std_error(serde_json::from_str(&res))?
-        };
-        if !response.published {
-            return Err(permission_denied_error(&response.message));
-        }
-        Ok(response.message)
     }
 }
