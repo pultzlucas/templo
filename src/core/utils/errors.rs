@@ -12,3 +12,11 @@ pub fn std_error<T, E: ToString>(result: Result<T, E>) -> Result<T, Error>{
 pub fn invalid_input_error(msg: &str) -> Error {
     return Error::new(ErrorKind::InvalidInput, msg);
 }
+
+pub fn not_found_error(msg: &str) -> Error {
+    return Error::new(ErrorKind::NotFound, msg);
+}
+
+pub fn permission_denied_error(msg: &str) -> Error {
+    return Error::new(ErrorKind::NotFound, msg);
+}

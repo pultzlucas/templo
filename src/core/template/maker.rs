@@ -1,7 +1,6 @@
 use crate::core::template::{miner, TemplateType};
 use crate::core::user_account::UserAccountManager;
-use chrono::prelude::Utc;
-use regex::Regex;
+use crate::core::utils::date::get_date_now_string;
 use serde_derive::{Deserialize, Serialize};
 use std::io::Error;
 use std::path::PathBuf;
@@ -41,15 +40,14 @@ pub fn create_template(temp_name: String, dir_path: String) -> Result<Template, 
 
 fn get_template_data(temp_name: String, dir_path: String) -> Result<TempData, Error> {
     let paths = miner::extract_paths_from(dir_path.as_str())?;
-    let files = miner::extract_files_from_paths(paths.clone());
-    let files_with_content = files
+    let files = miner::extract_files_from_paths(paths.clone())
         .into_iter()
         .filter(|file| file.content != "")
         .collect();
     Ok(TempData {
         name: temp_name,
         paths,
-        contents: files_with_content,
+        contents: files,
     })
 }
 
@@ -61,14 +59,6 @@ fn get_template_metadata() -> Result<TempMetadata, Error> {
         created_at: date_now,
         template_type: TemplateType::Local,
     })
-}
-
-fn get_date_now_string() -> String {
-    Regex::new(r"\..+")
-        .unwrap()
-        .replace(&Utc::now().to_string(), "")
-        .trim()
-        .to_string()
 }
 
 #[cfg(test)]

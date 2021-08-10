@@ -2,12 +2,9 @@ use crate::core::{
     file_system::{paths::TEMPLATES_PATH, ProtternFileSystem},
     template::{Template, TemplateType},
     user_account::UserPermissions,
+    utils::errors::{not_found_error, permission_denied_error},
 };
-use std::{
-    fs,
-    io::{Error, ErrorKind},
-    path::Path,
-};
+use std::{fs, io::Error, path::Path};
 
 #[derive(Clone)]
 pub struct RepositoryConnection {
@@ -51,7 +48,7 @@ impl RepositoryConnection {
     pub fn get_template(&self, template_name: &String) -> Result<Template, Error> {
         let template = {
             if self.is_empty() {
-                return Err(Error::new(ErrorKind::NotFound, "Repository is empty."));
+                return Err(not_found_error("Repository is empty."));
             }
 
             let matched_template = self
@@ -62,10 +59,10 @@ impl RepositoryConnection {
             match matched_template {
                 Some(t) => t,
                 None => {
-                    return Err(Error::new(
-                        ErrorKind::NotFound,
-                        format!("Not is possible find \"{}\" on repository", template_name),
-                    ))
+                    return Err(not_found_error(&format!(
+                        "Not is possible find \"{}\" on repository",
+                        template_name
+                    )))
                 }
             }
         };
@@ -74,37 +71,36 @@ impl RepositoryConnection {
     }
 
     pub fn get_remote_templates(&self) -> Vec<Template> {
-        self.templates
-            .clone()
-            .into_iter()
-            .filter(|temp| temp.template_type == TemplateType::Remote)
-            .collect()
+        RepositoryConnection::get_templates_type(self, TemplateType::Remote)
     }
+
     pub fn get_local_templates(&self) -> Vec<Template> {
+        RepositoryConnection::get_templates_type(self, TemplateType::Local)
+    }
+
+    fn get_templates_type(&self, temp_type: TemplateType) -> Vec<Template> {
         self.templates
             .clone()
             .into_iter()
-            .filter(|temp| temp.template_type == TemplateType::Local)
+            .filter(|temp| temp.template_type == temp_type)
             .collect()
     }
 
     pub fn delete_template(&self, template_name: &String) -> Result<(), Error> {
         if !self.template_exists(&template_name) {
-            let err = Error::new(
-                ErrorKind::NotFound,
-                format!("Not is possible find \"{}\" on repository", template_name),
-            );
-            return Err(err);
+            return Err(not_found_error(&format!(
+                "Not is possible find \"{}\" on repository",
+                template_name
+            )));
         }
 
         let has_permission_to = UserPermissions::new();
 
         if !has_permission_to.delete_template(&template_name) {
-            let err = Error::new(
-                ErrorKind::PermissionDenied,
-                format!("You do not has permission to delete \"{}\".", template_name),
-            );
-            return Err(err);
+            return Err(permission_denied_error(&format!(
+                "You do not has permission to delete \"{}\".",
+                template_name
+            )));
         }
 
         let template_path = Path::new(TEMPLATES_PATH).join(template_name);

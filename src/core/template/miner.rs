@@ -6,7 +6,7 @@ use serde_derive::{Deserialize, Serialize};
 use std::{
     fs,
     io::{Error, ErrorKind},
-    path::{Path, PathBuf},
+    path::PathBuf,
 };
 
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
