@@ -2,8 +2,9 @@ use crate::{
     cli::output::messages::error::{INVALID_TEMPLATE_NAME, TEMPLATE_ALREADY_EXISTS},
     core::{
         repository::{create_repository_if_not_exists, RepositoryConnection},
-        requester::{Method, ProtternRequester},
+        requester::{build_request, request, Method},
         template::Template,
+        utils::errors::std_error,
     },
     paintln,
 };
@@ -52,18 +53,15 @@ pub async fn get(args: &[String]) -> Result<(), Error> {
     let start = Instant::now(); // start timing process
     let response: GetResponseBody = {
         let response = {
-            let requester = ProtternRequester::new();
-            let req = {
-                let body: GetRequestBody = GetRequestBody {
-                    templates_name: templates_name.to_vec(),
-                };
-                let body_as_string: String = serde_json::to_string(&body).unwrap();
-                requester.build_request("/templates/get", Method::GET, body_as_string)
+            let body: GetRequestBody = GetRequestBody {
+                templates_name: templates_name.to_vec(),
             };
+            let body_as_string: String = std_error(serde_json::to_string(&body))?;
+            let req = build_request("/templates/get", Method::GET, body_as_string);
             paintln!("{gray}", "[Getting Templates]");
-            requester.request(req).await?
+            request(req).await?
         };
-        serde_json::from_str(&response).expect("Error when parsing JSON.")
+        std_error(serde_json::from_str(&response))?
     };
 
     // Save templates in repository

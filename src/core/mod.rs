@@ -5,3 +5,4 @@ pub mod user_account;
 pub mod requester;
 pub mod info;
 pub mod utils;
+pub mod secrets;

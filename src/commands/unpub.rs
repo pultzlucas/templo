@@ -1,7 +1,7 @@
 use crate::{
     cli::output::messages::error::{INVALID_TEMPLATE_NAME, NOT_FOUND_USER_AUTH},
     core::{
-        requester::{HeaderValue, Method, ProtternRequester},
+        requester::{build_request, request, HeaderValue, Method},
         user_account::UserAccountManager,
     },
     paintln,
@@ -31,8 +31,6 @@ pub async fn unpub(args: &[String]) -> Result<(), Error> {
         return Err(Error::new(ErrorKind::InvalidInput, INVALID_TEMPLATE_NAME));
     }
     let templates_name = &args[0..];
-    let requester = ProtternRequester::new();
-
     // unpub request body
     let req = {
         let current_user = UserAccountManager::get_user_account_data()?;
@@ -43,7 +41,7 @@ pub async fn unpub(args: &[String]) -> Result<(), Error> {
             };
             serde_json::to_string(&body).expect("Error when parsing request body to string.")
         };
-        let mut req = requester.build_request("/templates/unpub", Method::POST, body);
+        let mut req = build_request("/templates/unpub", Method::POST, body);
         req.headers_mut().insert(
             "authorization",
             HeaderValue::from_str(current_user.key.as_str()).expect("Error when set headers."),
@@ -54,7 +52,7 @@ pub async fn unpub(args: &[String]) -> Result<(), Error> {
     // unpub templates
     let start = Instant::now(); // start timing process
     paintln!("{gray}", "[Unpublishing Templates]");
-    let response = requester.request(req).await?;
+    let response = request(req).await?;
     let res_json: UnpubResponse =
         serde_json::from_str(&response).expect("Error when parsing JSON.");
 

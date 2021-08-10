@@ -1,6 +1,6 @@
 use crate::{
     core::{
-        requester::{Method, ProtternRequester},
+        requester::{Method, build_request, request},
         template::{Template, TempMetadata},
     },
     paintln,
@@ -12,11 +12,10 @@ use tabled::{Disable, Style, Table};
 pub async fn explore() -> Result<(), Error> {
     // get templates
     let templates: Vec<TempMetadata> = {
-        let requester = ProtternRequester::new();
-        let req = requester.build_request("/templates", Method::GET, "".to_owned());
+        let req = build_request("/templates", Method::GET, "".to_owned());
         paintln!("{gray}", "[Searching Templates]");
         let start = Instant::now(); // start timing process
-        let response = requester.request(req).await?;
+        let response = request(req).await?;
         let templates: Vec<Template> = serde_json::from_str(&response).unwrap();
         let temp_metadata: Vec<TempMetadata> = templates.into_iter().map(|temp| temp.metadata).collect();
         let end = Instant::now(); // stop timing process

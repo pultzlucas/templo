@@ -1,7 +1,7 @@
-use crate::core::utils::errors::permission_denied_error;
+use crate::core::utils::errors::{permission_denied_error, std_error};
 use crate::{
     core::{
-        requester::{HeaderValue, Method, ProtternRequester},
+        requester::{build_request, request, HeaderValue, Method},
         user_account::UserAccountManager,
         utils::path::pathbuf_to_string,
     },
@@ -60,22 +60,21 @@ impl TemplateManager {
 
     pub async fn publish_templates(&self) -> Result<String, Error> {
         let current_user = UserAccountManager::get_user_account_data()?;
-        let requester = ProtternRequester::new();
 
-        let request = {
-            let body =
-                serde_json::to_string(&self.templates).expect("Error when parsing template.");
-            let mut req = requester.build_request("/templates/pub", Method::POST, body);
+        let req = {
+            let body = std_error(serde_json::to_string(&self.templates))?;
+            let mut req = build_request("/templates/pub", Method::POST, body);
             let headers = req.headers_mut();
             headers.insert(
                 "authorization",
-                HeaderValue::from_str(current_user.key.as_str()).expect("Error when set headers."),
+                std_error(HeaderValue::from_str(current_user.key.as_str()))?,
             );
             req
         };
+
         let response: PublishResponse = {
-            let raw_response = requester.request(request).await?;
-            serde_json::from_str(&raw_response).expect("Error when parsing JSON.")
+            let res = request(req).await?;
+            std_error(serde_json::from_str(&res))?
         };
         if !response.published {
             return Err(permission_denied_error(&response.message));

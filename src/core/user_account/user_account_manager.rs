@@ -1,7 +1,8 @@
 use super::UserAccountData;
+use crate::core::utils::errors::std_error;
 use crate::core::{
     file_system::{paths::USER_ACCOUNT_AUTH_PATH, ProtternFileSystem},
-    requester::{Method, ProtternRequester},
+    requester::{build_request, request, Method},
 };
 use serde_derive::{Deserialize, Serialize};
 use std::{fs, io::Error, path::Path};
@@ -44,7 +45,7 @@ impl UserAccountManager {
 
     pub fn get_user_account_data() -> Result<UserAccountKey, Error> {
         let user_account = ProtternFileSystem::read_base64_file(USER_ACCOUNT_AUTH_PATH)?;
-        Ok(serde_json::from_str(&user_account).expect("Error when parsing user account object."))
+        Ok(std_error(serde_json::from_str(&user_account))?)
     }
 
     pub async fn signup_user_account(
@@ -52,11 +53,10 @@ impl UserAccountManager {
     ) -> Result<RegisterResponse, Error> {
         let response = {
             let body = serde_json::to_string(user_account)?;
-            let requester = ProtternRequester::new();
-            let request = requester.build_request("/user/signup", Method::POST, body);
-            requester.request(request).await?
+            let req = build_request("/user/signup", Method::POST, body);
+            request(req).await?
         };
-        Ok(serde_json::from_str(&response).unwrap())
+        Ok(std_error(serde_json::from_str(&response))?)
     }
 
     pub async fn authenticate_user_account(
@@ -64,10 +64,12 @@ impl UserAccountManager {
         password: String,
     ) -> Result<AuthResponse, Error> {
         let response = {
-            let body = serde_json::to_string(&AuthRequestBody { username, password }).unwrap();
-            let requester = ProtternRequester::new();
-            let request = requester.build_request("/user/login", Method::POST, body);
-            requester.request(request).await?
+            let body = std_error(serde_json::to_string(&AuthRequestBody {
+                username,
+                password,
+            }))?;
+            let req = build_request("/user/login", Method::POST, body);
+            request(req).await?
         };
 
         Ok(serde_json::from_str(&response)?)
