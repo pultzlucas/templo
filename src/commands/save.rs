@@ -4,9 +4,10 @@ use crate::{
     },
     core::{
         file_system::ProtternFileSystem,
-        repository::{create_repository_if_not_exists, RepositoryConnection},
+        repository::local,
         template::maker::create_template,
         user_account::UserAccountManager,
+        utils::errors::{invalid_input_error, not_found_error},
     },
 };
 use std::{
@@ -16,10 +17,10 @@ use std::{
 };
 
 pub fn save(args: &[String]) -> Result<(), Error> {
-    create_repository_if_not_exists()?;
+    local::create()?;
 
     if !UserAccountManager::user_auth_exists() {
-        return Err(Error::new(ErrorKind::NotFound, NOT_FOUND_USER_AUTH));
+        return Err(not_found_error(NOT_FOUND_USER_AUTH));
     }
     if args.len() < 1 {
         return Err(Error::new(
@@ -28,7 +29,7 @@ pub fn save(args: &[String]) -> Result<(), Error> {
         ));
     }
     if args.len() < 2 {
-        return Err(Error::new(ErrorKind::InvalidInput, INVALID_TEMPLATE_NAME));
+        return Err(invalid_input_error(INVALID_TEMPLATE_NAME));
     }
 
     let directory = args[0].clone();
@@ -55,7 +56,7 @@ pub fn save(args: &[String]) -> Result<(), Error> {
     let template = create_template(template_name, directory)?;
 
     //save template in repository
-    RepositoryConnection::new().save_template(template)?;
+    local::save_template(template)?;
     println!("Template was saved successfully.");
     let end = Instant::now(); // stop timing process
     println!("Done in {:.2?}", end.duration_since(start));

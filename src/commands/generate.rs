@@ -4,12 +4,12 @@ use crate::{
     cli::output::messages::error::{
         INVALID_DIRECTORY_PATH_NAME, INVALID_DIRECTORY_PATH_TYPE, INVALID_TEMPLATE_NAME,
     },
-    core::repository::{create_repository_if_not_exists, RepositoryConnection},
+    core::repository::local,
 };
 use std::{fs, io::Error, path::Path, time::Instant};
 
 pub fn generate(args: &[String]) -> Result<(), Error> {
-    create_repository_if_not_exists()?;
+    local::create()?;
 
     if args.len() < 1 {
         return Err(invalid_input_error(INVALID_TEMPLATE_NAME));
@@ -29,8 +29,7 @@ pub fn generate(args: &[String]) -> Result<(), Error> {
 
     // Get template from repository
     let start = Instant::now(); // start timing process
-    let repository = RepositoryConnection::new();
-    let template = repository.get_template(&template_name)?;
+    let template = local::get_template(&template_name)?;
     let manager = TemplateManager::new(vec![template]);
 
     // Generate template

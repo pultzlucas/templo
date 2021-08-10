@@ -1,6 +1,6 @@
 use crate::core::{
     template::TemplateType,
-    repository::RepositoryConnection
+    repository::local
 };
 use super::{UserAccountKey, UserAccountManager};
 
@@ -16,14 +16,12 @@ impl UserPermissions {
     }
 
     pub fn publish_template(&self, template_name: &String) -> bool {
-        let repository = RepositoryConnection::new();
-        let template = repository.get_template(template_name).unwrap();
+        let template = local::get_template(template_name).unwrap();
         template.metadata.owner == self.user.username
     }
 
     pub fn delete_template(&self, template_name: &String) -> bool {
-        let repository = RepositoryConnection::new();
-        let template = repository.get_template(template_name).unwrap();
+        let template = local::get_template(template_name).unwrap();
         let template_is_remote = template.metadata.template_type == TemplateType::Remote; 
         template.metadata.owner == self.user.username || template_is_remote
     }

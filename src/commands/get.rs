@@ -1,7 +1,7 @@
 use crate::{
     cli::output::messages::error::{INVALID_TEMPLATE_NAME, TEMPLATE_ALREADY_EXISTS},
     core::{
-        repository::{create_repository_if_not_exists, RepositoryConnection},
+        repository::local,
         requester::{build_request, request, Method},
         template::Template,
         utils::errors::std_error,
@@ -30,18 +30,17 @@ struct GetResponseBody {
 }
 
 pub async fn get(args: &[String]) -> Result<(), Error> {
-    create_repository_if_not_exists()?;
+    local::create()?;
 
     if args.len() < 1 {
         return Err(Error::new(ErrorKind::InvalidInput, INVALID_TEMPLATE_NAME));
     }
 
     let templates_name = &args[0..];
-    let repository = RepositoryConnection::new();
 
     // Verify if some template already exists in repository
     for name in templates_name.iter() {
-        if repository.template_exists(name) {
+        if local::template_exists(name) {
             return Err(Error::new(
                 ErrorKind::AlreadyExists,
                 TEMPLATE_ALREADY_EXISTS,
@@ -66,7 +65,7 @@ pub async fn get(args: &[String]) -> Result<(), Error> {
 
     // Save templates in repository
     for temp in response.templates.into_iter() {
-        RepositoryConnection::new().save_template(temp.clone())?;
+        local::save_template(temp.clone())?;
         println!("Template {} was installed.", temp.name);
     }
 

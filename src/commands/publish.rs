@@ -2,25 +2,25 @@ use crate::paintln;
 use crate::{
     cli::output::messages::error::{INVALID_TEMPLATE_NAME, NOT_FOUND_USER_AUTH},
     core::{
-        repository::{create_repository_if_not_exists, RepositoryConnection},
+        repository::local,
         template::{Template, TemplateManager},
         user_account::{UserAccountManager, UserPermissions},
+        utils::errors::{invalid_input_error, not_found_error},
     },
 };
 use std::io::{Error, ErrorKind};
 use std::time::Instant;
 
 pub async fn publish(args: &[String]) -> Result<(), Error> {
-    create_repository_if_not_exists()?;
+    local::create()?;
     if !UserAccountManager::user_auth_exists() {
-        return Err(Error::new(ErrorKind::NotFound, NOT_FOUND_USER_AUTH));
+        return Err(not_found_error(NOT_FOUND_USER_AUTH));
     }
 
     if args.len() < 1 {
-        return Err(Error::new(ErrorKind::InvalidInput, INVALID_TEMPLATE_NAME));
+        return Err(invalid_input_error(INVALID_TEMPLATE_NAME));
     }
 
-    let repository = RepositoryConnection::new();
     let templates_name = &args[0..];
 
     // Verify if current user has permission to publish these templates
@@ -40,7 +40,7 @@ pub async fn publish(args: &[String]) -> Result<(), Error> {
     // Get templates from repository
     let templates: Result<Vec<Template>, Error> = templates_name
         .into_iter()
-        .map(|name| repository.get_template(name))
+        .map(|name| local::get_template(name))
         .collect();
 
     // Publish templates
