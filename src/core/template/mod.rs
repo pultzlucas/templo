@@ -35,7 +35,7 @@ pub struct Template {
     pub contents: Vec<miner::File>,
 }
 
-#[derive(Debug, PartialEq, Deserialize, Serialize, Clone)]
+#[derive(Debug, PartialEq, Deserialize, Serialize, Clone, Tabled)]
 pub struct TempMetadata {
     pub owner: String,
     pub created_at: String,
@@ -43,13 +43,13 @@ pub struct TempMetadata {
 }
 
 
-#[derive(Tabled)]
+/* #[derive(Tabled)]
 pub struct TemplateDisplayInfo {
     template_name: String,
     owner: String,
     template_type: TemplateType,
     created_at: String,
-}
+} */
 
 /* #[derive(Tabled, Debug, Serialize, Deserialize, Clone)]
 pub struct Template {

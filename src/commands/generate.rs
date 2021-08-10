@@ -1,3 +1,4 @@
+use crate::core::template::TemplateManager;
 use crate::core::utils::errors::invalid_input_error;
 use crate::{
     cli::output::messages::error::{
@@ -5,12 +6,7 @@ use crate::{
     },
     core::repository::{create_repository_if_not_exists, RepositoryConnection},
 };
-use std::{
-    fs,
-    io::{Error, ErrorKind},
-    path::Path,
-    time::Instant,
-};
+use std::{fs, io::Error, path::Path, time::Instant};
 
 pub fn generate(args: &[String]) -> Result<(), Error> {
     create_repository_if_not_exists()?;
