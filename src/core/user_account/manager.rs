@@ -1,7 +1,7 @@
 use super::UserAccountData;
 use crate::core::utils::errors::std_error;
 use crate::core::{
-    file_system::{paths::USER_ACCOUNT_AUTH_PATH, ProtternFileSystem},
+    file_system::{paths::USER_ACCOUNT_AUTH_PATH, write_base64_file, read_base64_file},
     requester::{build_request, request, Method},
 };
 use serde_derive::{Deserialize, Serialize};
@@ -37,11 +37,11 @@ pub struct UserAccountKey {
 
 pub fn save_user_account(user_account: UserAccountKey) -> Result<(), Error> {
     let content = serde_json::to_string(&user_account)?;
-    ProtternFileSystem::write_base64_file(USER_ACCOUNT_AUTH_PATH, content)
+    write_base64_file(USER_ACCOUNT_AUTH_PATH, content)
 }
 
 pub fn get_user_account_data() -> Result<UserAccountKey, Error> {
-    let user_account = ProtternFileSystem::read_base64_file(USER_ACCOUNT_AUTH_PATH)?;
+    let user_account = read_base64_file(USER_ACCOUNT_AUTH_PATH)?;
     Ok(std_error(serde_json::from_str(&user_account))?)
 }
 
