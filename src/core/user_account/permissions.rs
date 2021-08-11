@@ -1,28 +1,25 @@
-use crate::core::{
-    template::TemplateType,
-    repository::local
-};
-use super::{UserAccountKey, get_user_account_data};
+use super::{get_user_account_data, UserAccountKey};
+use crate::core::{repository::local, template::TemplateType};
 
 pub struct UserPermissions {
-    user: UserAccountKey
+    user: UserAccountKey,
 }
 
 impl UserPermissions {
     pub fn new() -> Self {
         Self {
-            user: get_user_account_data().unwrap()
+            user: get_user_account_data().unwrap(),
         }
     }
 
-    pub fn publish_template(&self, template_name: &String) -> bool {
+    pub fn publish_template(&self, template_name: &str) -> bool {
         let template = local::get_template(template_name).unwrap();
         template.metadata.owner == self.user.username
     }
 
-    pub fn delete_template(&self, template_name: &String) -> bool {
+    pub fn delete_template(&self, template_name: &str) -> bool {
         let template = local::get_template(template_name).unwrap();
-        let template_is_remote = template.metadata.template_type == TemplateType::Remote; 
+        let template_is_remote = template.metadata.template_type == TemplateType::Remote;
         template.metadata.owner == self.user.username || template_is_remote
     }
 }
