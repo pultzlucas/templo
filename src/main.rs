@@ -1,13 +1,11 @@
 extern crate tokio;
+mod cli;
 mod commands;
 mod core;
-mod cli;
 
 use commands::*;
-use std::{
-    env,
-    io::{Error, ErrorKind},
-};
+use crate::core::utils::errors::invalid_input_error;
+use std::env;
 
 #[tokio::main]
 async fn main() {
@@ -38,7 +36,7 @@ async fn main() {
             "unpub" => unpub(args).await,
             "get" => get(args).await,
             "explore" => explore().await,
-            _ => Err(Error::new(ErrorKind::InvalidInput, "Invalid command.")),
+            _ => Err(invalid_input_error(&format!("Invalid command \"{}\".", command))),
         }
     };
 
