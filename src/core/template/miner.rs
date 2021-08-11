@@ -1,14 +1,8 @@
 use crate::core::utils::errors::std_error;
 use crate::core::utils::path::{format_path_namespace, pathbuf_to_string, valid_directory_path};
+use super::TempContent;
 use fs_tree::FsTreeBuilder;
-use serde_derive::{Deserialize, Serialize};
 use std::{fs, io::Error, path::PathBuf};
-
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
-pub struct File {
-    pub filename: String,
-    pub content: String,
-}
 
 pub fn extract_paths_from(directory: &str) -> Result<Vec<PathBuf>, Error> {
     valid_directory_path(directory)?;
@@ -21,13 +15,13 @@ pub fn extract_paths_from(directory: &str) -> Result<Vec<PathBuf>, Error> {
     vec_fs_tree
 }
 
-pub fn extract_files_from_paths(paths: Vec<PathBuf>) -> Vec<File> {
+pub fn extract_files_from_paths(paths: Vec<PathBuf>) -> Vec<TempContent> {
     paths
         .into_iter()
         .filter(|path| path.is_file())
-        .map(|file| File {
+        .map(|file| TempContent {
             filename: pathbuf_to_string(file.clone()),
-            content: fs::read_to_string(file).unwrap(),
+            text: fs::read_to_string(file).unwrap(),
         })
         .collect()
 }

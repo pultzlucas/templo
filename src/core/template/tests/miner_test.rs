@@ -1,4 +1,5 @@
-use super::miner::*;
+use super::*;
+use miner::*;
 use crate::core::utils::path::*;
 use std::path::Path;
 const TREE_FILES_ONLY: &'static str = "./src/core/tests/tree_files_only";
@@ -30,16 +31,16 @@ fn it_should_return_the_tree_files_only_flatted() {
 #[test]
 fn it_should_return_all_tree_files_only_files() {
     let paths = extract_paths_from(TREE_FILES_ONLY).unwrap();
-    let contents: Vec<File> = extract_files_from_paths(paths)
+    let contents: Vec<TempContent> = extract_files_from_paths(paths)
         .into_iter()
-        .filter(|file_content| file_content.content != "")
+        .filter(|file_content| file_content.text != "")
         .collect();
 
     assert_eq!(
         contents,
-        vec![File {
+        vec![TempContent {
             filename: "./src/core/tests/tree_files_only/file_text.txt".to_string(),
-            content: "Lorem ipsum dolor\r\n\r\n123123123123\r\n\r\n{(-@#$%¨¨&*)}".to_string()
+            text: "Lorem ipsum dolor\r\n\r\n123123123123\r\n\r\n{(-@#$%¨¨&*)}".to_string()
         }]
     )
 }

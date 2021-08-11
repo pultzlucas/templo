@@ -1,7 +1,7 @@
 use crate::core::utils::errors::std_error;
 use crate::core::utils::path::pathbuf_to_string;
 use crate::core::template::{TempMetadata, Template};
-use crate::core::template::miner::File;
+use crate::core::template::TempContent;
 use base64;
 use serde_derive::{Deserialize, Serialize};
 use serde_json;
@@ -54,15 +54,15 @@ pub fn deserialize_template(temp_str: &str) -> Result<Template, Error> {
 
 // OPERATORS
 
-pub fn deserialize_contents(content_string: String) -> Vec<File> {
+pub fn deserialize_contents(content_string: String) -> Vec<TempContent> {
     split_by(content_string, ";")
         .into_iter()
         .map(|content_b64| decode_base64(content_b64))
         .map(|content| {
             let content_info = split_by(content, "|");
-            File {
+            TempContent {
                 filename: content_info[0].clone(),
-                content: content_info[1].clone(),
+                text: content_info[1].clone(),
             }
         })
         .collect()
@@ -76,10 +76,10 @@ pub fn deserialize_paths(paths_string: String) -> Vec<PathBuf> {
         .collect()
 }
 
-pub fn serialize_contents(contents: Vec<File>) -> String {
+pub fn serialize_contents(contents: Vec<TempContent>) -> String {
     let contents_strings: Vec<String> = contents
         .into_iter()
-        .map(|content: File| [content.filename, content.content].join("|"))
+        .map(|content: TempContent| [content.filename, content.text].join("|"))
         .map(base64::encode)
         .collect();
     contents_strings.join(";")

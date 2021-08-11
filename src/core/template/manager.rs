@@ -1,5 +1,5 @@
 use super::Template;
-use crate::core::template::miner::File;
+use crate::core::template::TempContent;
 use crate::{core::utils::path::pathbuf_to_string, paint_string};
 use std::{
     fs,
@@ -31,11 +31,11 @@ fn create_path(path: PathBuf, directory: &Path) -> Result<(), Error> {
     Ok(())
 }
 
-fn write_contents(contents: Vec<File>, directory: &Path) -> Result<(), Error> {
-    for data in contents.into_iter() {
-        let file_path = Path::new(directory).join(data.filename);
+fn write_contents(contents: Vec<TempContent>, directory: &Path) -> Result<(), Error> {
+    for content in contents.into_iter() {
+        let file_path = Path::new(directory).join(content.filename);
         if file_path.exists() {
-            fs::write(file_path, data.content)?;
+            fs::write(file_path, content.text)?;
         }
     }
 
