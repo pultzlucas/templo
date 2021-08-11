@@ -6,10 +6,11 @@ use crate::{
         file_system::ProtternFileSystem,
         repository::local,
         template::maker::create_template,
-        user_account::UserAccountManager,
+        user_account::user_auth_exists,
         utils::errors::{invalid_input_error, not_found_error},
     },
 };
+
 use std::{
     io::{Error, ErrorKind},
     path::Path,
@@ -19,14 +20,11 @@ use std::{
 pub fn save(args: &[String]) -> Result<(), Error> {
     local::create()?;
 
-    if !UserAccountManager::user_auth_exists() {
+    if !user_auth_exists() {
         return Err(not_found_error(NOT_FOUND_USER_AUTH));
     }
     if args.len() < 1 {
-        return Err(Error::new(
-            ErrorKind::InvalidInput,
-            INVALID_DIRECTORY_PATH_NAME,
-        ));
+        return Err(invalid_input_error(INVALID_DIRECTORY_PATH_NAME));
     }
     if args.len() < 2 {
         return Err(invalid_input_error(INVALID_TEMPLATE_NAME));

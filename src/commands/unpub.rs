@@ -2,7 +2,7 @@ use crate::{
     cli::output::messages::error::{INVALID_TEMPLATE_NAME, NOT_FOUND_USER_AUTH},
     core::{
         repository::remote,
-        user_account::UserAccountManager,
+        user_account::user_auth_exists,
         utils::errors::{invalid_input_error, not_found_error},
     },
     paintln,
@@ -18,7 +18,7 @@ struct UnpubRequestBody {
 }
 
 pub async fn unpub(args: &[String]) -> Result<(), Error> {
-    if !UserAccountManager::user_auth_exists() {
+    if !user_auth_exists() {
         return Err(not_found_error(NOT_FOUND_USER_AUTH));
     }
 

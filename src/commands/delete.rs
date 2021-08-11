@@ -1,6 +1,6 @@
 use crate::{
     cli::output::messages::error::{INVALID_TEMPLATE_NAME, NOT_FOUND_USER_AUTH},
-    core::{repository::local, user_account::UserAccountManager},
+    core::{repository::local, user_account::user_auth_exists},
 };
 use std::{
     io::{Error, ErrorKind},
@@ -10,7 +10,7 @@ use std::{
 pub fn delete(args: &[String]) -> Result<(), Error> {
     local::create()?;
 
-    if !UserAccountManager::user_auth_exists() {
+    if !user_auth_exists() {
         return Err(Error::new(ErrorKind::NotFound, NOT_FOUND_USER_AUTH));
     }
 

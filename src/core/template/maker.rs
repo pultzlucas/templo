@@ -1,5 +1,5 @@
 use crate::core::template::{miner, TempMetadata, Template, TemplateType};
-use crate::core::user_account::UserAccountManager;
+use crate::core::user_account::get_user_account_data;
 use crate::core::utils::date::get_date_now_string;
 use std::io::Error;
 use std::path::PathBuf;
@@ -36,7 +36,7 @@ fn get_template_data(temp_name: String, dir_path: String) -> Result<TempData, Er
 }
 
 fn get_template_metadata() -> Result<TempMetadata, Error> {
-    let owner = UserAccountManager::get_user_account_data()?.username;
+    let owner = get_user_account_data()?.username;
     let date_now = get_date_now_string();
     Ok(TempMetadata {
         owner,

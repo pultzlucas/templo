@@ -2,7 +2,7 @@ use crate::core::{
     template::TemplateType,
     repository::local
 };
-use super::{UserAccountKey, UserAccountManager};
+use super::{UserAccountKey, get_user_account_data};
 
 pub struct UserPermissions {
     user: UserAccountKey
@@ -11,7 +11,7 @@ pub struct UserPermissions {
 impl UserPermissions {
     pub fn new() -> Self {
         Self {
-            user: UserAccountManager::get_user_account_data().unwrap()
+            user: get_user_account_data().unwrap()
         }
     }
 

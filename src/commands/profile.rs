@@ -1,14 +1,16 @@
+use crate::core::utils::errors::not_found_error;
 use crate::{
-    cli::output::messages::error::NOT_FOUND_USER_AUTH, core::user_account::UserAccountManager,
+    cli::output::messages::error::NOT_FOUND_USER_AUTH,
+    core::user_account::{get_user_account_data, user_auth_exists},
 };
-use std::io::{Error, ErrorKind};
+use std::io::Error;
 
 pub fn profile() -> Result<(), Error> {
-    if !UserAccountManager::user_auth_exists() {
-        return Err(Error::new(ErrorKind::NotFound, NOT_FOUND_USER_AUTH));
+    if !user_auth_exists() {
+        return Err(not_found_error(NOT_FOUND_USER_AUTH));
     }
 
-    let current_user = UserAccountManager::get_user_account_data()?;
+    let current_user = get_user_account_data()?;
     println!("Name: {}", current_user.username);
     println!("Email: {}", current_user.email);
 

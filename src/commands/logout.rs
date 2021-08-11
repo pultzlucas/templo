@@ -1,15 +1,13 @@
-use crate::core::user_account::UserAccountManager;
-use std::io::{Error, ErrorKind};
+use crate::core::user_account::{logout_current, user_auth_exists};
+use crate::core::utils::errors::not_found_error;
+use std::io::Error;
 
 pub fn logout() -> Result<(), Error> {
-    if !UserAccountManager::user_auth_exists() {
-        return Err(Error::new(
-            ErrorKind::NotFound,
-            "You already is logged out.",
-        ));
+    if !user_auth_exists() {
+        return Err(not_found_error("You already is logged out."));
     }
 
-    UserAccountManager::logout_current()?;
+    logout_current()?;
     println!("Logged out.");
     Ok(())
 }

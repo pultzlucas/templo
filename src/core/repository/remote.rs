@@ -1,6 +1,6 @@
 use crate::core::requester::{build_request, request, HeaderValue, Method};
 use crate::core::template::{TempMetadata, Template};
-use crate::core::user_account::UserAccountManager;
+use crate::core::user_account::get_user_account_data;
 use crate::core::utils::errors::{other_error, permission_denied_error, std_error};
 use serde_derive::{Deserialize, Serialize};
 use std::io::Error;
@@ -36,7 +36,7 @@ struct UnpubResponse {
 }
 
 pub async fn publish_templates(templates: Vec<Template>) -> Result<String, Error> {
-    let current_user = UserAccountManager::get_user_account_data()?;
+    let current_user = get_user_account_data()?;
 
     let req = {
         let body = std_error(serde_json::to_string(&templates))?;
@@ -69,7 +69,7 @@ pub async fn get_templates(temps_name: Vec<String>) -> Result<Vec<Template>, Err
 
 pub async fn unpub_templates(temps_name: Vec<String>) -> Result<String, Error> {
     let req = {
-        let current_user = UserAccountManager::get_user_account_data()?;
+        let current_user = get_user_account_data()?;
         let body = {
             let body = UnpubRequestBody {
                 templates_name: temps_name.to_vec(),

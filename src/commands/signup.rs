@@ -1,6 +1,6 @@
 use crate::{
     cli::input::{get, InputType},
-    core::user_account::{UserAccountData, UserAccountKey, UserAccountManager},
+    core::user_account::{UserAccountData, UserAccountKey, signup_user_account, save_user_account},
     paintln,
 };
 use std::io::{Error, ErrorKind};
@@ -27,7 +27,7 @@ pub async fn signup() -> Result<(), Error> {
     let start = Instant::now(); // start timing process
 
     paintln!("{gray}", "[Registering Account]");
-    let res = UserAccountManager::signup_user_account(&user_account).await?;
+    let res = signup_user_account(&user_account).await?;
     if !res.registered {
         return Err(Error::new(ErrorKind::AlreadyExists, res.message));
     }
@@ -35,7 +35,7 @@ pub async fn signup() -> Result<(), Error> {
     let user_account_registration: UserAccountKey = serde_json::from_str(&res.user).unwrap();
 
     // Saving user account auth
-    UserAccountManager::save_user_account(user_account_registration)?;
+    save_user_account(user_account_registration)?;
     println!("\nAccount was registered.");
 
     let end = Instant::now(); // stop timing process

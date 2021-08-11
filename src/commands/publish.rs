@@ -4,7 +4,7 @@ use crate::{
     core::{
         repository::{local, remote},
         template::Template,
-        user_account::{UserAccountManager, UserPermissions},
+        user_account::{UserPermissions, user_auth_exists},
         utils::errors::{invalid_input_error, not_found_error, permission_denied_error},
     },
 };
@@ -13,7 +13,7 @@ use std::time::Instant;
 
 pub async fn publish(args: &[String]) -> Result<(), Error> {
     local::create()?;
-    if !UserAccountManager::user_auth_exists() {
+    if !user_auth_exists() {
         return Err(not_found_error(NOT_FOUND_USER_AUTH));
     }
 
