@@ -29,14 +29,14 @@ pub fn save(args: &[String]) -> Result<(), Error> {
     let template_name = args[1].clone();
 
     if local::template_exists(&template_name) {
-        return Err(already_exists_error(format!(
+        return Err(already_exists_error(&format!(
             r#"Template "{}" already exists in your repository."#,
             &template_name
         )));
     }
 
     if !Path::new(&directory).exists() {
-        return Err(invalid_input_error(format!(
+        return Err(invalid_input_error(&format!(
             r#"Not is possible find "{}" directory."#,
             directory
         )));

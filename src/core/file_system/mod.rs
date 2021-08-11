@@ -1,16 +1,10 @@
 pub mod paths;
 
-use crate::core::utils::errors::std_error;
-use paths::TEMPLATES_PATH;
-use std::{
-    fs,
-    io::Error,
-    path::{Path, PathBuf},
-};
+#[cfg(test)]
+mod tests;
 
-pub fn get_template_path(template_name: &String) -> PathBuf {
-    Path::new(TEMPLATES_PATH).join(template_name)
-}
+use crate::core::utils::errors::std_error;
+use std::{fs, io::Error, path::Path};
 
 pub fn write_base64_file<P: AsRef<Path>>(path: P, content: String) -> Result<(), Error> {
     let content_as_base64 = base64::encode(content);
