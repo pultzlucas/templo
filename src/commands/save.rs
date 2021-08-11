@@ -4,7 +4,7 @@ use crate::{
     },
     core::{
         repository::local,
-        template::maker::create_template,
+        template::maker::make_template,
         user_account::user_auth_exists,
         utils::errors::{already_exists_error, invalid_input_error, not_found_error},
     },
@@ -43,7 +43,7 @@ pub fn save(args: &[String]) -> Result<(), Error> {
     }
 
     let start = Instant::now(); // start timing process
-    let template = create_template(template_name, directory)?;
+    let template = make_template(template_name, directory)?;
 
     local::save_template(template)?;
     println!("Template was saved successfully.");

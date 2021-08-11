@@ -3,6 +3,9 @@ pub mod miner;
 pub mod maker;
 pub mod serde;
 
+#[cfg(test)]
+mod tests;
+
 pub use manager::*;
 
 use serde_derive::{Deserialize, Serialize};
