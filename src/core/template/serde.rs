@@ -1,7 +1,7 @@
 use crate::core::utils::errors::std_error;
 use crate::core::utils::path::pathbuf_to_string;
 use crate::core::template::{TempMetadata, Template};
-use crate::core::template::miner::File;
+use crate::core::template::File;
 use base64;
 use serde_derive::{Deserialize, Serialize};
 use serde_json;

@@ -1,4 +1,5 @@
-use super::miner::*;
+use super::*;
+use miner::*;
 use crate::core::utils::path::*;
 use std::path::Path;
 const TREE_FILES_ONLY: &'static str = "./src/core/tests/tree_files_only";

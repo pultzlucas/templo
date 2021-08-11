@@ -13,6 +13,12 @@ use std::fmt::{Display, Formatter, Result};
 use tabled::Tabled;
 use std::path::PathBuf;
 
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
+pub struct File {
+    pub filename: String,
+    pub content: String,
+}
+
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
 pub enum TemplateType {
     Local,
@@ -32,7 +38,7 @@ impl Display for TemplateType {
 pub struct Template {
     pub metadata: TempMetadata,
     pub paths: Vec<PathBuf>,
-    pub contents: Vec<miner::File>,
+    pub contents: Vec<File>,
 }
 
 #[derive(Debug, PartialEq, Deserialize, Serialize, Clone, Tabled)]

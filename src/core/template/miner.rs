@@ -1,14 +1,8 @@
 use crate::core::utils::errors::std_error;
 use crate::core::utils::path::{format_path_namespace, pathbuf_to_string, valid_directory_path};
+use super::File;
 use fs_tree::FsTreeBuilder;
-use serde_derive::{Deserialize, Serialize};
 use std::{fs, io::Error, path::PathBuf};
-
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
-pub struct File {
-    pub filename: String,
-    pub content: String,
-}
 
 pub fn extract_paths_from(directory: &str) -> Result<Vec<PathBuf>, Error> {
     valid_directory_path(directory)?;

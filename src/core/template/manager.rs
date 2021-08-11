@@ -1,5 +1,5 @@
 use super::Template;
-use crate::core::template::miner::File;
+use crate::core::template::File;
 use crate::{core::utils::path::pathbuf_to_string, paint_string};
 use std::{
     fs,

@@ -16,7 +16,7 @@ fn it_should_return_a_valid_template_data() {
                 Path::new("./src/core/tests/tree_files_only/file_3").to_path_buf(),
                 Path::new("./src/core/tests/tree_files_only/file_text.txt").to_path_buf()
             ],
-            contents: vec![crate::core::template::miner::File {
+            contents: vec![crate::core::template::File {
                 filename: "./src/core/tests/tree_files_only/file_text.txt".to_string(),
                 content: "Lorem ipsum dolor\r\n\r\n123123123123\r\n\r\n{(-@#$%¨¨&*)}".to_string()
             }]

@@ -1,4 +1,4 @@
-use super::{miner, TempMetadata, Template, TemplateType};
+use super::{miner, File, TempMetadata, Template, TemplateType};
 use crate::core::user_account::get_user_account_data;
 use crate::core::utils::date::get_date_now_string;
 use std::io::Error;
@@ -7,7 +7,7 @@ use std::path::PathBuf;
 #[derive(Debug, PartialEq)]
 pub struct TempData {
     pub paths: Vec<PathBuf>,
-    pub contents: Vec<miner::File>,
+    pub contents: Vec<File>,
 }
 
 pub fn make_template(temp_name: String, dir_path: String) -> Result<Template, Error> {
