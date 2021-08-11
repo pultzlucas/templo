@@ -1,4 +1,4 @@
-use crate::core::template::TemplateManager;
+use crate::core::template::gen_template;
 use crate::core::utils::errors::invalid_input_error;
 use crate::{
     cli::output::messages::error::{
@@ -18,23 +18,24 @@ pub fn generate(args: &[String]) -> Result<(), Error> {
     if args.len() < 2 {
         return Err(invalid_input_error(INVALID_DIRECTORY_PATH_NAME));
     }
+
     let template_name = &args[0];
     let directory = Path::new(&args[1]);
+
     if directory.extension() != None {
         return Err(invalid_input_error(INVALID_DIRECTORY_PATH_TYPE));
     }
+
     if !directory.exists() {
         fs::create_dir_all(directory)?;
     }
 
-    // Get template from repository
     let start = Instant::now(); // start timing process
     let template = local::get_template(&template_name)?;
-    let manager = TemplateManager::new(vec![template]);
 
-    // Generate template
-    manager.gen_templates(directory)?;
+    gen_template(template, directory)?;
     println!("Template \"{}\" was generated.", template_name);
+
     let end = Instant::now(); // stop timing process
     println!("Done in {:.2?}", end.duration_since(start));
     Ok(())
