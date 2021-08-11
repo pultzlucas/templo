@@ -6,7 +6,7 @@ pub fn pathbuf_to_string(path: PathBuf) -> String {
     path.as_os_str().to_str().unwrap().to_string()
 }
 
-pub fn format_pathbuf(path: PathBuf) -> PathBuf {
+pub fn format_path_namespace(path: PathBuf) -> PathBuf {
     Path::new(&pathbuf_to_string(path).replace(r"\", "/")).to_path_buf()
 }
 
