@@ -3,16 +3,11 @@ use std::path::Path;
 
 #[test]
 fn it_should_return_a_valid_template_data() {
-    let temp_data = make_template_data(
-        "temp-name".to_string(),
-        "./src/core/tests/tree_files_only".to_string(),
-    )
-    .unwrap();
+    let temp_data = make_template_data("./src/core/tests/tree_files_only".to_string()).unwrap();
 
     assert_eq!(
         temp_data,
         TempData {
-            name: "temp-name".to_string(),
             paths: vec![
                 Path::new("./src/core/tests/tree_files_only").to_path_buf(),
                 Path::new("./src/core/tests/tree_files_only/.file4").to_path_buf(),
@@ -23,8 +18,7 @@ fn it_should_return_a_valid_template_data() {
             ],
             contents: vec![crate::core::template::miner::File {
                 filename: "./src/core/tests/tree_files_only/file_text.txt".to_string(),
-                content: "Lorem ipsum dolor\r\n\r\n123123123123\r\n\r\n{(-@#$%¨¨&*)}"
-                    .to_string()
+                content: "Lorem ipsum dolor\r\n\r\n123123123123\r\n\r\n{(-@#$%¨¨&*)}".to_string()
             }]
         }
     )

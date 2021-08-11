@@ -31,13 +31,13 @@ impl Display for TemplateType {
 #[derive(Debug, PartialEq, Deserialize, Serialize, Clone)]
 pub struct Template {
     pub metadata: TempMetadata,
-    pub name: String,
     pub paths: Vec<PathBuf>,
     pub contents: Vec<miner::File>,
 }
 
 #[derive(Debug, PartialEq, Deserialize, Serialize, Clone, Tabled)]
 pub struct TempMetadata {
+    pub name: String,
     pub owner: String,
     pub created_at: String,
     pub template_type: TemplateType,

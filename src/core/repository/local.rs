@@ -33,7 +33,7 @@ pub fn get_templates() -> Vec<Template> {
 }
 
 pub fn save_template(template: Template) -> Result<(), Error> {
-    let template_path = get_template_path(&template.name);
+    let template_path = get_template_path(&template.metadata.name);
     let template_string = serialize_template(template)?;
     write_base64_file(template_path, template_string)
 }
@@ -55,7 +55,7 @@ pub fn get_template(template_name: &String) -> Result<Template, Error> {
         let matched_template = get_templates()
             .clone()
             .into_iter()
-            .find(|temp| temp.name == *template_name);
+            .find(|temp| temp.metadata.name == *template_name);
         match matched_template {
             Some(t) => t,
             None => {
