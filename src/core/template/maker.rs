@@ -1,9 +1,8 @@
 use super::{miner, TempContent, TempMetadata, TempPath, Template, TemplateType};
 use crate::core::user_account::get_user_account_data;
 use crate::core::utils::date::get_date_now_string;
-use crate::core::utils::path::{pathbuf_to_string, remove_dir_prefix};
+use crate::core::utils::path::{pathbuf_to_string, remove_dir_prefix, format_path_namespace};
 use std::io::Error;
-use std::path::Path;
 
 #[derive(Debug, PartialEq)]
 pub struct TempData {
@@ -30,7 +29,10 @@ pub fn make_template_data(dir_path: &str) -> Result<TempData, Error> {
         .collect();
 
     let formatted_paths: Vec<TempPath> = raw_paths.into_iter()
-        .map(|path| format_path_namespace(path))
+        .map(|path| TempPath {
+            buf: format_path_namespace(path.buf),
+            path_type: path.path_type
+        })
         .map(|path| remove_dir_prefix(path, dir_path).unwrap())
         .filter(|path| pathbuf_to_string(path.buf.clone()) != "")
         .collect();
@@ -50,11 +52,6 @@ fn make_template_metadata(temp_name: String) -> Result<TempMetadata, Error> {
         created_at: date_now,
         template_type: TemplateType::Local,
     })
-}
-
-fn format_path_namespace(path: TempPath) -> TempPath {
-    let path_formatted = Path::new(&pathbuf_to_string(path.buf).replace(r"\", "/")).to_path_buf();
-    TempPath::new(path_formatted)
 }
 
 

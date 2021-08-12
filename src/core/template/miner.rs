@@ -19,7 +19,6 @@ pub fn extract_files_from_paths(paths: Vec<TempPath>, directory: &str) -> Vec<Te
         .filter(|path| path.path_type == TempPathType::File)
         .map(|file| {
             let file_path: TempPath = remove_dir_prefix(file.clone(), directory).unwrap();
-            println!("\n\n\n\n\n{:?}\n\n\n", fs::read_to_string(file.clone().buf).unwrap());
             TempContent {
                 filename: pathbuf_to_string(file_path.buf),
                 text: fs::read_to_string(file.buf).unwrap(),
