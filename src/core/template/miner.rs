@@ -1,19 +1,9 @@
-<<<<<<< HEAD
-use crate::core::utils::errors::std_error;
-use crate::core::utils::path::{format_path_namespace, pathbuf_to_string, valid_directory_path};
-use super::File;
-use fs_tree::FsTreeBuilder;
-use std::{fs, io::Error, path::PathBuf};
-
-pub fn extract_paths_from(directory: &str) -> Result<Vec<PathBuf>, Error> {
-=======
 use super::{TempContent, TempPath, TempPathType};
 use crate::core::utils::path::{pathbuf_to_string, valid_directory_path, remove_dir_prefix};
 use fs_tree::FsTreeBuilder;
 use std::{fs, io::Error};
 
 pub fn mine_template_from(directory: &str) -> Result<Vec<TempPath>, Error> {
->>>>>>> temp-path
     valid_directory_path(directory)?;
     let fs_tree = FsTreeBuilder::new(directory).build();
     let vec_fs_tree: Vec<TempPath> = fs_tree
