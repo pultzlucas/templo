@@ -43,7 +43,7 @@ pub fn save(args: &[String]) -> Result<(), Error> {
     }
 
     let start = Instant::now(); // start timing process
-    let template = make_template(template_name, directory)?;
+    let template = make_template(template_name, &directory)?;
 
     local::save_template(template)?;
     println!("Template was saved successfully.");

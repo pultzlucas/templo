@@ -1,16 +1,16 @@
-use super::{miner, File, TempMetadata, Template, TemplateType};
+use super::{miner, TempContent, TempMetadata, TempPath, Template, TemplateType};
 use crate::core::user_account::get_user_account_data;
 use crate::core::utils::date::get_date_now_string;
+use crate::core::utils::path::{pathbuf_to_string, remove_dir_prefix, format_path_namespace};
 use std::io::Error;
-use std::path::PathBuf;
 
 #[derive(Debug, PartialEq)]
 pub struct TempData {
-    pub paths: Vec<PathBuf>,
-    pub contents: Vec<File>,
+    pub paths: Vec<TempPath>,
+    pub contents: Vec<TempContent>,
 }
 
-pub fn make_template(temp_name: String, dir_path: String) -> Result<Template, Error> {
+pub fn make_template(temp_name: String, dir_path: &str) -> Result<Template, Error> {
     let metadata = make_template_metadata(temp_name)?;
     let data = make_template_data(dir_path)?;
     Ok(Template {
@@ -20,14 +20,25 @@ pub fn make_template(temp_name: String, dir_path: String) -> Result<Template, Er
     })
 }
 
-pub fn make_template_data(dir_path: String) -> Result<TempData, Error> {
-    let paths = miner::extract_paths_from(dir_path.as_str())?;
-    let files = miner::extract_files_from_paths(paths.clone())
+pub fn make_template_data(dir_path: &str) -> Result<TempData, Error> {
+    let raw_paths = miner::mine_template_from(dir_path)?;     
+
+    let files = miner::extract_files_from_paths(raw_paths.clone(), dir_path)
         .into_iter()
-        .filter(|file| file.content != "")
+        .filter(|file| file.text != "")
         .collect();
+
+    let formatted_paths: Vec<TempPath> = raw_paths.into_iter()
+        .map(|path| TempPath {
+            buf: format_path_namespace(path.buf),
+            path_type: path.path_type
+        })
+        .map(|path| remove_dir_prefix(path, dir_path).unwrap())
+        .filter(|path| pathbuf_to_string(path.buf.clone()) != "")
+        .collect();
+    
     Ok(TempData {
-        paths,
+        paths: formatted_paths,
         contents: files,
     })
 }
@@ -42,3 +53,5 @@ fn make_template_metadata(temp_name: String) -> Result<TempMetadata, Error> {
         template_type: TemplateType::Local,
     })
 }
+
+

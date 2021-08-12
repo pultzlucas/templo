@@ -50,12 +50,12 @@ macro_rules! paint_string {
 
             let paint_string = |string: &str, color_name: &str| {
                 BufferWriter::stderr(ColorChoice::Always);
-
                 let color_id = match color_name {
                     "red" => 31,
                     "green" => 32,
                     "yellow" => 33,
                     "gray" => 90,
+                    "0" => 0,
                     _ => panic!("Invalid color in paint macro.")
                 };
                 format!("\x1b[1;{}m{}\x1b[0;0m", color_id, string)

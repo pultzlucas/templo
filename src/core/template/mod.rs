@@ -1,17 +1,46 @@
-mod manager;
-pub mod miner;
 pub mod maker;
+pub mod generator;
+pub mod miner;
 pub mod serde;
 
 #[cfg(test)]
 mod tests;
 
-pub use manager::*;
-
 use serde_derive::{Deserialize, Serialize};
 use std::fmt::{Display, Formatter, Result};
-use tabled::Tabled;
 use std::path::PathBuf;
+use tabled::Tabled;
+
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
+pub enum TempPathType {
+    File,
+    Dir,
+}
+
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
+pub struct TempPath {
+    pub buf: PathBuf,
+    pub path_type: TempPathType,
+}
+
+impl TempPath {
+    pub fn new(path: PathBuf) -> Self {
+        Self {
+            buf: path.clone(),
+            path_type: if path.is_file() {
+                TempPathType::File
+            } else {
+                TempPathType::Dir
+            },
+        }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
+pub struct TempContent {
+    pub filename: String,
+    pub text: String,
+}
 
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 pub struct File {
@@ -37,8 +66,8 @@ impl Display for TemplateType {
 #[derive(Debug, PartialEq, Deserialize, Serialize, Clone)]
 pub struct Template {
     pub metadata: TempMetadata,
-    pub paths: Vec<PathBuf>,
-    pub contents: Vec<File>,
+    pub paths: Vec<TempPath>,
+    pub contents: Vec<TempContent>,
 }
 
 #[derive(Debug, PartialEq, Deserialize, Serialize, Clone, Tabled)]
