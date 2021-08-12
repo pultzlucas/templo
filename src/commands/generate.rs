@@ -1,4 +1,4 @@
-use crate::core::template::gen_template;
+use crate::core::template::generator::gen_template;
 use crate::core::utils::errors::invalid_input_error;
 use crate::{
     cli::output::messages::error::{
