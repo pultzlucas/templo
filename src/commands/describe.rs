@@ -17,6 +17,6 @@ pub fn describe(args: &[String]) -> Result<(), Error> {
     template
         .paths
         .into_iter()
-        .for_each(|path| println!("{}", pathbuf_to_string(path)));
+        .for_each(|path| println!("{}", pathbuf_to_string(path.buf)));
     Ok(())
 }

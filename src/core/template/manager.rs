@@ -9,7 +9,7 @@ use std::{
 
 pub fn gen_template(template: Template, directory: &Path) -> Result<(), Error> {
     for path in template.paths.into_iter() {
-        create_path(path, directory)?;
+        create_path(path.buf, directory)?;
     }
 
     if template.contents.len() > 0 {

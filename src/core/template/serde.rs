@@ -1,12 +1,12 @@
+use crate::core::template::TempContent;
+use crate::core::template::{TempMetadata, TempPath, TempPathType, Template};
 use crate::core::utils::errors::std_error;
 use crate::core::utils::path::pathbuf_to_string;
-use crate::core::template::{TempMetadata, Template};
-use crate::core::template::TempContent;
 use base64;
 use serde_derive::{Deserialize, Serialize};
 use serde_json;
 use std::io::Error;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 
 #[derive(Serialize, Deserialize)]
 struct TempPreSerde {
@@ -68,11 +68,16 @@ pub fn deserialize_contents(content_string: String) -> Vec<TempContent> {
         .collect()
 }
 
-pub fn deserialize_paths(paths_string: String) -> Vec<PathBuf> {
+pub fn deserialize_paths(paths_string: String) -> Vec<TempPath> {
     split_by(paths_string, ";")
         .into_iter()
-        .map(|path| split_by(path, "|")[1].clone())
-        .map(|path| Path::new(&path).to_path_buf())
+        .map(|path| {
+            let path_info = split_by(path, "|");
+            TempPath {
+                buf: Path::new(&path_info[1]).to_path_buf(),
+                path_type: deserialize_temp_path_type(path_info[0].clone()),
+            }
+        })
         .collect()
 }
 
@@ -85,21 +90,33 @@ pub fn serialize_contents(contents: Vec<TempContent>) -> String {
     contents_strings.join(";")
 }
 
-pub fn serialize_paths(paths: Vec<PathBuf>) -> String {
+pub fn serialize_paths(paths: Vec<TempPath>) -> String {
     let paths_strings: Vec<String> = paths
         .into_iter()
-        .map(|path: PathBuf| {
-            if path.is_dir() {
-                return format!("dir|{}", pathbuf_to_string(path));
+        .map(|path: TempPath| {
+            if path.path_type == TempPathType::File {
+                return format!("File|{}", pathbuf_to_string(path.buf));
             }
-            if path.is_file() {
-                return format!("file|{}", pathbuf_to_string(path));
+            if path.path_type == TempPathType::Dir {
+                return format!("Dir|{}", pathbuf_to_string(path.buf));
             }
             panic!("Invalid path type!");
         })
         .collect();
 
     paths_strings.join(";")
+}
+
+fn deserialize_temp_path_type(type_str: String) -> TempPathType {
+    if type_str == "File" {
+        return TempPathType::File;
+    }
+
+    if type_str == "Dir" {
+        return TempPathType::Dir;
+    }
+
+    panic!("Invalid path type!");
 }
 
 fn split_by(string: String, sep: &str) -> Vec<String> {
