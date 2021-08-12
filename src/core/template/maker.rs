@@ -21,9 +21,9 @@ pub fn make_template(temp_name: String, dir_path: &str) -> Result<Template, Erro
 }
 
 pub fn make_template_data(dir_path: &str) -> Result<TempData, Error> {
-    let raw_paths = miner::mine_template_from(dir_path)?;     
+    let raw_paths = miner::mine_paths_from(dir_path)?;     
 
-    let files = miner::extract_files_from_paths(raw_paths.clone(), dir_path)
+    let files = miner::mine_files_from_paths(raw_paths.clone(), dir_path)
         .into_iter()
         .filter(|file| file.text != "")
         .collect();

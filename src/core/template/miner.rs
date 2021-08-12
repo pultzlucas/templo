@@ -3,7 +3,7 @@ use crate::core::utils::path::{pathbuf_to_string, valid_directory_path, remove_d
 use fs_tree::FsTreeBuilder;
 use std::{fs, io::Error};
 
-pub fn mine_template_from(directory: &str) -> Result<Vec<TempPath>, Error> {
+pub fn mine_paths_from(directory: &str) -> Result<Vec<TempPath>, Error> {
     valid_directory_path(directory)?;
     let fs_tree = FsTreeBuilder::new(directory).build();
     let vec_fs_tree: Vec<TempPath> = fs_tree
@@ -13,7 +13,7 @@ pub fn mine_template_from(directory: &str) -> Result<Vec<TempPath>, Error> {
     Ok(vec_fs_tree)
 }
 
-pub fn extract_files_from_paths(paths: Vec<TempPath>, directory: &str) -> Vec<TempContent> {
+pub fn mine_files_from_paths(paths: Vec<TempPath>, directory: &str) -> Vec<TempContent> {
     paths
         .into_iter()
         .filter(|path| path.path_type == TempPathType::File)

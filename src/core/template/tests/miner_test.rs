@@ -7,7 +7,7 @@ const TREE_FILES_ONLY: &'static str = "./src/core/tests/tree_files_only";
 
 #[test]
 fn it_should_return_the_tree_files_only_flatted() {
-    let flat = mine_template_from(TREE_FILES_ONLY).unwrap();
+    let flat = mine_paths_from(TREE_FILES_ONLY).unwrap();
     assert_eq!(
         flat,
         vec![
@@ -37,8 +37,8 @@ fn it_should_return_the_tree_files_only_flatted() {
 
 #[test]
 fn it_should_return_all_tree_files_only_files() {
-    let paths = mine_template_from(TREE_FILES_ONLY).unwrap();
-    let contents: Vec<TempContent> = extract_files_from_paths(paths, TREE_FILES_ONLY)
+    let paths = mine_paths_from(TREE_FILES_ONLY).unwrap();
+    let contents: Vec<TempContent> = mine_files_from_paths(paths, TREE_FILES_ONLY)
         .into_iter()
         .filter(|file_content| file_content.text != "")
         .collect();
