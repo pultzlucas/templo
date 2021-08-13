@@ -1,0 +1,8 @@
+body {
+    backface-visibility: hidden;
+    background-color: aliceblue;
+}
+
+h1 {
+    font: optional;
+}
