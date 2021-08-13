@@ -7,6 +7,10 @@ pub fn pathbuf_to_string(path: PathBuf) -> String {
     path.as_os_str().to_str().unwrap().to_string()
 }
 
+pub fn str_to_pathbuf(path: &str) -> PathBuf {
+    Path::new(path).to_path_buf()
+}
+
 pub fn valid_directory_path(directory: &str) -> Result<(), Error> {
     if directory.contains(r"\") || directory.ends_with("/") {
         return Err(invalid_input_error("Invalid directory path."));

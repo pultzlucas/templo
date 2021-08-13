@@ -1,8 +1,8 @@
 use super::Template;
 use crate::core::template::{TempContent, TempPath, TempPathType};
 use crate::{
-    core::utils::path::{format_path_namespace, pathbuf_to_string},
-    paint_string, paintln,
+    core::utils::path::{format_path_namespace, pathbuf_to_string, str_to_pathbuf},
+    paint, paintln,
 };
 use std::{
     fs,
@@ -25,24 +25,35 @@ pub fn gen_template(template: Template, directory: &Path) -> Result<(), Error> {
 }
 
 fn create_path(path: TempPath, directory: &Path) -> Result<(), Error> {
-    let real_path = get_real_path(directory, path);
+    let real_path = TempPath {
+        buf: get_real_path(directory, path.buf),
+        path_type: path.path_type,
+    };
 
     if real_path.path_type == TempPathType::File {
-        create_file(real_path.buf.clone())?;
+        fs::write(&real_path.buf, "")?;
+        paint!("{gray}", "file: ");
     }
     if real_path.path_type == TempPathType::Dir {
-        create_dir(real_path.buf)?;
+        fs::create_dir(&real_path.buf)?;
+        paint!("{gray}", "dir: ");
     }
+
+    println!(
+        "{}",
+        pathbuf_to_string(format_path_namespace(real_path.buf))
+    );
 
     Ok(())
 }
 
 fn write_contents(contents: Vec<TempContent>, directory: &Path) -> Result<(), Error> {
     for content in contents.into_iter() {
-        let file_path = Path::new(directory).join(content.filename);
+        let file_path = get_real_path(directory, str_to_pathbuf(&content.filename));
         if file_path.exists() {
             fs::write(&file_path, content.text)?;
-            paintln!("{0}...{green}", pathbuf_to_string(file_path), "ok".to_string());
+            print!("{}", pathbuf_to_string(format_path_namespace(file_path)));
+            paintln!("...{green}", "ok");
         }
     }
 
@@ -50,33 +61,8 @@ fn write_contents(contents: Vec<TempContent>, directory: &Path) -> Result<(), Er
     Ok(())
 }
 
-fn get_real_path(directory: &Path, path: TempPath) -> TempPath {
-    let buf = Path::new(directory)
-        .join(pathbuf_to_string(path.buf))
-        .to_path_buf();
-
-    TempPath {
-        buf: format_path_namespace(buf),
-        path_type: path.path_type,
-    }
-}
-
-fn create_file(path: PathBuf) -> Result<(), Error> {
-    fs::write(&path, "")?;
-    println!(
-        "{} {}",
-        paint_string!("{gray}", "file:"),
-        pathbuf_to_string(path)
-    );
-    Ok(())
-}
-
-fn create_dir(path: PathBuf) -> Result<(), Error> {
-    fs::create_dir(&path)?;
-    println!(
-        " {} {}",
-        paint_string!("{gray}", "dir:"),
-        pathbuf_to_string(path)
-    );
-    Ok(())
+fn get_real_path(directory: &Path, path: PathBuf) -> PathBuf {
+    Path::new(directory)
+        .join(pathbuf_to_string(path))
+        .to_path_buf()
 }

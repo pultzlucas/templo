@@ -1,12 +1,11 @@
 use crate::core::template::TempContent;
 use crate::core::template::{TempMetadata, TempPath, TempPathType, Template};
 use crate::core::utils::errors::std_error;
-use crate::core::utils::path::pathbuf_to_string;
+use crate::core::utils::path::{pathbuf_to_string, str_to_pathbuf};
 use base64;
 use serde_derive::{Deserialize, Serialize};
 use serde_json;
 use std::io::Error;
-use std::path::Path;
 
 #[derive(Serialize, Deserialize)]
 struct TempPreSerde {
@@ -18,7 +17,8 @@ struct TempPreSerde {
 
 pub fn serialize_template(template: Template) -> Result<String, Error> {
     let temp_pre_serde = {
-        let metadata_as_string = base64::encode(serde_json::to_string(&template.metadata).unwrap());
+        //let metadata_as_string = base64::encode(serde_json::to_string(&template.metadata).unwrap());
+        let metadata_as_string = serde_json::to_string(&template.metadata).unwrap();
         let paths_as_string = serialize_paths(template.paths);
         let contents_as_string = serialize_contents(template.contents);
         TempPreSerde {
@@ -37,7 +37,7 @@ pub fn deserialize_template(temp_str: &str) -> Result<Template, Error> {
 
     let template = {
         let metadata: TempMetadata = {
-            let meta_as_string_utf8 = decode_base64(temp_pre_serde.metadata);
+            let meta_as_string_utf8 = temp_pre_serde.metadata;
             serde_json::from_str(&meta_as_string_utf8).unwrap()
         };
         let paths = deserialize_paths(temp_pre_serde.paths);
@@ -74,7 +74,7 @@ pub fn deserialize_paths(paths_string: String) -> Vec<TempPath> {
         .map(|path| {
             let path_info = split_by(path, "|");
             TempPath {
-                buf: Path::new(&path_info[1]).to_path_buf(),
+                buf: str_to_pathbuf(&path_info[1]),
                 path_type: deserialize_temp_path_type(path_info[0].clone()),
             }
         })
