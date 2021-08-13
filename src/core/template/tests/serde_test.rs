@@ -1,5 +1,5 @@
 use super::serde::*;
-use crate::core::template::{TempMetadata, TempPath, TempPathType, Template, TemplateType};
+use crate::core::template::{TempPath, TempPathType, Template, TemplateType};
 use std::path::Path;
 
 #[test]
@@ -7,23 +7,23 @@ fn it_should_return_contents_serialized() {
     let paths = vec![
         TempPath {
             buf: Path::new(".file4").to_path_buf(),
-            path_type: TempPathType::File
+            path_type: TempPathType::File,
         },
         TempPath {
             buf: Path::new("file-2").to_path_buf(),
-            path_type: TempPathType::File
+            path_type: TempPathType::File,
         },
         TempPath {
             buf: Path::new("file1").to_path_buf(),
-            path_type: TempPathType::File
+            path_type: TempPathType::File,
         },
         TempPath {
             buf: Path::new("file_3").to_path_buf(),
-            path_type: TempPathType::File
+            path_type: TempPathType::File,
         },
         TempPath {
             buf: Path::new("file_text.txt").to_path_buf(),
-            path_type: TempPathType::File
+            path_type: TempPathType::File,
         },
     ];
     let paths_ser = serialize_paths(paths);
@@ -91,12 +91,10 @@ fn it_should_return_paths_deserialized() {
 #[test]
 fn it_should_serialize_template() {
     let template = Template {
-        metadata: TempMetadata {
-            name: "temp-name".to_string(),
-            owner: "Username".to_string(),
-            created_at: "123123123123".to_string(),
-            template_type: TemplateType::Local,
-        },
+        name: "temp-name".to_string(),
+        owner: "Username".to_string(),
+        created_at: "123123123123".to_string(),
+        template_type: TemplateType::Local,
         paths: vec![
             TempPath {
                 buf: Path::new(".file4").to_path_buf(),
@@ -141,12 +139,10 @@ fn it_should_deserialize_template() {
     assert_eq!(
         template,
         Template {
-            metadata: TempMetadata {
-                name: "temp-name".to_string(),
-                owner: "Username".to_string(),
-                created_at: "123123123123".to_string(),
-                template_type: TemplateType::Local,
-            },
+            name: "temp-name".to_string(),
+            owner: "Username".to_string(),
+            created_at: "123123123123".to_string(),
+            template_type: TemplateType::Local,
             paths: vec![
                 TempPath {
                     buf: Path::new(".file4").to_path_buf(),

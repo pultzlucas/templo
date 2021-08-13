@@ -11,8 +11,7 @@ pub fn profile() -> Result<(), Error> {
     }
 
     let current_user = get_user_account_data()?;
-    println!("Name: {}", current_user.username);
-    println!("Email: {}", current_user.email);
+    println!("{}", current_user.username);
 
     Ok(())
 }

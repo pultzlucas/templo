@@ -10,7 +10,7 @@ use std::{fs, io::Error, path::Path};
 #[derive(Serialize, Deserialize, Debug)]
 pub struct RegisterResponse {
     pub registered: bool,
-    pub user: String,
+    pub user: Option<String>,
     pub message: String,
 }
 
@@ -30,8 +30,6 @@ struct AuthRequestBody {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UserAccountKey {
     pub username: String,
-    pub email: String,
-    pub password: String,
     pub key: String,
 }
 

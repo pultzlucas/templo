@@ -32,7 +32,7 @@ pub async fn get(args: &[String]) -> Result<(), Error> {
     // Save templates in repository
     for temp in templates.into_iter() {
         local::save_template(temp.clone())?;
-        println!("Template {} was installed.", temp.metadata.name);
+        println!("Template {} was installed.", temp.name);
     }
 
     let end = Instant::now(); // stop timing process

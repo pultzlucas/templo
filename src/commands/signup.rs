@@ -1,6 +1,7 @@
+use crate::core::utils::errors::{already_exists_error, other_error, std_error};
 use crate::{
     cli::input::{get, InputType},
-    core::user_account::{UserAccountData, UserAccountKey, signup_user_account, save_user_account},
+    core::user_account::{save_user_account, signup_user_account, UserAccountData, UserAccountKey},
     paintln,
 };
 use std::io::{Error, ErrorKind};
@@ -11,10 +12,10 @@ type RegisterFields = (String, String, String, String);
 pub async fn signup() -> Result<(), Error> {
     let user_account = {
         let inputs = (
-            get("Username: ", InputType::Text).unwrap(),
-            get("Email (this is public): ", InputType::Text).unwrap(),
-            get("Password: ", InputType::Password).unwrap(),
-            get("Confirm your password: ", InputType::Password).unwrap(),
+            get("Username: ", InputType::Text)?,
+            get("Email (this is public): ", InputType::Text)?,
+            get("Password: ", InputType::Password)?,
+            get("Confirm your password: ", InputType::Password)?,
         );
 
         validate_signup_inputs(&inputs)?;
@@ -28,20 +29,23 @@ pub async fn signup() -> Result<(), Error> {
 
     paintln!("{gray}", "[Registering Account]");
     let res = signup_user_account(&user_account).await?;
+
     if !res.registered {
-        return Err(Error::new(ErrorKind::AlreadyExists, res.message));
+        return Err(already_exists_error(&res.message));
     }
 
-    let user_account_registration: UserAccountKey = serde_json::from_str(&res.user).unwrap();
+    if let Some(user) = res.user {
+        let user_account_registration: UserAccountKey = std_error(serde_json::from_str(&user))?;
+        // Saving user account auth
+        save_user_account(user_account_registration)?;
+        println!("\nAccount was registered.");
+        let end = Instant::now(); // stop timing process
+        println!("Done in {:.2?}", end.duration_since(start));
 
-    // Saving user account auth
-    save_user_account(user_account_registration)?;
-    println!("\nAccount was registered.");
+        return Ok(());
+    }
 
-    let end = Instant::now(); // stop timing process
-    println!("Done in {:.2?}", end.duration_since(start));
-
-    Ok(())
+    Err(other_error("Something went wrong when signup."))
 }
 
 fn validate_signup_inputs(

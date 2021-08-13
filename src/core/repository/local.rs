@@ -1,7 +1,7 @@
 use crate::core::template::serde::{deserialize_template, serialize_template};
 use crate::core::{
     file_system::{paths::TEMPLATES_PATH, read_base64_file, write_base64_file},
-    template::{Template, TemplateType},
+    template::Template,
     user_account::UserPermissions,
     utils::errors::{not_found_error, permission_denied_error},
 };
@@ -25,7 +25,7 @@ pub fn create() -> Result<(), Error> {
 }
 
 pub fn save_template(template: Template) -> Result<(), Error> {
-    let template_path = get_template_path(&template.metadata.name);
+    let template_path = get_template_path(&template.name);
     let template_string = serialize_template(template)?;
     write_base64_file(template_path, template_string)
 }
@@ -48,7 +48,7 @@ pub fn get_template(template_name: &str) -> Result<Template, Error> {
         let matched_template = get_templates()
             .clone()
             .into_iter()
-            .find(|temp| temp.metadata.name == *template_name);
+            .find(|temp| temp.name == *template_name);
         match matched_template {
             Some(t) => t,
             None => {
@@ -93,25 +93,25 @@ pub fn template_exists(template_name: &str) -> bool {
     get_template_path(template_name).exists()
 }
 
-pub fn get_remote_templates() -> Vec<Template> {
+/* pub fn get_remote_templates() -> Vec<Template> {
     get_templates_type(TemplateType::Remote)
 }
 
 pub fn get_local_templates() -> Vec<Template> {
     get_templates_type(TemplateType::Local)
-}
+} */
 
 pub fn is_empty() -> bool {
     total_templates() == 0
 }
 
-fn get_templates_type(temp_type: TemplateType) -> Vec<Template> {
+/* fn get_templates_type(temp_type: TemplateType) -> Vec<Template> {
     get_templates()
         .clone()
         .into_iter()
-        .filter(|temp| temp.metadata.template_type == temp_type)
+        .filter(|temp| temp.template_type == temp_type)
         .collect()
-}
+} */
 
 fn get_template_path(template_name: &str) -> PathBuf {
     Path::new(TEMPLATES_PATH)

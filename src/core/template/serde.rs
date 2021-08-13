@@ -1,5 +1,5 @@
 use crate::core::template::TempContent;
-use crate::core::template::{TempMetadata, TempPath, TempPathType, Template};
+use crate::core::template::{TempPath, TempPathType, Template, TemplateType};
 use crate::core::utils::errors::std_error;
 use crate::core::utils::path::{pathbuf_to_string, str_to_pathbuf};
 use base64;
@@ -9,47 +9,42 @@ use std::io::Error;
 
 #[derive(Serialize, Deserialize)]
 struct TempPreSerde {
-    metadata: String,
     name: String,
+    owner: String,
+    created_at: String,
+    template_type: TemplateType,
     paths: String,
     contents: String,
 }
 
 pub fn serialize_template(template: Template) -> Result<String, Error> {
-    let temp_pre_serde = {
-        //let metadata_as_string = base64::encode(serde_json::to_string(&template.metadata).unwrap());
-        let metadata_as_string = serde_json::to_string(&template.metadata).unwrap();
-        let paths_as_string = serialize_paths(template.paths);
-        let contents_as_string = serialize_contents(template.contents);
-        TempPreSerde {
-            metadata: metadata_as_string,
-            name: template.metadata.name,
-            paths: paths_as_string,
-            contents: contents_as_string,
-        }
-    };
-
+    let temp_pre_serde = temp_to_pre_serde(template);
     std_error(serde_json::to_string(&temp_pre_serde))
 }
 
 pub fn deserialize_template(temp_str: &str) -> Result<Template, Error> {
     let temp_pre_serde: TempPreSerde = std_error(serde_json::from_str(temp_str))?;
-
     let template = {
-        let metadata: TempMetadata = {
-            let meta_as_string_utf8 = temp_pre_serde.metadata;
-            serde_json::from_str(&meta_as_string_utf8).unwrap()
-        };
         let paths = deserialize_paths(temp_pre_serde.paths);
         let contents = deserialize_contents(temp_pre_serde.contents);
         Template {
-            metadata,
+            name: temp_pre_serde.name,
+            owner: temp_pre_serde.owner,
+            created_at: temp_pre_serde.created_at,
+            template_type: temp_pre_serde.template_type,
             paths,
             contents,
         }
     };
 
     Ok(template)
+}
+
+pub fn serialize_template_vec(temp_vec: Vec<Template>) -> Result<String, Error> {
+    let temps_pre_serde: Vec<TempPreSerde> =
+        temp_vec.into_iter().map(temp_to_pre_serde).collect();
+
+    std_error(serde_json::to_string(&temps_pre_serde))
 }
 
 // OPERATORS
@@ -105,6 +100,19 @@ pub fn serialize_paths(paths: Vec<TempPath>) -> String {
         .collect();
 
     paths_strings.join(";")
+}
+
+fn temp_to_pre_serde(template: Template) -> TempPreSerde {
+    let paths_as_string = serialize_paths(template.paths);
+    let contents_as_string = serialize_contents(template.contents);
+    TempPreSerde {
+        name: template.name,
+        owner: template.owner,
+        created_at: template.created_at,
+        template_type: template.template_type,
+        paths: paths_as_string,
+        contents: contents_as_string,
+    }
 }
 
 fn deserialize_temp_path_type(type_str: String) -> TempPathType {

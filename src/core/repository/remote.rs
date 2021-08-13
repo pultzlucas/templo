@@ -1,5 +1,5 @@
 use crate::core::requester::{build_request, request, HeaderValue, Method};
-use crate::core::template::{TempMetadata, Template};
+use crate::core::template::{Template, serde};
 use crate::core::user_account::get_user_account_data;
 use crate::core::utils::errors::{other_error, permission_denied_error, std_error};
 use serde_derive::{Deserialize, Serialize};
@@ -39,12 +39,12 @@ pub async fn publish_templates(templates: Vec<Template>) -> Result<String, Error
     let current_user = get_user_account_data()?;
 
     let req = {
-        let body = std_error(serde_json::to_string(&templates))?;
+        let body = serde::serialize_template_vec(templates)?;
         let mut req = build_request("/templates/pub", Method::POST, body);
         let headers = req.headers_mut();
         headers.insert(
             "authorization",
-            std_error(HeaderValue::from_str(current_user.key.as_str()))?,
+            std_error(HeaderValue::from_str(&current_user.key))?,
         );
         req
     };
@@ -97,11 +97,9 @@ pub async fn unpub_templates(temps_name: Vec<String>) -> Result<String, Error> {
     Ok(res_json.message)
 }
 
-pub async fn get_all_templates() -> Result<Vec<TempMetadata>, Error> {
+pub async fn get_all_templates() -> Result<Vec<Template>, Error> {
     let req = build_request("/templates", Method::GET, "".to_owned());
     let response = request(req).await?;
     let templates: Vec<Template> = std_error(serde_json::from_str(&response))?;
-    let temps_metadata: Vec<TempMetadata> =
-        templates.into_iter().map(|temp| temp.metadata).collect();
-    Ok(temps_metadata)
+    Ok(templates)
 }

@@ -1,5 +1,5 @@
-pub mod maker;
 pub mod generator;
+pub mod maker;
 pub mod miner;
 pub mod serde;
 
@@ -65,13 +65,27 @@ impl Display for TemplateType {
 
 #[derive(Debug, PartialEq, Deserialize, Serialize, Clone)]
 pub struct Template {
-    pub metadata: TempMetadata,
+    pub name: String,
+    pub owner: String,
+    pub created_at: String,
+    pub template_type: TemplateType,
     pub paths: Vec<TempPath>,
     pub contents: Vec<TempContent>,
 }
 
-#[derive(Debug, PartialEq, Deserialize, Serialize, Clone, Tabled)]
-pub struct TempMetadata {
+impl Template {
+    pub fn fmt(&self) -> TemplateDisplayInfo {
+        TemplateDisplayInfo {
+            name: self.name.clone(),
+            owner: self.owner.clone(),
+            created_at: self.created_at.clone(),
+            template_type: self.template_type.clone(),
+        }
+    }
+}
+
+#[derive(Tabled)]
+pub struct TemplateDisplayInfo {
     pub name: String,
     pub owner: String,
     pub created_at: String,
