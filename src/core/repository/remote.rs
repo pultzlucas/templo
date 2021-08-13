@@ -1,5 +1,8 @@
 use crate::core::requester::{build_request, request, HeaderValue, Method};
-use crate::core::template::{serde::{deserialize, serialize}, Template};
+use crate::core::template::{
+    serde::{deserialize, serialize, TempPreSerde},
+    Template,
+};
 use crate::core::user_account::get_user_account_data;
 use crate::core::utils::errors::{other_error, permission_denied_error, std_error};
 use serde_derive::{Deserialize, Serialize};
@@ -18,9 +21,8 @@ struct GetRequestBody {
 
 #[derive(Deserialize, Serialize, Clone, Debug)]
 struct GetResponseBody {
-    message: String,
-    getted: bool,
-    templates: Vec<Template>,
+    message: Option<String>,
+    templates: Vec<TempPreSerde>,
 }
 
 #[derive(Deserialize, Serialize)]
@@ -59,12 +61,15 @@ pub async fn publish_templates(templates: Vec<Template>) -> Result<String, Error
     Ok(response.message)
 }
 
-pub async fn get_templates(temps_name: Vec<String>) -> Result<Vec<Template>, Error> {
-    let body_string: String = std_error(serde_json::to_string(&temps_name))?;
+pub async fn get_templates(templates_name: Vec<String>) -> Result<Vec<Template>, Error> {
+    let body = GetRequestBody { templates_name };
+    let body_string = std_error(serde_json::to_string(&body))?;
     let req = build_request("/templates/get", Method::GET, body_string);
     let res_string = request(req).await?;
     let res: GetResponseBody = std_error(serde_json::from_str(&res_string))?;
-    Ok(res.templates)
+    let templates_string = serde_json::to_string(&res.templates).unwrap();
+    let templates = deserialize::to_template_vec(templates_string)?;
+    Ok(templates)
 }
 
 pub async fn unpub_templates(temps_name: Vec<String>) -> Result<String, Error> {

@@ -8,8 +8,8 @@ use serde_derive::{Deserialize, Serialize};
 use serde_json;
 use std::io::Error;
 
-#[derive(Serialize, Deserialize)]
-struct TempPreSerde {
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct TempPreSerde {
     name: String,
     owner: String,
     created_at: String,
