@@ -1,11 +1,8 @@
 use crate::{
     cli::output::messages::error::{INVALID_TEMPLATE_NAME, NOT_FOUND_USER_AUTH},
-    core::{
-        repository::remote,
-        user_account::user_auth_exists,
-        utils::errors::{invalid_input_error, not_found_error},
-    },
+    core::{repository::remote, user_account::user_auth_exists},
     paintln,
+    utils::errors::{invalid_input_error, not_found_error},
 };
 use serde_derive::{Deserialize, Serialize};
 use std::io::Error;

@@ -2,9 +2,10 @@ extern crate tokio;
 mod cli;
 mod commands;
 mod core;
+mod utils;
 
 use commands::*;
-use crate::core::utils::errors::invalid_input_error;
+use crate::utils::errors::invalid_input_error;
 use std::env;
 
 #[tokio::main]

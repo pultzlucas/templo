@@ -1,5 +1,5 @@
 use super::{TempContent, TempPath, TempPathType};
-use crate::core::utils::path::{pathbuf_to_string, valid_directory_path, remove_dir_prefix};
+use crate::utils::path::{pathbuf_to_string, valid_directory_path, remove_dir_prefix};
 use fs_tree::FsTreeBuilder;
 use std::{fs, io::Error};
 

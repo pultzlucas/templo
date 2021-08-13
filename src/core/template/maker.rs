@@ -1,7 +1,7 @@
 use super::{miner, TempContent, TempPath, Template, TemplateType};
 use crate::core::user_account::get_user_account_data;
-use crate::core::utils::date::get_date_now_string;
-use crate::core::utils::path::{format_path_namespace, pathbuf_to_string, remove_dir_prefix};
+use crate::utils::date::get_date_now_string;
+use crate::utils::path::{format_path_namespace, pathbuf_to_string, remove_dir_prefix};
 use std::io::Error;
 
 #[derive(Debug, PartialEq)]

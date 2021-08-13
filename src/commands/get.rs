@@ -2,8 +2,8 @@ use crate::{
     cli::output::messages::error::{INVALID_TEMPLATE_NAME, TEMPLATE_ALREADY_EXISTS},
     core::{
         repository::{local, remote},
-        utils::errors::{already_exists_error, invalid_input_error},
     },
+    utils::errors::{already_exists_error, invalid_input_error},
     paintln,
 };
 use std::{io::Error, str, time::Instant};

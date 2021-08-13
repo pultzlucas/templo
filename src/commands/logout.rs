@@ -1,5 +1,5 @@
 use crate::core::user_account::{logout_current, user_auth_exists};
-use crate::core::utils::errors::not_found_error;
+use crate::utils::errors::not_found_error;
 use std::io::Error;
 
 pub fn logout() -> Result<(), Error> {

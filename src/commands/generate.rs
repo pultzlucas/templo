@@ -1,5 +1,5 @@
 use crate::core::template::generator::gen_template;
-use crate::core::utils::errors::invalid_input_error;
+use crate::utils::errors::invalid_input_error;
 use crate::{
     cli::output::messages::error::{
         INVALID_DIRECTORY_PATH_NAME, INVALID_DIRECTORY_PATH_TYPE, INVALID_TEMPLATE_NAME,

@@ -1,4 +1,4 @@
-use crate::core::utils::errors::already_exists_error;
+use crate::utils::errors::already_exists_error;
 use crate::{
     cli::input::{get, InputType},
     core::user_account::{authenticate_user_account, save_user_account},

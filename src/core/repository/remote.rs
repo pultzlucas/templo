@@ -4,7 +4,7 @@ use crate::core::template::{
     Template,
 };
 use crate::core::user_account::get_user_account_data;
-use crate::core::utils::errors::{other_error, permission_denied_error, std_error};
+use crate::utils::errors::{other_error, permission_denied_error, std_error};
 use serde_derive::{Deserialize, Serialize};
 use std::io::Error;
 

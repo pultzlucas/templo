@@ -5,8 +5,8 @@ use crate::{
         repository::{local, remote},
         template::Template,
         user_account::{UserPermissions, user_auth_exists},
-        utils::errors::{invalid_input_error, not_found_error, permission_denied_error},
     },
+    utils::errors::{invalid_input_error, not_found_error, permission_denied_error},
 };
 use std::io::Error;
 use std::time::Instant;

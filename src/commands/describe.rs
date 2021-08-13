@@ -1,5 +1,5 @@
-use crate::core::utils::errors::invalid_input_error;
-use crate::core::utils::path::pathbuf_to_string;
+use crate::utils::errors::invalid_input_error;
+use crate::utils::path::pathbuf_to_string;
 use crate::{cli::output::messages::error::INVALID_TEMPLATE_NAME, core::repository::local};
 use std::io::Error;
 

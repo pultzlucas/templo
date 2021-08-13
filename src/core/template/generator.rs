@@ -1,7 +1,7 @@
 use super::Template;
 use crate::core::template::{TempContent, TempPath, TempPathType};
 use crate::{
-    core::utils::path::{format_path_namespace, pathbuf_to_string, str_to_pathbuf},
+    utils::path::{format_path_namespace, pathbuf_to_string, str_to_pathbuf},
     paint, paintln,
 };
 use std::{

@@ -3,7 +3,7 @@ pub mod paths;
 #[cfg(test)]
 mod tests;
 
-use crate::core::utils::errors::std_error;
+use crate::utils::errors::std_error;
 use std::{fs, io::Error, path::Path};
 
 pub fn write_base64_file<P: AsRef<Path>>(path: P, content: String) -> Result<(), Error> {

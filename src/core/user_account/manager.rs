@@ -1,5 +1,5 @@
 use super::UserAccountData;
-use crate::core::utils::errors::std_error;
+use crate::utils::errors::std_error;
 use crate::core::{
     file_system::{paths::USER_ACCOUNT_AUTH_PATH, write_base64_file, read_base64_file},
     requester::{build_request, request, Method},

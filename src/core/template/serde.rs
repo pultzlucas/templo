@@ -1,8 +1,8 @@
 use crate::core::template::TempContent;
 use crate::core::template::{TempPath, TempPathType, Template, TemplateType};
-use crate::core::utils::errors::std_error;
-use crate::core::utils::string::{split_by, decode_base64};
-use crate::core::utils::path::{pathbuf_to_string, str_to_pathbuf};
+use crate::utils::errors::std_error;
+use crate::utils::string::{split_by, decode_base64};
+use crate::utils::path::{pathbuf_to_string, str_to_pathbuf};
 use base64;
 use serde_derive::{Deserialize, Serialize};
 use serde_json;

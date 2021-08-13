@@ -6,8 +6,8 @@ use crate::{
         repository::local,
         template::maker::make_template,
         user_account::user_auth_exists,
-        utils::errors::{already_exists_error, invalid_input_error, not_found_error},
     },
+    utils::errors::{already_exists_error, invalid_input_error, not_found_error},
 };
 
 use std::{io::Error, path::Path, time::Instant};

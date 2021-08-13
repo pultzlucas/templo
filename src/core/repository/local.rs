@@ -3,8 +3,8 @@ use crate::core::{
     file_system::{paths::TEMPLATES_PATH, read_base64_file, write_base64_file},
     template::Template,
     user_account::UserPermissions,
-    utils::errors::{not_found_error, permission_denied_error},
 };
+use crate::utils::errors::{not_found_error, permission_denied_error};
 use std::{
     fs,
     io::Error,

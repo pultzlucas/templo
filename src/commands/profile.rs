@@ -1,4 +1,4 @@
-use crate::core::utils::errors::not_found_error;
+use crate::utils::errors::not_found_error;
 use crate::{
     cli::output::messages::error::NOT_FOUND_USER_AUTH,
     core::user_account::{get_user_account_data, user_auth_exists},
