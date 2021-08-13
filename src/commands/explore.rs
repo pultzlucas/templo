@@ -9,6 +9,12 @@ pub async fn explore() -> Result<(), Error> {
 
     let start = Instant::now(); // start timing process
     let templates = remote::get_all_templates().await?;
+
+    if templates.len() == 0 {
+        println!("No there public templates.");
+        return Ok(());
+    }
+
     let templates_display: Vec<TemplateDisplayInfo> = templates
         .into_iter()
         .map(|temp: Template| temp.fmt())
