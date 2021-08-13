@@ -1,4 +1,4 @@
-use crate::core::template::serde::{deserialize_template, serialize_template};
+use crate::core::template::serde::{deserialize, serialize};
 use crate::core::{
     file_system::{paths::TEMPLATES_PATH, read_base64_file, write_base64_file},
     template::Template,
@@ -26,7 +26,7 @@ pub fn create() -> Result<(), Error> {
 
 pub fn save_template(template: Template) -> Result<(), Error> {
     let template_path = get_template_path(&template.name);
-    let template_string = serialize_template(template)?;
+    let template_string = serialize::template(template)?;
     write_base64_file(template_path, template_string)
 }
 
@@ -35,7 +35,7 @@ pub fn get_templates() -> Vec<Template> {
         .unwrap()
         .map(|template| template.map(|e| e.path()).unwrap())
         .map(|file| read_base64_file(file).unwrap())
-        .map(|temp_string| deserialize_template(&temp_string).unwrap())
+        .map(|temp_string| deserialize::template(&temp_string).unwrap())
         .collect()
 }
 
