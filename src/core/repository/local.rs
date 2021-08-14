@@ -116,5 +116,5 @@ pub fn is_empty() -> bool {
 fn get_template_path(template_name: &str) -> PathBuf {
     Path::new(TEMPLATES_PATH)
         .join(template_name)
-        .with_extension("tmp")
+        .with_extension("tmpt")
 }

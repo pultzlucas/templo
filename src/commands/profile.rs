@@ -5,7 +5,7 @@ use crate::{
 };
 use std::io::Error;
 
-pub fn profile() -> Result<(), Error> {
+pub fn run() -> Result<(), Error> {
     if !user_auth_exists() {
         return Err(not_found_error(NOT_FOUND_USER_AUTH));
     }

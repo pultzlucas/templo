@@ -8,7 +8,7 @@ use crate::{
 };
 use std::{fs, io::Error, path::Path, time::Instant};
 
-pub fn generate(args: &[String]) -> Result<(), Error> {
+pub fn run(args: &[String]) -> Result<(), Error> {
     local::create()?;
 
     if args.len() < 1 {

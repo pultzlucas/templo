@@ -3,7 +3,7 @@ use crate::core::template::{Template, TemplateDisplayInfo};
 use std::io::Error;
 use tabled::{Disable, Style, Table};
 
-pub fn repository() -> Result<(), Error> {
+pub fn run() -> Result<(), Error> {
     local::create()?;
 
     if local::is_empty() {

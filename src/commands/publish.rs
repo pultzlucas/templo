@@ -11,7 +11,7 @@ use crate::{
 use std::io::Error;
 use std::time::Instant;
 
-pub async fn publish(args: &[String]) -> Result<(), Error> {
+pub async fn run(args: &[String]) -> Result<(), Error> {
     local::create()?;
     if !user_auth_exists() {
         return Err(not_found_error(NOT_FOUND_USER_AUTH));

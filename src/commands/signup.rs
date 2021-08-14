@@ -9,7 +9,7 @@ use std::time::Instant;
 
 type RegisterFields = (String, String, String, String);
 
-pub async fn signup() -> Result<(), Error> {
+pub async fn run() -> Result<(), Error> {
     let user_account = {
         let inputs = (
             get("Username: ", InputType::Text)?,

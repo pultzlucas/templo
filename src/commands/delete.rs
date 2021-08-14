@@ -7,7 +7,7 @@ use std::{
     time::Instant,
 };
 
-pub fn delete(args: &[String]) -> Result<(), Error> {
+pub fn run(args: &[String]) -> Result<(), Error> {
     local::create()?;
 
     if !user_auth_exists() {

@@ -13,7 +13,7 @@ struct Version {
     version: &'static str,
 }
 
-pub fn help() -> Result<(), Error> {
+pub fn run() -> Result<(), Error> {
     print!(
         "{}",
         Table::new(&[Version { version: VERSION }]).with(Style::pseudo())

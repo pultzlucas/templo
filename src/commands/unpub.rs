@@ -14,7 +14,7 @@ struct UnpubRequestBody {
     user: String,
 }
 
-pub async fn unpub(args: &[String]) -> Result<(), Error> {
+pub async fn run(args: &[String]) -> Result<(), Error> {
     if !user_auth_exists() {
         return Err(not_found_error(NOT_FOUND_USER_AUTH));
     }

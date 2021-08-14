@@ -14,29 +14,29 @@ async fn main() {
     let args: &[String] = if env.len() > 2 { &env[2..] } else { &[] };
 
     if env.len() == 1 {
-        prottern();
+        prottern::run();
         return;
     }
 
     let output = {
         let command = env[1].as_str();
         match command {
-            "save" => save(args),
-            "generate" | "gen" => generate(args),
-            "delete" | "del" => delete(args),
-            "repo" | "repository" => repository(),
-            "describe" | "desc" => describe(args),
-            "profile" => profile(),
-            "help" | "h" => help(),
-            "version" | "v" => version(),
-            "logout" => logout(),
-            "documentation" | "docs" => documentation(),
-            "signup" => signup().await,
-            "login" => login().await,
-            "pub" => publish(args).await,
-            "unpub" => unpub(args).await,
-            "get" => get(args).await,
-            "explore" => explore().await,
+            "save" => save::run(args),
+            "generate" | "gen" => generate::run(args),
+            "delete" | "del" => delete::run(args),
+            "repo" | "repository" => repository::run(),
+            "describe" | "desc" => describe::run(args),
+            "profile" => profile::run(),
+            "help" | "h" => help::run(),
+            "version" | "v" => version::run(),
+            "logout" => logout::run(),
+            "documentation" | "docs" => documentation::run(),
+            "signup" => signup::run().await,
+            "login" => login::run().await,
+            "pub" => publish::run(args).await,
+            "unpub" => unpub::run(args).await,
+            "get" => get::run(args).await,
+            "explore" => explore::run().await,
             _ => Err(invalid_input_error(&format!("Invalid command \"{}\".", command))),
         }
     };

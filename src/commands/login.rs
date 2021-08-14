@@ -8,7 +8,7 @@ use crate::{
 use std::io::Error;
 use std::time::Instant;
 
-pub async fn login() -> Result<(), Error> {
+pub async fn run() -> Result<(), Error> {
     let (username, password) = (
         get("Username: ", InputType::Text).unwrap(),
         get("Password: ", InputType::Password).unwrap(),

@@ -3,7 +3,7 @@ use crate::utils::path::pathbuf_to_string;
 use crate::{cli::output::messages::error::INVALID_TEMPLATE_NAME, core::repository::local};
 use std::io::Error;
 
-pub fn describe(args: &[String]) -> Result<(), Error> {
+pub fn run(args: &[String]) -> Result<(), Error> {
     local::create()?;
 
     if args.len() < 1 {

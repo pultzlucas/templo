@@ -8,6 +8,7 @@ mod tests;
 
 use serde_derive::{Deserialize, Serialize};
 use std::fmt::{Display, Formatter, Result};
+//use std::ops::Deref;
 use std::path::PathBuf;
 use tabled::Tabled;
 
@@ -84,6 +85,17 @@ impl Template {
     }
 }
 
+/* pub struct TemplateRemote {
+    template: Template, 
+}
+
+impl Deref for TemplateRemote {
+    type Target = Template;
+    fn deref(&self) -> &Self::Target {
+        &self.template
+    }
+}
+ */
 #[derive(Tabled)]
 pub struct TemplateDisplayInfo {
     pub name: String,

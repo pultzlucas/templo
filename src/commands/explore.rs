@@ -4,7 +4,7 @@ use std::io::Error;
 use std::time::Instant;
 use tabled::{Disable, Style, Table};
 
-pub async fn explore() -> Result<(), Error> {
+pub async fn run() -> Result<(), Error> {
     paintln!("{gray}", "[Searching Templates]");
 
     let start = Instant::now(); // start timing process

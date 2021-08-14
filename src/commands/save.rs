@@ -12,7 +12,7 @@ use crate::{
 
 use std::{io::Error, path::Path, time::Instant};
 
-pub fn save(args: &[String]) -> Result<(), Error> {
+pub fn run(args: &[String]) -> Result<(), Error> {
     local::create()?;
 
     if !user_auth_exists() {

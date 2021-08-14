@@ -8,7 +8,7 @@ use crate::{
 };
 use std::{io::Error, str, time::Instant};
 
-pub async fn get(args: &[String]) -> Result<(), Error> {
+pub async fn run(args: &[String]) -> Result<(), Error> {
     local::create()?;
 
     if args.len() < 1 {

@@ -5,7 +5,7 @@ use std::time::Instant;
 
 const DOCS_URL: &'static str = "https://github.com/Lucas-Lopes-Pultz/prottern-docs";
 
-pub fn documentation() -> Result<(), Error> {
+pub fn run() -> Result<(), Error> {
     let start = Instant::now(); // start timing process
     paintln!("{gray}", "[Opening browser]");
 

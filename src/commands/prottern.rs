@@ -11,7 +11,7 @@ const WELCOME_STRING: &'static str = r#"
 
 "#;
 
-pub fn prottern() {
+pub fn run() {
     print!("{}", WELCOME_STRING);
 
     if !local::exists() {
