@@ -1,8 +1,8 @@
 use crate::core::template::TempContent;
 use crate::core::template::{TempPath, TempPathType, Template, TemplateType};
 use crate::utils::errors::std_error;
-use crate::utils::string::{split_by, decode_base64};
-use crate::utils::path::{pathbuf_to_string, str_to_pathbuf};
+use crate::utils::path::{format_path_namespace, pathbuf_to_string, str_to_pathbuf};
+use crate::utils::string::{decode_base64, split_by};
 use base64;
 use serde_derive::{Deserialize, Serialize};
 use serde_json;
@@ -27,15 +27,21 @@ pub mod serialize {
     }
 
     pub fn template_vec(temp_vec: Vec<Template>) -> Result<String, Error> {
-        let temps_pre_serde: Vec<TempPreSerde> = temp_vec.into_iter().map(temp_to_pre_serde).collect();
+        let temps_pre_serde: Vec<TempPreSerde> =
+            temp_vec.into_iter().map(temp_to_pre_serde).collect();
         std_error(serde_json::to_string(&temps_pre_serde))
     }
 
     pub fn template_contents(contents: Vec<TempContent>) -> String {
         let contents_strings: Vec<String> = contents
             .into_iter()
+            .map(|content: TempContent| TempContent {
+                filename: pathbuf_to_string(format_path_namespace(str_to_pathbuf(
+                    &content.filename,
+                ))),
+                text: base64::encode(content.text),
+            })
             .map(|content: TempContent| [content.filename, content.text].join("|"))
-            .map(base64::encode)
             .collect();
         contents_strings.join(";")
     }
@@ -53,22 +59,17 @@ pub mod serialize {
                 panic!("Invalid path type!");
             })
             .collect();
-    
         paths_strings.join(";")
     }
 }
 
 pub mod deserialize {
     use super::*;
-    
     pub fn template(temp_str: &str) -> Result<Template, Error> {
         let temp_pre_serde: TempPreSerde = std_error(serde_json::from_str(temp_str))?;
         let template = temp_pre_serde_to_temp(temp_pre_serde);
-    
         Ok(template)
     }
-    
-    
     pub fn to_template_vec(temps_string: String) -> Result<Vec<Template>, Error> {
         let temps_pre_serde: Vec<TempPreSerde> = std_error(serde_json::from_str(&temps_string))?;
         let templates: Vec<Template> = temps_pre_serde
@@ -77,21 +78,18 @@ pub mod deserialize {
             .collect();
         Ok(templates)
     }
-    
     pub fn template_contents(content_string: String) -> Vec<TempContent> {
         split_by(content_string, ";")
             .into_iter()
-            .map(|content_b64| decode_base64(content_b64))
             .map(|content| {
                 let content_info = split_by(content, "|");
                 TempContent {
                     filename: content_info[0].clone(),
-                    text: content_info[1].clone(),
+                    text: decode_base64(content_info[1].clone()),
                 }
             })
             .collect()
     }
-    
     pub fn template_paths(paths_string: String) -> Vec<TempPath> {
         split_by(paths_string, ";")
             .into_iter()
@@ -109,15 +107,12 @@ pub mod deserialize {
         if type_str == "File" {
             return TempPathType::File;
         }
-    
         if type_str == "Dir" {
             return TempPathType::Dir;
         }
-    
         panic!("Invalid path type!");
     }
 }
-
 
 fn temp_pre_serde_to_temp(temp_pre_serde: TempPreSerde) -> Template {
     let paths = deserialize::template_paths(temp_pre_serde.paths);

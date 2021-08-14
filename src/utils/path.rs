@@ -12,9 +12,10 @@ pub fn str_to_pathbuf(path: &str) -> PathBuf {
 }
 
 pub fn valid_directory_path(directory: &str) -> Result<(), Error> {
-    if directory.contains(r"\") || directory.ends_with("/") {
-        return Err(invalid_input_error("Invalid directory path."));
+    if directory.contains(r"\") {
+        return Err(invalid_input_error("Invalid directory path syntax."));
     }
+
     Ok(())
 }
 
