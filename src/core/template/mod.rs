@@ -16,7 +16,7 @@ use tabled::Tabled;
 #[derive(Debug, PartialEq, Deserialize, Serialize, Clone)]
 pub struct Template {
     pub name: String,
-    pub owner: String,
+    pub created_by: String,
     pub created_at: String,
     pub template_type: TemplateType,
     pub paths: Vec<TempPath>,
@@ -31,14 +31,14 @@ pub struct TempPath {
 
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 pub struct TempContent {
-    pub filename: String,
+    pub file_path: String,
     pub text: String,
 }
 
 #[derive(Tabled)]
 pub struct TemplateDisplayInfo {
     pub name: String,
-    pub owner: String,
+    pub created_by: String,
     pub created_at: String,
     pub template_type: TemplateType,
 }
@@ -73,23 +73,9 @@ impl TempPath {
 }
 
 impl TempContent {
-    pub fn new(filename: String, text: String) -> Self {
-        Self { filename, text }
+    pub fn new(file_path: String, text: String) -> Self {
+        Self { file_path, text }
     }
-
-   /*  pub fn encode_text(&self) -> Self {
-        Self {
-            filename: self.filename.clone(),
-            text: base64::encode(self.text.clone()),
-        }
-    }
-
-    pub fn decode_text(&self) -> Self {
-        Self {
-            filename: self.filename.clone(),
-            text: decode_base64(self.text.clone()).expect("Error when decode template content"),
-        }
-    } */
 }
 
 impl Display for TemplateType {
@@ -106,7 +92,7 @@ impl Template {
     pub fn fmt(&self) -> TemplateDisplayInfo {
         TemplateDisplayInfo {
             name: self.name.clone(),
-            owner: self.owner.clone(),
+            created_by: self.created_by.clone(),
             created_at: self.created_at.clone(),
             template_type: self.template_type.clone(),
         }

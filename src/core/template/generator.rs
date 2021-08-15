@@ -50,7 +50,7 @@ fn create_path(path: TempPath, directory: &Path) -> Result<(), Error> {
 
 fn write_contents(contents: Vec<TempContent>, directory: &Path) -> Result<(), Error> {
     for content in contents.into_iter() {
-        let file_path = get_real_path(directory, str_to_pathbuf(&content.filename));
+        let file_path = get_real_path(directory, str_to_pathbuf(&content.file_path));
         if file_path.exists() {
             let text = decode_base64(content.text)?;
             fs::write(&file_path, text)?;

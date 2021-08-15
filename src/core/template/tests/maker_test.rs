@@ -34,7 +34,7 @@ fn it_should_return_a_valid_template_data() {
                 },
             ],
             contents: vec![crate::core::template::TempContent {
-                filename: "file_text.txt".to_string(),
+                file_path: "file_text.txt".to_string(),
                 text: "Lorem ipsum dolor\r\n\r\n123123123123\r\n\r\n{(-@#$%¨¨&*)}".to_string()
             }]
         }

@@ -46,7 +46,7 @@ fn it_should_return_all_tree_files_only_files() {
     assert_eq!(
         contents,
         vec![TempContent {
-            filename: "file_text.txt".to_string(),
+            file_path: "file_text.txt".to_string(),
             text: "Lorem ipsum dolor\r\n\r\n123123123123\r\n\r\n{(-@#$%¨¨&*)}".to_string()
         }]
     )

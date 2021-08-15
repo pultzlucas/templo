@@ -11,11 +11,11 @@ pub struct TempData {
 }
 
 pub fn make_template(temp_name: String, dir_path: &str) -> Result<Template, Error> {
-    let (name, owner, created_at, template_type) = make_template_metadata(temp_name)?;
+    let (name, created_by, created_at, template_type) = make_template_metadata(temp_name)?;
     let data = make_template_data(dir_path)?;
     Ok(Template {
         name,
-        owner,
+        created_by,
         created_at,
         template_type,
         paths: data.paths,
