@@ -25,7 +25,7 @@ pub struct Template {
 
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 pub struct TempPath {
-    pub buf: PathBuf,
+    pub path: PathBuf,
     pub path_type: TempPathType,
 }
 
@@ -62,7 +62,7 @@ pub enum TempPathType {
 impl TempPath {
     pub fn new(path: PathBuf) -> Self {
         Self {
-            buf: path.clone(),
+            path: path.clone(),
             path_type: if path.is_file() {
                 TempPathType::File
             } else {

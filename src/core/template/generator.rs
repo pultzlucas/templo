@@ -27,22 +27,22 @@ pub fn gen_template(template: Template, directory: &Path) -> Result<(), Error> {
 
 fn create_path(path: TempPath, directory: &Path) -> Result<(), Error> {
     let real_path = TempPath {
-        buf: get_real_path(directory, path.buf),
+        path: get_real_path(directory, path.path),
         path_type: path.path_type,
     };
 
     if real_path.path_type == TempPathType::File {
-        fs::write(&real_path.buf, "")?;
+        fs::write(&real_path.path, "")?;
         paint!("{gray}", "file: ");
     }
     if real_path.path_type == TempPathType::Dir {
-        fs::create_dir(&real_path.buf)?;
+        fs::create_dir(&real_path.path)?;
         paint!("{gray}", "dir: ");
     }
 
     println!(
         "{}",
-        pathbuf_to_string(format_path_namespace(real_path.buf))
+        pathbuf_to_string(format_path_namespace(real_path.path))
     );
 
     Ok(())

@@ -21,9 +21,9 @@ pub fn valid_directory_path(directory: &str) -> Result<(), Error> {
 
 pub fn remove_dir_prefix(path: TempPath, directory: &str) -> Result<TempPath, Error> {
     let prefix = format!("{}/", directory);
-    let new_path = std_error(path.buf.strip_prefix(prefix))?.to_path_buf();
+    let new_path = std_error(path.path.strip_prefix(prefix))?.to_path_buf();
     Ok(TempPath {
-        buf: new_path,
+        path: new_path,
         path_type: path.path_type,
     })
 }

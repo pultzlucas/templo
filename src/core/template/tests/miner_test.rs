@@ -12,23 +12,23 @@ fn it_should_return_the_tree_files_only_flatted() {
         flat,
         vec![
             TempPath {
-                buf: Path::new("./src/core/tests/tree_files_only\\.file4").to_path_buf(),
+                path: Path::new("./src/core/tests/tree_files_only\\.file4").to_path_buf(),
                 path_type: TempPathType::File
             },
             TempPath {
-                buf: Path::new("./src/core/tests/tree_files_only\\file-2").to_path_buf(),
+                path: Path::new("./src/core/tests/tree_files_only\\file-2").to_path_buf(),
                 path_type: TempPathType::File
             },
             TempPath {
-                buf: Path::new("./src/core/tests/tree_files_only\\file1").to_path_buf(),
+                path: Path::new("./src/core/tests/tree_files_only\\file1").to_path_buf(),
                 path_type: TempPathType::File
             },
             TempPath {
-                buf: Path::new("./src/core/tests/tree_files_only\\file_3").to_path_buf(),
+                path: Path::new("./src/core/tests/tree_files_only\\file_3").to_path_buf(),
                 path_type: TempPathType::File
             },
             TempPath {
-                buf: Path::new("./src/core/tests/tree_files_only\\file_text.txt").to_path_buf(),
+                path: Path::new("./src/core/tests/tree_files_only\\file_text.txt").to_path_buf(),
                 path_type: TempPathType::File
             },
         ]

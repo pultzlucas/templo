@@ -34,11 +34,11 @@ pub fn make_template_data(dir_path: &str) -> Result<TempData, Error> {
     let formatted_paths: Vec<TempPath> = raw_paths
         .into_iter()
         .map(|path| TempPath {
-            buf: format_path_namespace(path.buf),
+            path: format_path_namespace(path.path),
             path_type: path.path_type,
         })
         .map(|path| remove_dir_prefix(path, dir_path).unwrap())
-        .filter(|path| pathbuf_to_string(path.buf.clone()) != "")
+        .filter(|path| pathbuf_to_string(path.path.clone()) != "")
         .collect();
     Ok(TempData {
         paths: formatted_paths,

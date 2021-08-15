@@ -20,8 +20,8 @@ pub fn mine_files_from_paths(paths: Vec<TempPath>, directory: &str) -> Vec<TempC
         .filter(|path| path.path_type == TempPathType::File)
         .map(|file| {
             let file_path: TempPath = remove_dir_prefix(file.clone(), directory).unwrap();
-            let filename = pathbuf_to_string(format_path_namespace(file_path.buf));
-            let text = fs::read_to_string(file.buf).expect("Error when read file content");
+            let filename = pathbuf_to_string(format_path_namespace(file_path.path));
+            let text = fs::read_to_string(file.path).expect("Error when read file content");
             TempContent::new(filename, base64::encode(text))
         })
         .collect()

@@ -13,23 +13,23 @@ fn it_should_return_a_valid_template_data() {
         TempData {
             paths: vec![
                 TempPath {
-                    buf: Path::new(".file4").to_path_buf(),
+                    path: Path::new(".file4").to_path_buf(),
                     path_type: TempPathType::File
                 },
                 TempPath {
-                    buf: Path::new("file-2").to_path_buf(),
+                    path: Path::new("file-2").to_path_buf(),
                     path_type: TempPathType::File
                 },
                 TempPath {
-                    buf: Path::new("file1").to_path_buf(),
+                    path: Path::new("file1").to_path_buf(),
                     path_type: TempPathType::File
                 },
                 TempPath {
-                    buf: Path::new("file_3").to_path_buf(),
+                    path: Path::new("file_3").to_path_buf(),
                     path_type: TempPathType::File
                 },
                 TempPath {
-                    buf: Path::new("file_text.txt").to_path_buf(),
+                    path: Path::new("file_text.txt").to_path_buf(),
                     path_type: TempPathType::File
                 },
             ],
