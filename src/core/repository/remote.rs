@@ -1,11 +1,9 @@
 use crate::core::requester::{build_request, request, HeaderValue, Method};
-use crate::core::template::{
-    serde::{deserialize, serialize, TempPreSerde},
-    Template,
-};
+use crate::core::template::Template;
 use crate::core::user_account::get_user_account_data;
 use crate::utils::errors::{other_error, permission_denied_error, std_error};
 use serde_derive::{Deserialize, Serialize};
+use serde_json;
 use std::io::Error;
 
 #[derive(Deserialize, Serialize)]
@@ -22,7 +20,7 @@ struct GetRequestBody {
 #[derive(Deserialize, Serialize, Clone, Debug)]
 struct GetResponseBody {
     message: Option<String>,
-    templates: Vec<TempPreSerde>,
+    templates: Vec<Template>,
 }
 
 #[derive(Deserialize, Serialize)]
@@ -41,7 +39,7 @@ pub async fn publish_templates(templates: Vec<Template>) -> Result<String, Error
     let current_user = get_user_account_data()?;
 
     let req = {
-        let body = serialize::template_vec(templates)?;
+        let body = serde_json::to_string(&templates)?;
         let mut req = build_request("/templates/pub", Method::POST, body);
         let headers = req.headers_mut();
         headers.insert(
@@ -62,13 +60,12 @@ pub async fn publish_templates(templates: Vec<Template>) -> Result<String, Error
 }
 
 pub async fn get_templates(templates_name: Vec<String>) -> Result<Vec<Template>, Error> {
-    let body = GetRequestBody { templates_name };
-    let body_string = std_error(serde_json::to_string(&body))?;
-    let req = build_request("/templates/get", Method::GET, body_string);
+    let body = std_error(serde_json::to_string(&GetRequestBody { templates_name }))?;
+    let req = build_request("/templates/get", Method::GET, body);
     let res_string = request(req).await?;
     let res: GetResponseBody = std_error(serde_json::from_str(&res_string))?;
     let templates_string = serde_json::to_string(&res.templates).unwrap();
-    let templates = deserialize::to_template_vec(templates_string)?;
+    let templates: Vec<Template> = std_error(serde_json::from_str(&templates_string))?;
     Ok(templates)
 }
 
@@ -105,6 +102,6 @@ pub async fn unpub_templates(temps_name: Vec<String>) -> Result<String, Error> {
 pub async fn get_all_templates() -> Result<Vec<Template>, Error> {
     let req = build_request("/templates", Method::GET, "".to_owned());
     let response = request(req).await?;
-    let templates = deserialize::to_template_vec(response)?;
+    let templates: Vec<Template> = std_error(serde_json::from_str(&response))?;
     Ok(templates)
 }

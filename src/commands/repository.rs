@@ -11,7 +11,7 @@ pub fn run() -> Result<(), Error> {
         return Ok(());
     }
 
-    let templates = local::get_templates();
+    let templates = local::get_templates()?;
     let templates_display: Vec<TemplateDisplayInfo> = templates
         .into_iter()
         .map(|temp: Template| temp.fmt())

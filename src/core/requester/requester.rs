@@ -1,4 +1,3 @@
-use crate::core::secrets::BASE_URL;
 use hyper::{body::to_bytes, Body, Client, Method, Request as Req};
 use hyper_tls::HttpsConnector;
 use serde_derive::{Deserialize, Serialize};
@@ -8,6 +7,9 @@ use std::io::{Error, ErrorKind};
 struct NotFoundResponse {
     message: String,
 }
+
+//const BASE_URL: &str = "https://protternio.herokuapp.com"; 
+const BASE_URL: &str = "http://localhost:8081"; 
 
 pub fn build_request(route: &str, method: Method, body: String) -> Req<hyper::Body> {
     let url = format!("{}{}", BASE_URL, route);

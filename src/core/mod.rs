@@ -4,4 +4,3 @@ pub mod template;
 pub mod user_account;
 pub mod requester;
 pub mod info;
-pub mod secrets;

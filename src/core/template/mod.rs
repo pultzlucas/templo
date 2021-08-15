@@ -1,7 +1,6 @@
 pub mod generator;
 pub mod maker;
 pub mod miner;
-pub mod serde;
 
 #[cfg(test)]
 mod tests;
@@ -12,10 +11,16 @@ use std::fmt::{Display, Formatter, Result};
 use std::path::PathBuf;
 use tabled::Tabled;
 
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
-pub enum TempPathType {
-    File,
-    Dir,
+// STRUCTS
+
+#[derive(Debug, PartialEq, Deserialize, Serialize, Clone)]
+pub struct Template {
+    pub name: String,
+    pub owner: String,
+    pub created_at: String,
+    pub template_type: TemplateType,
+    pub paths: Vec<TempPath>,
+    pub contents: Vec<TempContent>,
 }
 
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
@@ -23,6 +28,36 @@ pub struct TempPath {
     pub buf: PathBuf,
     pub path_type: TempPathType,
 }
+
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
+pub struct TempContent {
+    pub filename: String,
+    pub text: String,
+}
+
+#[derive(Tabled)]
+pub struct TemplateDisplayInfo {
+    pub name: String,
+    pub owner: String,
+    pub created_at: String,
+    pub template_type: TemplateType,
+}
+
+//ENUMS
+
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
+pub enum TemplateType {
+    Local,
+    Remote,
+}
+
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
+pub enum TempPathType {
+    File,
+    Dir,
+}
+
+// IMPLEMENTATIONS
 
 impl TempPath {
     pub fn new(path: PathBuf) -> Self {
@@ -37,22 +72,24 @@ impl TempPath {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
-pub struct TempContent {
-    pub filename: String,
-    pub text: String,
-}
+impl TempContent {
+    pub fn new(filename: String, text: String) -> Self {
+        Self { filename, text }
+    }
 
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
-pub struct File {
-    pub filename: String,
-    pub content: String,
-}
+   /*  pub fn encode_text(&self) -> Self {
+        Self {
+            filename: self.filename.clone(),
+            text: base64::encode(self.text.clone()),
+        }
+    }
 
-#[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
-pub enum TemplateType {
-    Local,
-    Remote,
+    pub fn decode_text(&self) -> Self {
+        Self {
+            filename: self.filename.clone(),
+            text: decode_base64(self.text.clone()).expect("Error when decode template content"),
+        }
+    } */
 }
 
 impl Display for TemplateType {
@@ -64,15 +101,6 @@ impl Display for TemplateType {
     }
 }
 
-#[derive(Debug, PartialEq, Deserialize, Serialize, Clone)]
-pub struct Template {
-    pub name: String,
-    pub owner: String,
-    pub created_at: String,
-    pub template_type: TemplateType,
-    pub paths: Vec<TempPath>,
-    pub contents: Vec<TempContent>,
-}
 
 impl Template {
     pub fn fmt(&self) -> TemplateDisplayInfo {
@@ -83,23 +111,4 @@ impl Template {
             template_type: self.template_type.clone(),
         }
     }
-}
-
-/* pub struct TemplateRemote {
-    template: Template, 
-}
-
-impl Deref for TemplateRemote {
-    type Target = Template;
-    fn deref(&self) -> &Self::Target {
-        &self.template
-    }
-}
- */
-#[derive(Tabled)]
-pub struct TemplateDisplayInfo {
-    pub name: String,
-    pub owner: String,
-    pub created_at: String,
-    pub template_type: TemplateType,
 }

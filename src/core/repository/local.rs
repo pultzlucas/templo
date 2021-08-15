@@ -1,10 +1,10 @@
-use crate::core::template::serde::{deserialize, serialize};
 use crate::core::{
     file_system::{paths::TEMPLATES_PATH, read_base64_file, write_base64_file},
     template::Template,
     user_account::UserPermissions,
 };
 use crate::utils::errors::{not_found_error, permission_denied_error};
+use crate::utils::errors::std_error;
 use std::{
     fs,
     io::Error,
@@ -26,16 +26,16 @@ pub fn create() -> Result<(), Error> {
 
 pub fn save_template(template: Template) -> Result<(), Error> {
     let template_path = get_template_path(&template.name);
-    let template_string = serialize::template(template)?;
+    let template_string = std_error(serde_json::to_string(&template))?;
     write_base64_file(template_path, template_string)
 }
 
-pub fn get_templates() -> Vec<Template> {
+pub fn get_templates() -> Result<Vec<Template>, Error> {
     fs::read_dir(TEMPLATES_PATH)
         .unwrap()
-        .map(|template| template.map(|e| e.path()).unwrap())
-        .map(|file| read_base64_file(file).unwrap())
-        .map(|temp_string| deserialize::template(&temp_string).unwrap())
+        .map(|template| template.map(|e| e.path()))
+        .map(|file| read_base64_file(file?))
+        .map(|temp_string| std_error(serde_json::from_str(&temp_string?)))
         .collect()
 }
 
@@ -45,7 +45,7 @@ pub fn get_template(template_name: &str) -> Result<Template, Error> {
             return Err(not_found_error("Repository is empty."));
         }
 
-        let matched_template = get_templates()
+        let matched_template = get_templates()?
             .clone()
             .into_iter()
             .find(|temp| temp.name == *template_name);
@@ -86,7 +86,8 @@ pub fn delete_template(template_name: &str) -> Result<(), Error> {
 }
 
 pub fn total_templates() -> usize {
-    get_templates().len()
+    let temps = [fs::read_dir(TEMPLATES_PATH).unwrap()];
+    temps.len()
 }
 
 pub fn template_exists(template_name: &str) -> bool {
@@ -116,5 +117,5 @@ pub fn is_empty() -> bool {
 fn get_template_path(template_name: &str) -> PathBuf {
     Path::new(TEMPLATES_PATH)
         .join(template_name)
-        .with_extension("tmpt")
+        .with_extension("ptmp")
 }
