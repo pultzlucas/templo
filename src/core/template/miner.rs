@@ -2,6 +2,7 @@ use super::{TempContent, TempPath, TempPathType};
 use crate::utils::path::{pathbuf_to_string, format_path_namespace, valid_directory_path, remove_dir_prefix};
 use fs_tree::FsTreeBuilder;
 use std::{fs, io::Error};
+use base64;
 
 pub fn mine_paths_from(directory: &str) -> Result<Vec<TempPath>, Error> {
     valid_directory_path(directory)?;
@@ -21,7 +22,7 @@ pub fn mine_files_from_paths(paths: Vec<TempPath>, directory: &str) -> Vec<TempC
             let file_path: TempPath = remove_dir_prefix(file.clone(), directory).unwrap();
             let filename = pathbuf_to_string(format_path_namespace(file_path.buf));
             let text = fs::read_to_string(file.buf).expect("Error when read file content");
-            TempContent::new(filename, text)
+            TempContent::new(filename, base64::encode(text))
         })
         .collect()
 }

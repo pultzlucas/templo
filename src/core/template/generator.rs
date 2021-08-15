@@ -4,6 +4,7 @@ use crate::{
     utils::path::{format_path_namespace, pathbuf_to_string, str_to_pathbuf},
     paint, paintln,
 };
+use crate::utils::string::decode_base64;
 use std::{
     fs,
     io::Error,
@@ -51,7 +52,9 @@ fn write_contents(contents: Vec<TempContent>, directory: &Path) -> Result<(), Er
     for content in contents.into_iter() {
         let file_path = get_real_path(directory, str_to_pathbuf(&content.filename));
         if file_path.exists() {
-            fs::write(&file_path, content.text)?;
+            let text = decode_base64(content.text)?;
+            fs::write(&file_path, text)?;
+
             print!("{}", pathbuf_to_string(format_path_namespace(file_path)));
             paintln!("...{green}", "ok");
         }

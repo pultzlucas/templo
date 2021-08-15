@@ -37,7 +37,6 @@ struct UnpubResponse {
 
 pub async fn publish_templates(templates: Vec<Template>) -> Result<String, Error> {
     let current_user = get_user_account_data()?;
-
     let req = {
         let body = serde_json::to_string(&templates)?;
         let mut req = build_request("/templates/pub", Method::POST, body);
