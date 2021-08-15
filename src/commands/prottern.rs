@@ -1,4 +1,4 @@
-use crate::{core::repository::local, paintln};
+use crate::paintln;
 
 const WELCOME_STRING: &'static str = r#"
  _______________________________________________
@@ -13,13 +13,5 @@ const WELCOME_STRING: &'static str = r#"
 
 pub fn run() {
     print!("{}", WELCOME_STRING);
-
-    if !local::exists() {
-        paintln!(
-            "Type \"{yellow}\" to create a template repository.",
-            "prottern init"
-        );
-    }
-
-    paintln!(r#"Type "{yellow}" for more information."#, "prottern help")
+    paintln!(r#"Type "{yellow}" for more information."#, "prottern help");
 }
