@@ -1,4 +1,4 @@
-Prottern is a platform and a tool that provide you more flexibility at software development time.
+Prottern is a Template Manager that provide you more flexibility at software development time.
 
 - Faster software development process
 - CLI Simple to use
