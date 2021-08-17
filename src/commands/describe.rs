@@ -11,7 +11,7 @@ pub fn run(args: &[String]) -> Result<(), Error> {
     }
 
     // Get template from repository
-    let template = { local::get_template(&args[0])? };
+    let template = local::get_template(&args[0])?;
 
     // Describe template
     template

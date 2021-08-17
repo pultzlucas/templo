@@ -86,8 +86,8 @@ pub fn delete_template(template_name: &str) -> Result<(), Error> {
 }
 
 pub fn total_templates() -> usize {
-    let temps = [fs::read_dir(TEMPLATES_PATH).unwrap()];
-    temps.len()
+    let temps = fs::read_dir(TEMPLATES_PATH).unwrap();    
+    temps.count()
 }
 
 pub fn template_exists(template_name: &str) -> bool {
