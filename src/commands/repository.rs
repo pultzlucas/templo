@@ -7,7 +7,7 @@ use crate::core::file_system::paths::REPO_PATH;
 pub fn run(args: &[String]) -> Result<(), Error> {
     local::create()?;
 
-    if args[0] == "--local" {
+    if args.len() > 0 && args[0] == "--local" {
         println!("{}", REPO_PATH);
         return Ok(());
     }
