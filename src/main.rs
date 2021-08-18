@@ -5,6 +5,7 @@ mod core;
 mod utils;
 
 use commands::*;
+use crate::core::user_account::{get_user_account_data, user_auth_exists};
 use crate::utils::errors::invalid_input_error;
 use std::env;
 
@@ -13,9 +14,17 @@ async fn main() {
     let env: Vec<String> = env::args().collect();
     let args: &[String] = if env.len() > 2 { &env[2..] } else { &[] };
 
+    
     if env.len() == 1 {
         prottern::run();
         return;
+    }
+
+    //print current user account before execute other commands
+    if user_auth_exists() {
+        if let Ok(user) = get_user_account_data() {
+            paintln!("{gray}", user.username);
+        }
     }
 
     let output = {

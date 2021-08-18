@@ -22,6 +22,8 @@ pub fn gen_template(template: Template, directory: &Path) -> Result<(), Error> {
         paintln!("{gray}", "[writing contents...]");
         write_contents(template.contents, directory)?;
     }
+    
+    print!("\n");
     Ok(())
 }
 
@@ -60,7 +62,6 @@ fn write_contents(contents: Vec<TempContent>, directory: &Path) -> Result<(), Er
         }
     }
 
-    print!("\n");
     Ok(())
 }
 
