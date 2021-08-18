@@ -37,7 +37,7 @@ fn create_path(path: TempPath, directory: &Path) -> Result<(), Error> {
     }
     if real_path.path_type == TempPathType::Dir {
         fs::create_dir(&real_path.path)?;
-        paint!("{gray}", "dir: ");
+        paint!("{gray}", "dir:  ");
     }
 
     println!(
