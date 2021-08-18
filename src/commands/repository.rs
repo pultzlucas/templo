@@ -2,9 +2,15 @@ use crate::core::repository::local;
 use crate::core::template::{Template, TemplateDisplayInfo};
 use std::io::Error;
 use tabled::{Disable, Style, Table};
+use crate::core::file_system::paths::REPO_PATH;
 
-pub fn run() -> Result<(), Error> {
+pub fn run(args: &[String]) -> Result<(), Error> {
     local::create()?;
+
+    if args[0] == "--local" {
+        println!("{}", REPO_PATH);
+        return Ok(());
+    }
 
     if local::is_empty() {
         println!("Repository is empty.");

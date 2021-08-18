@@ -5,7 +5,6 @@ mod core;
 mod utils;
 
 use commands::*;
-use crate::core::user_account::{get_user_account_data, user_auth_exists};
 use crate::utils::errors::invalid_input_error;
 use std::env;
 
@@ -20,20 +19,13 @@ async fn main() {
         return;
     }
 
-    //print current user account before execute other commands
-    if user_auth_exists() {
-        if let Ok(user) = get_user_account_data() {
-            paintln!("{gray}", user.username);
-        }
-    }
-
     let output = {
         let command = env[1].as_str();
         match command {
             "save" => save::run(args),
             "generate" | "gen" => generate::run(args),
             "delete" | "del" => delete::run(args),
-            "repo" | "repository" => repository::run(),
+            "repo" | "repository" => repository::run(args),
             "describe" | "desc" => describe::run(args),
             "profile" => profile::run(),
             "help" | "h" => help::run(),
