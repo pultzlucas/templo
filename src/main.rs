@@ -4,16 +4,19 @@ mod commands;
 mod core;
 mod utils;
 
-use commands::*;
 use crate::utils::errors::invalid_input_error;
+use cli::input::parse_args;
+use commands::*;
 use std::env;
 
 #[tokio::main]
 async fn main() {
     let env: Vec<String> = env::args().collect();
     let args: &[String] = if env.len() > 2 { &env[2..] } else { &[] };
+    let args2 = parse_args(env.join(" ")).expect("Error when parsing command args.");
 
-    
+    println!("{:?}", args2);
+
     if env.len() == 1 {
         prottern::run();
         return;
@@ -38,7 +41,10 @@ async fn main() {
             "unpub" => unpub::run(args).await,
             "get" => get::run(args).await,
             "explore" => explore::run().await,
-            _ => Err(invalid_input_error(&format!("Invalid command \"{}\".", command))),
+            _ => Err(invalid_input_error(&format!(
+                "Invalid command \"{}\".",
+                command
+            ))),
         }
     };
 

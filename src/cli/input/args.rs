@@ -3,18 +3,29 @@ use crate::utils::string::split_by;
 use regex::Regex;
 use std::io::Error;
 
+#[derive(Debug)]
 pub struct Args {
     raw: String,
+    program_name: String,
     flags: Vec<String>,
     args: Vec<String>,
 }
 
 pub fn parse_args(string_command: String) -> Result<Args, Error> {
+    let command_split = split_by(string_command.clone(), " ")[1..]
+        .to_vec()
+        .join(" ");
     let raw = string_command.clone();
-    let flags = get_flags(&string_command)?;
-    let args = get_args(string_command)?;
+    let program_name = split_by(string_command.clone(), " ")[0].clone();
+    let flags = get_flags(&command_split)?;
+    let args = get_args(command_split)?;
 
-    Ok(Args { raw, flags, args })
+    Ok(Args {
+        raw,
+        program_name,
+        flags,
+        args,
+    })
 }
 
 fn get_args(string_command: String) -> Result<Vec<String>, Error> {
