@@ -1,5 +1,4 @@
 use crate::paintln;
-use crate::cli::output::clear_console;
 
 const WELCOME_STRING: &'static str = r#" 
  _______________________________________________
@@ -13,7 +12,6 @@ const WELCOME_STRING: &'static str = r#"
 "#;
 
 pub fn run() {
-    clear_console();
     print!("{}", WELCOME_STRING);
     paintln!(r#"Type "{yellow}" for more information."#, "prottern help");
 }
