@@ -1,13 +1,14 @@
+use crate::cli::input::args::Args;
+use crate::core::file_system::paths::REPO_PATH;
 use crate::core::repository::local;
 use crate::core::template::{Template, TemplateDisplayInfo};
 use std::io::Error;
 use tabled::{Disable, Style, Table};
-use crate::core::file_system::paths::REPO_PATH;
 
-pub fn run(args: &[String]) -> Result<(), Error> {
+pub fn run(args: Args) -> Result<(), Error> {
     local::create()?;
 
-    if args.len() > 0 && args[0] == "--local" {
+    if args.has_flag("--local") {
         println!("{}", REPO_PATH);
         return Ok(());
     }

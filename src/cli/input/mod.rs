@@ -1,7 +1,6 @@
 extern crate scanpw;
-mod args;
+pub mod args;
 
-pub use args::parse_args;
 use scanpw::scanpw;
 use std::io::{stdin, stdout, Error, Write};
 

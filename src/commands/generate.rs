@@ -1,3 +1,4 @@
+use crate::cli::input::args::Args;
 use crate::core::template::generator::gen_template;
 use crate::utils::errors::invalid_input_error;
 use crate::{
@@ -8,19 +9,19 @@ use crate::{
 };
 use std::{fs, io::Error, path::Path, time::Instant};
 
-pub fn run(args: &[String]) -> Result<(), Error> {
+pub fn run(args: Args) -> Result<(), Error> {
     local::create()?;
 
-    if args.len() < 1 {
+    if args.args.len() < 1 {
         return Err(invalid_input_error(INVALID_TEMPLATE_NAME));
     }
 
-    if args.len() < 2 {
+    if args.args.len() < 2 {
         return Err(invalid_input_error(INVALID_DIRECTORY_PATH_NAME));
     }
 
-    let template_name = &args[0];
-    let directory = Path::new(&args[1]);
+    let template_name = &args.args[0];
+    let directory = Path::new(&args.args[1]);
 
     if directory.extension() != None {
         return Err(invalid_input_error(INVALID_DIRECTORY_PATH_TYPE));

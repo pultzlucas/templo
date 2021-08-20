@@ -1,5 +1,4 @@
 use crate::paintln;
-
 const WELCOME_STRING: &'static str = r#" 
  _______________________________________________
 |   __    __  __  _    ___  ____   _  _   __    |

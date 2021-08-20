@@ -9,24 +9,24 @@ use crate::{
     },
     utils::errors::{already_exists_error, invalid_input_error, not_found_error},
 };
-
+use crate::cli::input::args::Args;
 use std::{io::Error, path::Path, time::Instant};
 
-pub fn run(args: &[String]) -> Result<(), Error> {
+pub fn run(args: Args) -> Result<(), Error> {
     local::create()?;
 
     if !user_auth_exists() {
         return Err(not_found_error(NOT_FOUND_USER_AUTH));
     }
-    if args.len() < 1 {
+    if args.args.len() < 1 {
         return Err(invalid_input_error(INVALID_DIRECTORY_PATH_NAME));
     }
-    if args.len() < 2 {
+    if args.args.len() < 2 {
         return Err(invalid_input_error(INVALID_TEMPLATE_NAME));
     }
 
-    let directory = args[0].clone();
-    let template_name = args[1].clone();
+    let directory = args.args[0].clone();
+    let template_name = args.args[1].clone();
 
     if local::template_exists(&template_name) {
         return Err(already_exists_error(&format!(

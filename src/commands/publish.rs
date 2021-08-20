@@ -1,27 +1,28 @@
+use crate::cli::input::args::Args;
 use crate::paintln;
 use crate::{
     cli::output::messages::error::{INVALID_TEMPLATE_NAME, NOT_FOUND_USER_AUTH},
     core::{
         repository::{local, remote},
         template::Template,
-        user_account::{UserPermissions, user_auth_exists},
+        user_account::{user_auth_exists, UserPermissions},
     },
     utils::errors::{invalid_input_error, not_found_error, permission_denied_error},
 };
 use std::io::Error;
 use std::time::Instant;
 
-pub async fn run(args: &[String]) -> Result<(), Error> {
+pub async fn run(args: Args) -> Result<(), Error> {
     local::create()?;
     if !user_auth_exists() {
         return Err(not_found_error(NOT_FOUND_USER_AUTH));
     }
 
-    if args.len() < 1 {
+    if args.args.len() < 1 {
         return Err(invalid_input_error(INVALID_TEMPLATE_NAME));
     }
 
-    let templates_name = &args[0..];
+    let templates_name = &args.args[0..];
 
     // Verify if current user has permission to publish these templates
     for name in templates_name.iter() {

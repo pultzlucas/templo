@@ -5,10 +5,18 @@ use std::io::Error;
 
 #[derive(Debug)]
 pub struct Args {
-    raw: String,
-    program_name: String,
-    flags: Vec<String>,
-    args: Vec<String>,
+    pub raw: String,
+    pub program_name: String,
+    pub command: String,
+    pub flags: Vec<String>,
+    pub args: Vec<String>,
+}
+
+impl Args {
+    pub fn has_flag(&self, flag: &str) -> bool {
+        let regex = Regex::new(flag).unwrap();
+        self.flags.iter().any(|flag| regex.is_match(flag))
+    }
 }
 
 pub fn parse_args(string_command: String) -> Result<Args, Error> {
@@ -17,12 +25,14 @@ pub fn parse_args(string_command: String) -> Result<Args, Error> {
         .join(" ");
     let raw = string_command.clone();
     let program_name = split_by(string_command.clone(), " ")[0].clone();
+    let command = split_by(command_split.clone(), " ")[0].clone();
     let flags = get_flags(&command_split)?;
     let args = get_args(command_split)?;
 
     Ok(Args {
         raw,
         program_name,
+        command, 
         flags,
         args,
     })

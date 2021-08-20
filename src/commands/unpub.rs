@@ -1,3 +1,4 @@
+use crate::cli::input::args::Args;
 use crate::{
     cli::output::messages::error::{INVALID_TEMPLATE_NAME, NOT_FOUND_USER_AUTH},
     core::{repository::remote, user_account::user_auth_exists},
@@ -14,15 +15,15 @@ struct UnpubRequestBody {
     user: String,
 }
 
-pub async fn run(args: &[String]) -> Result<(), Error> {
+pub async fn run(args: Args) -> Result<(), Error> {
     if !user_auth_exists() {
         return Err(not_found_error(NOT_FOUND_USER_AUTH));
     }
 
-    if args.len() < 1 {
+    if args.args.len() < 1 {
         return Err(invalid_input_error(INVALID_TEMPLATE_NAME));
     }
-    let templates_name = &args[0..];
+    let templates_name = &args.args[0..];
 
     paintln!("{gray}", "[Unpublishing Templates]");
 
