@@ -6,10 +6,10 @@ use std::io::Error;
 #[derive(Debug)]
 pub struct Args {
     pub raw: String,
-    pub program_name: String,
-    pub command: String,
+    pub program: String,
+    pub command: Option<String>,
     pub flags: Vec<String>,
-    pub args: Vec<String>,
+    pub inputs: Vec<String>,
 }
 
 impl Args {
@@ -20,33 +20,36 @@ impl Args {
 }
 
 pub fn parse_args(string_command: String) -> Result<Args, Error> {
-    let command_split = split_by(string_command.clone(), " ")[1..]
-        .to_vec()
-        .join(" ");
+    let args = &split_by(string_command.clone(), " ")[1..];
     let raw = string_command.clone();
-    let program_name = split_by(string_command.clone(), " ")[0].clone();
-    let command = split_by(command_split.clone(), " ")[0].clone();
-    let flags = get_flags(&command_split)?;
-    let args = get_args(command_split)?;
+    let program = split_by(string_command.clone(), " ")[0].clone();
+    let command = if args.len() > 0 {
+        Some(args[0].clone())
+    } else {None};
+    let flags = get_flags(&args.join(" "))?;
+    let inputs = if args.len() > 1 {
+        get_inputs(args[1..].join(" "))?
+    }else {vec![]};
 
     Ok(Args {
         raw,
-        program_name,
-        command, 
+        program,
+        command,
         flags,
-        args,
+        inputs,
     })
 }
 
-fn get_args(string_command: String) -> Result<Vec<String>, Error> {
+fn get_inputs(string_command: String) -> Result<Vec<String>, Error> {
     let commands = split_by(string_command, " ");
-    let args = commands
+    let args: Vec<String> = commands
         .into_iter()
         .filter(|arg| {
             let regex = Regex::new(r"(-|--)\w+").unwrap();
             !regex.is_match(arg)
         })
         .collect();
+
     Ok(args)
 }
 

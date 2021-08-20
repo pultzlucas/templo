@@ -18,15 +18,15 @@ pub fn run(args: Args) -> Result<(), Error> {
     if !user_auth_exists() {
         return Err(not_found_error(NOT_FOUND_USER_AUTH));
     }
-    if args.args.len() < 1 {
+    if args.inputs.len() < 1 {
         return Err(invalid_input_error(INVALID_DIRECTORY_PATH_NAME));
     }
-    if args.args.len() < 2 {
+    if args.inputs.len() < 2 {
         return Err(invalid_input_error(INVALID_TEMPLATE_NAME));
     }
 
-    let directory = args.args[0].clone();
-    let template_name = args.args[1].clone();
+    let directory = args.inputs[0].clone();
+    let template_name = args.inputs[1].clone();
 
     if local::template_exists(&template_name) {
         return Err(already_exists_error(&format!(

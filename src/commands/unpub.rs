@@ -20,10 +20,10 @@ pub async fn run(args: Args) -> Result<(), Error> {
         return Err(not_found_error(NOT_FOUND_USER_AUTH));
     }
 
-    if args.args.len() < 1 {
+    if args.inputs.len() < 1 {
         return Err(invalid_input_error(INVALID_TEMPLATE_NAME));
     }
-    let templates_name = &args.args[0..];
+    let templates_name = &args.inputs[0..];
 
     paintln!("{gray}", "[Unpublishing Templates]");
 

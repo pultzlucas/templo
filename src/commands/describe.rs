@@ -7,12 +7,12 @@ use std::io::Error;
 pub fn run(args: Args) -> Result<(), Error> {
     local::create()?;
 
-    if args.args.len() < 1 {
+    if args.inputs.len() == 0 {
         return Err(invalid_input_error(INVALID_TEMPLATE_NAME));
     }
 
     // Get template from repository
-    let template = local::get_template(&args.args[0])?;
+    let template = local::get_template(&args.inputs[0])?;
 
     // Describe template
     template

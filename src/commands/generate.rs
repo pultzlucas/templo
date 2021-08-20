@@ -12,16 +12,16 @@ use std::{fs, io::Error, path::Path, time::Instant};
 pub fn run(args: Args) -> Result<(), Error> {
     local::create()?;
 
-    if args.args.len() < 1 {
+    if args.inputs.len() < 1 {
         return Err(invalid_input_error(INVALID_TEMPLATE_NAME));
     }
 
-    if args.args.len() < 2 {
+    if args.inputs.len() < 2 {
         return Err(invalid_input_error(INVALID_DIRECTORY_PATH_NAME));
     }
 
-    let template_name = &args.args[0];
-    let directory = Path::new(&args.args[1]);
+    let template_name = &args.inputs[0];
+    let directory = Path::new(&args.inputs[1]);
 
     if directory.extension() != None {
         return Err(invalid_input_error(INVALID_DIRECTORY_PATH_TYPE));

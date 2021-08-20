@@ -10,11 +10,11 @@ use std::{io::Error, str, time::Instant};
 pub async fn run(args: Args) -> Result<(), Error> {
     local::create()?;
 
-    if args.args.len() < 1 {
+    if args.inputs.len() < 1 {
         return Err(invalid_input_error(INVALID_TEMPLATE_NAME));
     }
 
-    let templates_name = &args.args[0..];
+    let templates_name = &args.inputs[0..];
 
     // Verify if some template already exists in repository
     for name in templates_name.iter() {

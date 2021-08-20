@@ -15,11 +15,11 @@ pub fn run(args: Args) -> Result<(), Error> {
         return Err(Error::new(ErrorKind::NotFound, NOT_FOUND_USER_AUTH));
     }
 
-    if args.args.len() < 1 {
+    if args.inputs.len() < 1 {
         return Err(Error::new(ErrorKind::InvalidInput, INVALID_TEMPLATE_NAME));
     }
 
-    let templates_name = &args.args[0..];
+    let templates_name = &args.inputs[0..];
 
     // Deleting templates
     let start = Instant::now(); // start timing process
