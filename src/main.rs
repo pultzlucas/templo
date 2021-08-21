@@ -12,10 +12,7 @@ use std::env;
 #[tokio::main]
 async fn main() {
     let env: Vec<String> = env::args().collect();
-    //let args: &[String] = if env.len() > 2 { &env[2..] } else { &[] };
     let args = parse_args(env.join(" ")).expect("Error when parsing command args.");
-
-    println!("{:?}", args);
 
     if let None = args.command {
         prottern::run();

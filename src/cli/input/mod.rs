@@ -1,7 +1,7 @@
-extern crate scanpw;
+extern crate rpassword;
 pub mod args;
 
-use scanpw::scanpw;
+use rpassword::read_password;
 use std::io::{stdin, stdout, Error, Write};
 
 pub enum InputType {
@@ -19,6 +19,6 @@ pub fn get(text: &str, input_type: InputType) -> Result<String, Error> {
             Ok(info.trim().to_string())
         }
 
-        InputType::Password => Ok(scanpw!().trim().to_string()),
+        InputType::Password => Ok(read_password()?.trim().to_string()),
     }
 }
