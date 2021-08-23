@@ -521,7 +521,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "prottern"
+name = "ptn"
 version = "0.1.0-beta"
 dependencies = [
  "base64",

@@ -9,10 +9,9 @@ struct NotFoundResponse {
 }
 
 //const BASE_URL: &str = "https://protternio.herokuapp.com"; 
-const BASE_URL: &str = "http://localhost:8081"; 
+//const BASE_URL: &str = "http://localhost:8081"; 
 
-pub fn build_request(route: &str, method: Method, body: String) -> Req<hyper::Body> {
-    let url = format!("{}{}", BASE_URL, route);
+pub fn build_request(url: &str, method: Method, body: String) -> Req<hyper::Body> {
     let req = Req::builder();
     req.method(method)
         .uri(url)

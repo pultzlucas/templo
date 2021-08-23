@@ -1,5 +1,5 @@
 [package]
-name = "prottern"
+name = "ptn"
 version = "0.1.0-beta"
 authors = ["Lucas-Lopes-Pultz <pultzlucas@gmail.com>"]
 edition = "2018"

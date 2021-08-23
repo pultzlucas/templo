@@ -1,9 +1,9 @@
 use super::UserAccountData;
-use crate::utils::errors::std_error;
 use crate::core::{
-    file_system::{paths::USER_ACCOUNT_AUTH_PATH, write_base64_file, read_base64_file},
+    file_system::{paths::USER_ACCOUNT_AUTH_PATH, read_base64_file, write_base64_file},
     requester::{build_request, request, Method},
 };
+use crate::utils::errors::std_error;
 use serde_derive::{Deserialize, Serialize};
 use std::{fs, io::Error, path::Path};
 
@@ -33,6 +33,8 @@ pub struct UserAccountKey {
     pub key: String,
 }
 
+const AUTHENTICATOR_URL: &'static str = "https://prottern-authenticator.herokuapp.com";
+
 pub fn save_user_account(user_account: UserAccountKey) -> Result<(), Error> {
     let content = serde_json::to_string(&user_account)?;
     write_base64_file(USER_ACCOUNT_AUTH_PATH, content)
@@ -48,7 +50,8 @@ pub async fn signup_user_account(
 ) -> Result<RegisterResponse, Error> {
     let response = {
         let body = serde_json::to_string(user_account)?;
-        let req = build_request("/user/signup", Method::POST, body);
+        let url = format!("{}/{}", AUTHENTICATOR_URL, "user/signup");
+        let req = build_request(&url, Method::POST, body);
         request(req).await?
     };
     Ok(std_error(serde_json::from_str(&response))?)
@@ -63,7 +66,8 @@ pub async fn authenticate_user_account(
             username,
             password,
         }))?;
-        let req = build_request("/user/login", Method::POST, body);
+        let url = format!("{}/{}", AUTHENTICATOR_URL, "user/login");
+        let req = build_request(&url, Method::POST, body);
         request(req).await?
     };
 
