@@ -1,5 +1,6 @@
 use crate::cli::input::args::Args;
-use crate::core::file_system::paths::REPO_PATH;
+use crate::core::fs::paths::get_repo_path;
+use crate::utils::path::pathbuf_to_string;
 use crate::core::repository::local;
 use crate::core::template::{Template, TemplateDisplayInfo};
 use std::io::Error;
@@ -9,7 +10,7 @@ pub fn run(args: Args) -> Result<(), Error> {
     local::create()?;
 
     if args.has_flag("--local") {
-        println!("{}", REPO_PATH);
+        println!("{}", pathbuf_to_string(get_repo_path().unwrap()));
         return Ok(());
     }
 

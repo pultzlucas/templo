@@ -41,7 +41,7 @@ async fn main() {
                 ))),
             }
         };
-    
+
         if let Err(e) = output {
             eprintln!("{}: {}", paint_string!("{red}", "Error"), e);
         }

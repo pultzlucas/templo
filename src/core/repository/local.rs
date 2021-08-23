@@ -1,5 +1,5 @@
 use crate::core::{
-    file_system::{paths::TEMPLATES_PATH, read_base64_file, write_base64_file},
+    fs::{paths::get_templates_path, read_base64_file, write_base64_file},
     template::Template,
     user_account::UserPermissions,
 };
@@ -12,12 +12,12 @@ use std::{
 };
 
 pub fn exists() -> bool {
-    Path::new(TEMPLATES_PATH).exists()
+    Path::new(&get_templates_path().unwrap()).exists()
 }
 
 pub fn create() -> Result<(), Error> {
     if !exists() {
-        fs::create_dir_all(TEMPLATES_PATH)?;
+        fs::create_dir_all(&get_templates_path().unwrap())?;
         println!("Repository was created.");
     }
 
@@ -31,7 +31,7 @@ pub fn save_template(template: Template) -> Result<(), Error> {
 }
 
 pub fn get_templates() -> Result<Vec<Template>, Error> {
-    fs::read_dir(TEMPLATES_PATH)
+    fs::read_dir(&get_templates_path().unwrap())
         .unwrap()
         .map(|template| template.map(|e| e.path()))
         .map(|file| read_base64_file(file?))
@@ -49,6 +49,7 @@ pub fn get_template(template_name: &str) -> Result<Template, Error> {
             .clone()
             .into_iter()
             .find(|temp| temp.name == *template_name);
+
         match matched_template {
             Some(t) => t,
             None => {
@@ -86,7 +87,7 @@ pub fn delete_template(template_name: &str) -> Result<(), Error> {
 }
 
 pub fn total_templates() -> usize {
-    let temps = fs::read_dir(TEMPLATES_PATH).unwrap();    
+    let temps = fs::read_dir(&get_templates_path().unwrap()).unwrap();    
     temps.count()
 }
 
@@ -115,7 +116,7 @@ pub fn is_empty() -> bool {
 } */
 
 fn get_template_path(template_name: &str) -> PathBuf {
-    Path::new(TEMPLATES_PATH)
+    Path::new(&get_templates_path().unwrap())
         .join(template_name)
         .with_extension("ptmp")
 }

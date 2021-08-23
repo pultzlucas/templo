@@ -1,6 +1,6 @@
 use super::UserAccountData;
 use crate::core::{
-    file_system::{paths::USER_ACCOUNT_AUTH_PATH, read_base64_file, write_base64_file},
+    fs::{paths::get_user_auth_path, read_base64_file, write_base64_file},
     requester::{build_request, request, Method},
 };
 use crate::utils::errors::std_error;
@@ -37,11 +37,11 @@ const AUTHENTICATOR_URL: &'static str = "https://prottern-authenticator.herokuap
 
 pub fn save_user_account(user_account: UserAccountKey) -> Result<(), Error> {
     let content = serde_json::to_string(&user_account)?;
-    write_base64_file(USER_ACCOUNT_AUTH_PATH, content)
+    write_base64_file(get_user_auth_path().unwrap(), content)
 }
 
 pub fn get_user_account_data() -> Result<UserAccountKey, Error> {
-    let user_account = read_base64_file(USER_ACCOUNT_AUTH_PATH)?;
+    let user_account = read_base64_file(get_user_auth_path().unwrap())?;
     Ok(std_error(serde_json::from_str(&user_account))?)
 }
 
@@ -75,9 +75,9 @@ pub async fn authenticate_user_account(
 }
 
 pub fn user_auth_exists() -> bool {
-    Path::new(USER_ACCOUNT_AUTH_PATH).exists()
+    Path::new(&get_user_auth_path().unwrap()).exists()
 }
 
 pub fn logout_current() -> Result<(), Error> {
-    fs::remove_file(USER_ACCOUNT_AUTH_PATH)
+    fs::remove_file(get_user_auth_path().unwrap())
 }

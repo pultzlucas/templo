@@ -1,4 +1,4 @@
-pub mod file_system;
+pub mod fs;
 pub mod repository;
 pub mod template;
 pub mod user_account;
