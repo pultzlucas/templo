@@ -45,7 +45,7 @@ fn get_inputs(string_command: String) -> Result<Vec<String>, Error> {
     let args: Vec<String> = commands
         .into_iter()
         .filter(|arg| {
-            let regex = Regex::new(r"(-|--)\w+").unwrap();
+            let regex = Regex::new(r"\s(-|--)\w+").unwrap();
             !regex.is_match(arg)
         })
         .collect();
@@ -54,7 +54,7 @@ fn get_inputs(string_command: String) -> Result<Vec<String>, Error> {
 }
 
 fn get_flags(string_command: &str) -> Result<Vec<String>, Error> {
-    let regex = std_error(Regex::new(r"(-|--)\w+"))?;
+    let regex = std_error(Regex::new(r"\s(-|--)\w+"))?;
     let flags: Vec<String> = regex
         .captures(&string_command)
         .into_iter()
