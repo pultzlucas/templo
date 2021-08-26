@@ -43,7 +43,7 @@ pub async fn run(args: Args) -> Result<(), Error> {
         .map(|name| local::get_template(name))
         .collect();
 
-    paintln!("{gray}", "[Publishing Templates]");
+    paintln!("{gray}", "[publishing templates]");
 
     let msg = remote::publish_templates(templates?).await?;
     println!("{}", msg);

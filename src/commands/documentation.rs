@@ -7,7 +7,7 @@ const DOCS_URL: &'static str = "https://github.com/Lucas-Lopes-Pultz/prottern-do
 
 pub fn run() -> Result<(), Error> {
     let start = Instant::now(); // start timing process
-    paintln!("{gray}", "[Opening browser]");
+    paintln!("{gray}", "[opening browser]");
 
     //open browser
     open::that(DOCS_URL)?;

@@ -17,7 +17,7 @@ pub async fn run() -> Result<(), Error> {
     // Making authentication
     let start = Instant::now(); //start timing process
     let response = {
-        paintln!("{gray}", "[Authenticating Account]");
+        paintln!("{gray}", "[authenticating account]");
         let response = log_user_account(username, password).await?;
         response
     };

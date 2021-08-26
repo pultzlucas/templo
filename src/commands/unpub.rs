@@ -25,7 +25,7 @@ pub async fn run(args: Args) -> Result<(), Error> {
     }
     let templates_name = &args.inputs[0..];
 
-    paintln!("{gray}", "[Unpublishing Templates]");
+    paintln!("{gray}", "[unpublishing templates]");
 
     let start = Instant::now(); // start timing process
     let res = remote::unpub_templates(templates_name.to_vec()).await?;

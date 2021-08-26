@@ -23,7 +23,7 @@ pub async fn run(args: Args) -> Result<(), Error> {
         }
     }
 
-    paintln!("{gray}", "[Getting Templates]");
+    paintln!("{gray}", "[getting templates]");
 
     let start = Instant::now(); // start timing process
     let templates = remote::get_templates(templates_name.to_vec()).await?;

@@ -5,7 +5,7 @@ use std::time::Instant;
 use tabled::{Disable, Style, Table};
 
 pub async fn run() -> Result<(), Error> {
-    paintln!("{gray}", "[Searching Templates]");
+    paintln!("{gray}", "[searching templates]");
 
     let start = Instant::now(); // start timing process
     let templates = remote::get_all_templates().await?;
