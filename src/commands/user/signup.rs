@@ -37,14 +37,15 @@ pub async fn run() -> Result<(), Error> {
     if !user_can_be_signup.ok {
         return Err(invalid_input_error(&user_can_be_signup.message))
     }
+    println!("Ok");
 
     // Send account confirmation token
     paintln!("{gray}", "[sending account confirmation]");
     let real_token = request_account_confirmation(account.username.clone(), account.email.clone()).await?;
 
     // Get valid token from user input
-    println!("A confirmation token has been sent to \"{}\" email.", account.email);
-    get_valid_input("Token: ", InputType::Text, "Invalid token.", |input| {
+    println!("A confirmation token was sent to \"{}\" email.", account.email);
+    get_valid_input("Enter your token here: ", InputType::Text, "Invalid token.", |input| {
         input == real_token
     })?;
 
