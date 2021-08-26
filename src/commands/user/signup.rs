@@ -7,11 +7,8 @@ use crate::{
     },
     paintln,
 };
-use regex::Regex;
 use std::io::Error;
 use std::time::Instant;
-
-type RegisterFields = (String, String, String, String);
 
 pub async fn run() -> Result<(), Error> {
     let account = {
@@ -21,8 +18,6 @@ pub async fn run() -> Result<(), Error> {
             get("Password: ", InputType::Password)?,
             get("Confirm your password: ", InputType::Password)?,
         );
-
-        validate_signup_inputs(&inputs)?;
 
         let (username, email, password, _) = inputs;
         UserAccountData::new(username, email, password)
@@ -71,7 +66,7 @@ pub async fn run() -> Result<(), Error> {
     Err(other_error("Something went wrong when signup."))
 }
 
-fn validate_signup_inputs(
+/* fn validate_signup_inputs(
     (username, email, password, password2): &RegisterFields,
 ) -> Result<(), Error> {
     let err = |msg: &str| Err(invalid_input_error(msg));
@@ -87,9 +82,9 @@ fn validate_signup_inputs(
     validate_password(password, password2)?;
 
     Ok(())
-}
+} */
 
-fn validate_password(password: &str, password2: &str) -> Result<(), Error> {
+/* fn validate_password(password: &str, password2: &str) -> Result<(), Error> {
     let special_chars_regex = std_error(Regex::new(r"[^[a-z][A-Z]\d]"))?;
     let upper_chars_regex = std_error(Regex::new(r"[A-Z]"))?;
     let lower_chars_regex = std_error(Regex::new(r"[a-z]"))?;
@@ -143,3 +138,4 @@ fn validate_password(password: &str, password2: &str) -> Result<(), Error> {
 
     Ok(())
 }
+ */
