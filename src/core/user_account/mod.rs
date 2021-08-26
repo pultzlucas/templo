@@ -6,7 +6,7 @@ pub use permissions::UserPermissions;
 
 use serde_derive::{Deserialize, Serialize};
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct UserAccountData {
     pub username: String,
     pub email: String,

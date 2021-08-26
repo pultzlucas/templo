@@ -1,7 +1,10 @@
 use crate::utils::errors::{already_exists_error, invalid_input_error, other_error, std_error};
 use crate::{
-    cli::input::{get, InputType},
-    core::user_account::{save_user_account, signup_user_account, UserAccountData, UserAccountKey},
+    cli::input::{get, get_valid_input, InputType},
+    core::user_account::{
+        request_account_confirmation, save_user_account, signup_user_account, check_user_signup, UserAccountData,
+        UserAccountKey,
+    },
     paintln,
 };
 use regex::Regex;
@@ -11,7 +14,7 @@ use std::time::Instant;
 type RegisterFields = (String, String, String, String);
 
 pub async fn run() -> Result<(), Error> {
-    let user_account = {
+    let account = {
         let inputs = (
             get("Username: ", InputType::Text)?,
             get("Email (this is public): ", InputType::Text)?,
@@ -25,11 +28,29 @@ pub async fn run() -> Result<(), Error> {
         UserAccountData::new(username, email, password)
     };
 
-    // Requesting registration
     let start = Instant::now(); // start timing process
 
-    paintln!("{gray}", "[Registering Account]");
-    let res = signup_user_account(&user_account).await?;
+
+    // Check if user can be signup
+    paintln!("{gray}", "[checking account credentials]");
+    let user_can_be_signup = check_user_signup(&account).await?;
+    if !user_can_be_signup.ok {
+        return Err(invalid_input_error(&user_can_be_signup.message))
+    }
+
+    // Send account confirmation token
+    paintln!("{gray}", "[sending account confirmation]");
+    let real_token = request_account_confirmation(account.username.clone(), account.email.clone()).await?;
+
+    // Get valid token from user input
+    println!("A confirmation token has been sent to \"{}\" email.", account.email);
+    get_valid_input("Token: ", InputType::Text, "Invalid token.", |input| {
+        input == real_token
+    })?;
+
+    // Request user registration
+    paintln!("{gray}", "[registering account]");
+    let res = signup_user_account(account).await?;
 
     if !res.registered {
         return Err(already_exists_error(&res.message));
@@ -75,31 +96,44 @@ fn validate_password(password: &str, password2: &str) -> Result<(), Error> {
     let whitespace_regex = std_error(Regex::new(r"\s"))?;
 
     if password.len() > 30 {
-        return Err(invalid_input_error("The password must have 30 characteres or less."));
+        return Err(invalid_input_error(
+            "The password must have 30 characteres or less.",
+        ));
     }
-    
     if password.len() < 6 {
-        return Err(invalid_input_error("The password must have 6 characters or more."));
+        return Err(invalid_input_error(
+            "The password must have 6 characters or more.",
+        ));
     }
 
     if !special_chars_regex.is_match(password) {
-        return Err(invalid_input_error("The password must have at least one special character."));
+        return Err(invalid_input_error(
+            "The password must have at least one special character.",
+        ));
     }
 
     if !upper_chars_regex.is_match(password) {
-        return Err(invalid_input_error("The password must have at least one uppercase character."));
+        return Err(invalid_input_error(
+            "The password must have at least one uppercase character.",
+        ));
     }
 
     if !lower_chars_regex.is_match(password) {
-        return Err(invalid_input_error("The password must have at least one lowercase character."));
+        return Err(invalid_input_error(
+            "The password must have at least one lowercase character.",
+        ));
     }
 
     if !digits_regex.is_match(password) {
-        return Err(invalid_input_error("The password must have at least one digit."));
+        return Err(invalid_input_error(
+            "The password must have at least one digit.",
+        ));
     }
 
     if whitespace_regex.is_match(password) {
-        return Err(invalid_input_error("The password must not have whitespaces."));
+        return Err(invalid_input_error(
+            "The password must not have whitespaces.",
+        ));
     }
 
     if password != password2 {

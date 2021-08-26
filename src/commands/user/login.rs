@@ -1,7 +1,7 @@
-use crate::utils::errors::already_exists_error;
+use crate::utils::errors::{already_exists_error};
 use crate::{
     cli::input::{get, InputType},
-    core::user_account::{authenticate_user_account, save_user_account},
+    core::user_account::{log_user_account, save_user_account},
     paintln,
 };
 
@@ -18,7 +18,7 @@ pub async fn run() -> Result<(), Error> {
     let start = Instant::now(); //start timing process
     let response = {
         paintln!("{gray}", "[Authenticating Account]");
-        let response = authenticate_user_account(username, password).await?;
+        let response = log_user_account(username, password).await?;
         response
     };
 
