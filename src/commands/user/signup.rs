@@ -2,8 +2,8 @@ use crate::utils::errors::{already_exists_error, invalid_input_error, other_erro
 use crate::{
     cli::input::{get, get_valid_input, InputType},
     core::user_account::{
-        request_account_confirmation, save_user_account, signup_user_account, check_user_signup, UserAccountData,
-        UserAccountKey,
+        check_user_signup, request_account_confirmation, save_user_account, signup_user_account,
+        UserAccountData, UserAccountKey,
     },
     paintln,
 };
@@ -25,24 +25,28 @@ pub async fn run() -> Result<(), Error> {
 
     let start = Instant::now(); // start timing process
 
-
     // Check if user can be signup
     paintln!("{gray}", "[checking account credentials]");
     let user_can_be_signup = check_user_signup(&account).await?;
     if !user_can_be_signup.ok {
-        return Err(invalid_input_error(&user_can_be_signup.message))
+        return Err(invalid_input_error(&user_can_be_signup.message));
     }
     println!("Ok");
 
     // Send account confirmation token
     paintln!("{gray}", "[sending account confirmation]");
-    let real_token = request_account_confirmation(account.username.clone(), account.email.clone()).await?;
+    let (real_token, email) =
+        request_account_confirmation(account.username.clone(), Some(account.email.clone()), false)
+            .await?;
 
     // Get valid token from user input
-    println!("A confirmation token was sent to \"{}\" email.", account.email);
-    get_valid_input("Enter your token here: ", InputType::Text, "Invalid token.", |input| {
-        input == real_token
-    })?;
+    println!("A confirmation token was sent to \"{}\" email.", email);
+    get_valid_input(
+        "Enter your token here: ",
+        InputType::Text,
+        "Invalid token.",
+        |input| input == real_token,
+    )?;
 
     // Request user registration
     paintln!("{gray}", "[registering account]");

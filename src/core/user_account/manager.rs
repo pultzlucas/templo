@@ -15,20 +15,20 @@ pub struct SignupResponse {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct SignupCheckResponse {
+pub struct CheckResponse {
     pub message: String,
     pub ok: bool,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct AuthResponse {
-    pub authenticated: bool,
+pub struct LoginResponse {
+    pub logged: bool,
     pub user: String,
     pub message: String,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-struct AuthRequestBody {
+struct LoginRequestBody {
     username: String,
     password: String,
 }
@@ -36,13 +36,15 @@ struct AuthRequestBody {
 #[derive(Serialize, Deserialize, Debug)]
 struct ConfirmAccountRequestBody {
     username: String,
-    email: String,
+    email: Option<String>,
+    login: bool
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 struct ConfirmAccountResponse {
     token: Option<String>,
     message: Option<String>,
+    email: Option<String>
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -63,15 +65,15 @@ pub fn get_user_account_data() -> Result<UserAccountKey, Error> {
     Ok(std_error(serde_json::from_str(&user_account))?)
 }
 
-pub async fn request_account_confirmation(username: String, email: String) -> Result<String, Error> {
+pub async fn request_account_confirmation(username: String, email: Option<String>, login: bool) -> Result<(String, String), Error> {
     let url = "https://prottern-authenticator.herokuapp.com/user/confirmAccount";
-    let body = ConfirmAccountRequestBody { username, email };
+    let body = ConfirmAccountRequestBody { username, email, login };
 
     let req = build_request(url, Method::POST, std_error(serde_json::to_string(&body))?);
     let res: ConfirmAccountResponse = std_error(serde_json::from_str(&request(req).await?))?;
 
     if let Some(token) = res.token {
-        return Ok(token);
+        return Ok((token, res.email.unwrap()));
     }
 
     if let Some(msg) = res.message {
@@ -92,7 +94,7 @@ pub async fn signup_user_account(account: UserAccountData) -> Result<SignupRespo
     Ok(std_error(serde_json::from_str(&response))?)
 }
 
-pub async fn check_user_signup(account: &UserAccountData) -> Result<SignupCheckResponse, Error> {
+pub async fn check_user_signup(account: &UserAccountData) -> Result<CheckResponse, Error> {
     let response = {
         let body = serde_json::to_string(account)?;
         let url = format!("{}/{}", AUTHENTICATOR_URL, "user/checkUserSignup");
@@ -103,15 +105,20 @@ pub async fn check_user_signup(account: &UserAccountData) -> Result<SignupCheckR
     Ok(std_error(serde_json::from_str(&response))?)
 }
 
-pub async fn log_user_account(username: String, password: String) -> Result<AuthResponse, Error> {
-    /* let real_token = request_account_confirmation(username.clone(), email.clone()).await?;
-
-    get_valid_input("Token: ", InputType::Text, "Invalid token.", |input| {
-        input == real_token
-    })?; */
-
+pub async fn check_user_login(username: String, password: String) -> Result<CheckResponse, Error> {
     let response = {
-        let body = std_error(serde_json::to_string(&AuthRequestBody {
+        let body = serde_json::to_string(&LoginRequestBody {username, password})?;
+        let url = format!("{}/{}", AUTHENTICATOR_URL, "user/checkUserLogin");
+        let req = build_request(&url, Method::POST, body);
+        request(req).await?
+    };
+
+    Ok(std_error(serde_json::from_str(&response))?)
+}
+
+pub async fn log_user_account(username: String, password: String) -> Result<LoginResponse, Error> {
+    let response = {
+        let body = std_error(serde_json::to_string(&LoginRequestBody {
             username,
             password,
         }))?;
