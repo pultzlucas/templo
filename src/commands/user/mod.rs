@@ -1,6 +1,7 @@
 mod login;
 mod logout;
 mod signup;
+mod chpw;
 
 use crate::cli::input::args::{parse_args, Args};
 use crate::utils::errors::{invalid_input_error, not_found_error};
@@ -23,6 +24,7 @@ pub async fn run(args: Args) -> Result<(), Error> {
         return match command.as_str() {
             "login" => login::run().await,
             "signup" => signup::run().await,
+            "chpw" => chpw::run().await,
             "logout" => logout::run(),
             _ => Err(invalid_input_error(&format!(
                 "Invalid user subcommand \"{}\"",
