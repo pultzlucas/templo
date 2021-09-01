@@ -1,21 +1,43 @@
-use std::io::Error;
 use crate::core::requester::{build_request, request, Method, AUTHENTICATOR_URL};
 use crate::core::user_account::get_user_account_data;
+use crate::paintln;
 use crate::utils::errors::std_error;
-use serde_json::to_string;
-use serde_derive::{Serialize, Deserialize};
+use serde_derive::{Deserialize, Serialize};
+use serde_json::{from_str, to_string};
+use std::io::Error;
+use std::time::Instant;
 
 #[derive(Serialize, Deserialize)]
 struct ChangePassRequest {
-    username: String
+    username: String,
+}
+
+#[derive(Serialize, Deserialize)]
+struct ChangePassResponse {
+    ok: bool,
+    message: String,
 }
 
 pub async fn run() -> Result<(), Error> {
+    let start = Instant::now(); //start timing process
+
     let username = get_user_account_data()?.username;
-    let url = format!("{}/user/changePassword", AUTHENTICATOR_URL);
-    let body = ChangePassRequest {username};
+    let url = format!("{}/user/changePassword/sendLink", AUTHENTICATOR_URL);
+    let body = ChangePassRequest { username };
     let req = build_request(&url, Method::POST, std_error(to_string(&body))?);
-    let res = request(req).await?;
-    println!("{}", res);
+
+    paintln!("{gray}", "[sending form link]");
+    let res: ChangePassResponse = from_str(&request(req).await?)?;
+
+    if !res.ok {
+        println!("{}", res.message);
+    }
+
+    println!("A link was invited to your email.");
+    println!("That link will redirect you to a form for you to change your password.");
+
+    let end = Instant::now(); // stop timing process
+    println!("Done in {:.2?}", end.duration_since(start));
+
     Ok(())
 }
