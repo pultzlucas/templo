@@ -2,7 +2,7 @@ use crate::cli::output::messages::error::NOT_FOUND_USER_AUTH;
 use crate::core::requester::{build_request, request, Method, AUTHENTICATOR_URL};
 use crate::core::user_account::{get_user_account_data, user_auth_exists};
 use crate::paintln;
-use crate::utils::errors::{not_found_error, std_error};
+use crate::utils::errors::{not_found_error, std_error, other_error};
 use serde_derive::{Deserialize, Serialize};
 use serde_json::{from_str, to_string};
 use std::io::Error;
@@ -35,7 +35,7 @@ pub async fn run() -> Result<(), Error> {
     let res: ChangePassResponse = from_str(&request(req).await?)?;
 
     if !res.ok {
-        println!("{}", res.message);
+        return Err(other_error(&res.message));
     }
 
     println!("A link was invited to your email by \"prottern.mailer@gmail.com\".");
