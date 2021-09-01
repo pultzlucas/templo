@@ -38,7 +38,7 @@ pub async fn run() -> Result<(), Error> {
         println!("{}", res.message);
     }
 
-    println!("A link was invited to your email.");
+    println!("A link was invited to your email by \"prottern.mailer@gmail.com\".");
     println!("That link will redirect you to a form for you to change your password.");
 
     let end = Instant::now(); // stop timing process
