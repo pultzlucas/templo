@@ -5,12 +5,12 @@ use crate::{
     cli::output::messages::error::{
         INVALID_DIRECTORY_PATH_NAME, INVALID_DIRECTORY_PATH_TYPE, INVALID_TEMPLATE_NAME,
     },
-    core::repository::local,
+    core::repo,
 };
 use std::{fs, io::Error, path::Path, time::Instant};
 
 pub fn run(args: Args) -> Result<(), Error> {
-    local::create()?;
+    repo::create()?;
 
     if args.inputs.len() < 1 {
         return Err(invalid_input_error(INVALID_TEMPLATE_NAME));
@@ -32,12 +32,13 @@ pub fn run(args: Args) -> Result<(), Error> {
     }
 
     let start = Instant::now(); // start timing process
-    let template = local::get_template(&template_name)?;
+    let template = repo::get_template(&template_name)?;
 
     gen_template(template, directory)?;
     println!("Template \"{}\" was generated.", template_name);
 
     let end = Instant::now(); // stop timing process
     println!("Done in {:.2?}", end.duration_since(start));
+
     Ok(())
 }

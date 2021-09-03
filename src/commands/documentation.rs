@@ -9,11 +9,11 @@ pub fn run() -> Result<(), Error> {
     let start = Instant::now(); // start timing process
     paintln!("{gray}", "[opening browser]");
 
-    //open browser
     open::that(DOCS_URL)?;
 
     let end = Instant::now(); // stop timing process
     println!("Done in {:.2?}", end.duration_since(start));
     println!("Look at your browser!");
+
     Ok(())
 }

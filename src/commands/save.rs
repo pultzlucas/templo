@@ -1,18 +1,13 @@
+use crate::cli::input::args::Args;
 use crate::{
-    cli::output::messages::error::{
-        INVALID_DIRECTORY_PATH_NAME, INVALID_TEMPLATE_NAME,
-    },
-    core::{
-        repository::local,
-        template::maker::make_template,
-    },
+    cli::output::messages::error::{INVALID_DIRECTORY_PATH_NAME, INVALID_TEMPLATE_NAME},
+    core::{repo, template::maker::make_template},
     utils::errors::{already_exists_error, invalid_input_error},
 };
-use crate::cli::input::args::Args;
 use std::{io::Error, path::Path, time::Instant};
 
 pub fn run(args: Args) -> Result<(), Error> {
-    local::create()?;
+    repo::create()?;
 
     if args.inputs.len() < 1 {
         return Err(invalid_input_error(INVALID_DIRECTORY_PATH_NAME));
@@ -24,7 +19,7 @@ pub fn run(args: Args) -> Result<(), Error> {
     let directory = args.inputs[0].clone();
     let template_name = args.inputs[1].clone();
 
-    if local::template_exists(&template_name) {
+    if repo::template_exists(&template_name) {
         return Err(already_exists_error(&format!(
             r#"Template "{}" already exists in your repository."#,
             &template_name
@@ -41,7 +36,7 @@ pub fn run(args: Args) -> Result<(), Error> {
     let start = Instant::now(); // start timing process
     let template = make_template(template_name, &directory)?;
 
-    local::save_template(template)?;
+    repo::save_template(template)?;
     println!("Template was saved successfully.");
 
     let end = Instant::now(); // stop timing process

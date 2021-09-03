@@ -1,14 +1,14 @@
 use crate::cli::input::args::Args;
 use crate::{
     cli::output::messages::error::{INVALID_TEMPLATE_NAME, TEMPLATE_ALREADY_EXISTS},
-    core::repository::local,
+    core::repo,
     paintln,
     utils::errors::{already_exists_error, invalid_input_error},
 };
 use std::{io::Error, str, time::Instant};
 
 pub async fn run(args: Args) -> Result<(), Error> {
-    local::create()?;
+    repo::create()?;
 
     if args.inputs.len() < 1 {
         return Err(invalid_input_error(INVALID_TEMPLATE_NAME));
@@ -18,7 +18,7 @@ pub async fn run(args: Args) -> Result<(), Error> {
 
     // Verify if some template already exists in repository
     for name in templates_name.iter() {
-        if local::template_exists(name) {
+        if repo::template_exists(name) {
             return Err(already_exists_error(TEMPLATE_ALREADY_EXISTS));
         }
     }

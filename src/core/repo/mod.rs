@@ -85,25 +85,9 @@ pub fn template_exists(template_name: &str) -> bool {
     get_template_path(template_name).exists()
 }
 
-/* pub fn get_remote_templates() -> Vec<Template> {
-    get_templates_type(TemplateType::Remote)
-}
-
-pub fn get_local_templates() -> Vec<Template> {
-    get_templates_type(TemplateType::Local)
-} */
-
 pub fn is_empty() -> bool {
     total_templates() == 0
 }
-
-/* fn get_templates_type(temp_type: TemplateType) -> Vec<Template> {
-    get_templates()
-        .clone()
-        .into_iter()
-        .filter(|temp| temp.template_type == temp_type)
-        .collect()
-} */
 
 fn get_template_path(template_name: &str) -> PathBuf {
     Path::new(&get_templates_path().unwrap())

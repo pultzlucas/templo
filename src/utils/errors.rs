@@ -17,13 +17,13 @@ pub fn not_found_error(msg: &str) -> Error {
     return Error::new(ErrorKind::NotFound, msg);
 }
 
-pub fn permission_denied_error(msg: &str) -> Error {
+/* pub fn permission_denied_error(msg: &str) -> Error {
     return Error::new(ErrorKind::NotFound, msg);
 }
 
 pub fn other_error(msg: &str) -> Error {
     return Error::new(ErrorKind::NotFound, msg);
-}
+} */
 
 pub fn already_exists_error(msg: &str) -> Error {
     return Error::new(ErrorKind::NotFound, msg);
