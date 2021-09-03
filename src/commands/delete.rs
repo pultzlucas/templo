@@ -15,8 +15,8 @@ pub fn run(args: Args) -> Result<(), Error> {
     // Deleting templates
     let start = Instant::now(); // start timing process
 
-    for name in templates_name.iter() {
-        repo::delete_template(name)?;
+    for name in templates_name.into_iter() {
+        repo::delete_template(name.to_string())?;
         println!("Template \"{}\" was deleted.", name);
     }
 

@@ -28,3 +28,7 @@ pub fn other_error(msg: &str) -> Error {
 pub fn already_exists_error(msg: &str) -> Error {
     return Error::new(ErrorKind::NotFound, msg);
 }
+
+pub fn invalid_data_error(msg: &str) -> Error {
+    return Error::new(ErrorKind::InvalidData, msg);
+}

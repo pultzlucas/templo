@@ -63,15 +63,15 @@ pub fn get_template(template_name: &str) -> Result<Template, Error> {
     Ok(template)
 }
 
-pub fn delete_template(template_name: &str) -> Result<(), Error> {
-    if !template_exists(template_name) {
+pub fn delete_template(template_name: String) -> Result<(), Error> {
+    if !template_exists(&template_name) {
         return Err(not_found_error(&format!(
             "Not is possible find \"{}\" on repository",
             template_name
         )));
     }
 
-    let template_path = get_template_path(template_name);
+    let template_path = get_template_path(&template_name);
     fs::remove_file(template_path)?;
     Ok(())
 }

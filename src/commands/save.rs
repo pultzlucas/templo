@@ -22,7 +22,7 @@ pub fn run(args: Args) -> Result<(), Error> {
     if repo::template_exists(&template_name) {
         return Err(already_exists_error(&format!(
             r#"Template "{}" already exists in your repository."#,
-            &template_name
+            template_name
         )));
     }
 
