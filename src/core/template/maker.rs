@@ -1,5 +1,4 @@
 use super::{miner, TempContent, TempPath, Template, TemplateType};
-use crate::core::user_account::get_user_account_data;
 use crate::utils::date::get_date_now_string;
 use crate::utils::path::{format_path_namespace, pathbuf_to_string, remove_dir_prefix};
 use std::io::Error;
@@ -11,11 +10,10 @@ pub struct TempData {
 }
 
 pub fn make_template(temp_name: String, dir_path: &str) -> Result<Template, Error> {
-    let (name, created_by, created_at, template_type) = make_template_metadata(temp_name)?;
+    let (name, created_at, template_type) = make_template_metadata(temp_name)?;
     let data = make_template_data(dir_path)?;
     Ok(Template {
         name,
-        created_by,
         created_at,
         template_type,
         paths: data.paths,
@@ -46,9 +44,8 @@ pub fn make_template_data(dir_path: &str) -> Result<TempData, Error> {
     })
 }
 
-type TempMetadata = (String, String, String, TemplateType);
+type TempMetadata = (String, String, TemplateType);
 fn make_template_metadata(temp_name: String) -> Result<TempMetadata, Error> {
-    let owner = get_user_account_data()?.username;
     let created_at = get_date_now_string();
-    Ok((temp_name, owner, created_at, TemplateType::Local))
+    Ok((temp_name, created_at, TemplateType::Local))
 }

@@ -1,9 +1,8 @@
 use crate::core::{
     fs::{paths::get_templates_path, read_base64_file, write_base64_file},
     template::Template,
-    user_account::UserPermissions,
 };
-use crate::utils::errors::{not_found_error, permission_denied_error};
+use crate::utils::errors::not_found_error;
 use crate::utils::errors::std_error;
 use std::{
     fs,
@@ -72,22 +71,13 @@ pub fn delete_template(template_name: &str) -> Result<(), Error> {
         )));
     }
 
-    let has_permission_to = UserPermissions::new();
-
-    if !has_permission_to.delete_template(template_name) {
-        return Err(permission_denied_error(&format!(
-            "You do not has permission to delete \"{}\".",
-            template_name
-        )));
-    }
-
     let template_path = get_template_path(template_name);
     fs::remove_file(template_path)?;
     Ok(())
 }
 
 pub fn total_templates() -> usize {
-    let temps = fs::read_dir(&get_templates_path().unwrap()).unwrap();    
+    let temps = fs::read_dir(&get_templates_path().unwrap()).unwrap();
     temps.count()
 }
 

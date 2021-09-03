@@ -1,13 +1,12 @@
 use crate::{
     cli::output::messages::error::{
-        INVALID_DIRECTORY_PATH_NAME, INVALID_TEMPLATE_NAME, NOT_FOUND_USER_AUTH,
+        INVALID_DIRECTORY_PATH_NAME, INVALID_TEMPLATE_NAME,
     },
     core::{
         repository::local,
         template::maker::make_template,
-        user_account::user_auth_exists,
     },
-    utils::errors::{already_exists_error, invalid_input_error, not_found_error},
+    utils::errors::{already_exists_error, invalid_input_error},
 };
 use crate::cli::input::args::Args;
 use std::{io::Error, path::Path, time::Instant};
@@ -15,9 +14,6 @@ use std::{io::Error, path::Path, time::Instant};
 pub fn run(args: Args) -> Result<(), Error> {
     local::create()?;
 
-    if !user_auth_exists() {
-        return Err(not_found_error(NOT_FOUND_USER_AUTH));
-    }
     if args.inputs.len() < 1 {
         return Err(invalid_input_error(INVALID_DIRECTORY_PATH_NAME));
     }

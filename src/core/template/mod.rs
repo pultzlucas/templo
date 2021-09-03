@@ -16,7 +16,6 @@ use tabled::Tabled;
 #[derive(Debug, PartialEq, Deserialize, Serialize, Clone)]
 pub struct Template {
     pub name: String,
-    pub created_by: String,
     pub created_at: String,
     pub template_type: TemplateType,
     pub paths: Vec<TempPath>,
@@ -38,7 +37,6 @@ pub struct TempContent {
 #[derive(Tabled)]
 pub struct TemplateDisplayInfo {
     pub name: String,
-    pub created_by: String,
     pub created_at: String,
     pub template_type: TemplateType,
 }
@@ -92,7 +90,6 @@ impl Template {
     pub fn fmt(&self) -> TemplateDisplayInfo {
         TemplateDisplayInfo {
             name: self.name.clone(),
-            created_by: self.created_by.clone(),
             created_at: self.created_at.clone(),
             template_type: self.template_type.clone(),
         }

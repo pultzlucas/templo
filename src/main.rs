@@ -30,11 +30,7 @@ async fn main() {
                 "help" | "h" => help::run(),
                 "version" | "v" => version::run(),
                 "documentation" | "docs" => documentation::run(),
-                "user" => user::run(args).await,
-                "pub" => publish::run(args).await,
-                "unpub" => unpub::run(args).await,
                 "get" => get::run(args).await,
-                "explore" => explore::run().await,
                 _ => Err(invalid_input_error(&format!(
                     "Invalid command \"{}\".",
                     command

@@ -1,7 +1,7 @@
 use crate::cli::input::args::Args;
 use crate::{
     cli::output::messages::error::{INVALID_TEMPLATE_NAME, TEMPLATE_ALREADY_EXISTS},
-    core::repository::{local, remote},
+    core::repository::local,
     paintln,
     utils::errors::{already_exists_error, invalid_input_error},
 };
@@ -26,13 +26,13 @@ pub async fn run(args: Args) -> Result<(), Error> {
     paintln!("{gray}", "[getting templates]");
 
     let start = Instant::now(); // start timing process
-    let templates = remote::get_templates(templates_name.to_vec()).await?;
+    //let templates = remote::get_templates(templates_name.to_vec()).await?;
 
     // Save templates in repository
-    for temp in templates.into_iter() {
+/*     for temp in templates.into_iter() {
         local::save_template(temp.clone())?;
         println!("Template {} was installed.", temp.name);
-    }
+    } */
 
     let end = Instant::now(); // stop timing process
     println!("Done in {:.2?}", end.duration_since(start));

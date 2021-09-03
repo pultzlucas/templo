@@ -74,14 +74,10 @@ pub trait Command {
 pub mod generate;
 pub mod delete;
 pub mod describe;
-pub mod explore;
 pub mod get;
 pub mod help;
-pub mod user;
 pub mod prottern;
-pub mod publish;
 pub mod save;
 pub mod repository;
-pub mod unpub;
 pub mod version;
 pub mod documentation;

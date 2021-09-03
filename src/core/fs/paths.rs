@@ -1,4 +1,3 @@
-extern crate home;
 use crate::core::info::os_is_windows;
 use crate::utils::errors::not_found_error;
 use std::io::Error;
@@ -11,10 +10,6 @@ pub fn get_templates_path() -> Result<PathBuf, Error> {
 pub fn get_repo_path() -> Result<PathBuf, Error> {
     let data_path = get_app_data_path()?;
     Ok(data_path.join("Repository"))
-}
-
-pub fn get_user_auth_path() -> Result<PathBuf, Error> {
-    Ok(get_app_data_path()?.join("auth"))
 }
 
 fn get_app_data_path() -> Result<PathBuf, Error> {
