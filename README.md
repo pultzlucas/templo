@@ -6,7 +6,8 @@ Templo is a template manager that provide you more flexibility and agility at so
 - Is open source
 
 ---
-![image]({https://img.shields.io/badge/GitHub-100000?logo=github&logoColor=white})
+![Github](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)
+![Rust](https://img.shields.io/badge/Rust-black?style=for-the-badge&logo=rust&logoColor=#E57324) 
 ---
 
 ### Installation
