@@ -36,7 +36,8 @@ pub async fn run(args: Args) -> Result<(), Error> {
         return Err(already_exists_error(TEMPLATE_ALREADY_EXISTS));
     }
 
-    repo::save_template(template)?;
+    repo::save_template(template.clone())?;
+    println!("Template \"{}\" was installed.", template.name);
 
     let end = Instant::now(); // stop timing process
     println!("Done in {:.2?}", end.duration_since(start));
