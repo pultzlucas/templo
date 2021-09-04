@@ -1,6 +1,6 @@
 Status: in development
 
-![example workflow](https://github.com/pultzlucas/templo/actions/workflows/rust.yml/badge.svg)
+![rust workflow](https://github.com/pultzlucas/templo/actions/workflows/rust.yml/badge.svg)
 
 Templo is a template manager that provide you more flexibility and agility at software development time and is built in Rust.
 
@@ -21,4 +21,4 @@ coming soon...
 $ tp
 ```
 
-If Templo was intalled a welcome message will appear in your console. 🎉
+If Templo was installed a welcome message will appear in your console. 🎉
