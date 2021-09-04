@@ -13,7 +13,7 @@ struct Version {
     version: &'static str,
 }
 
-pub fn help() -> Result<(), Error> {
+pub fn run() -> Result<(), Error> {
     print!(
         "{}",
         Table::new(&[Version { version: VERSION }]).with(Style::pseudo())
@@ -33,8 +33,8 @@ pub fn help() -> Result<(), Error> {
 
 fn print_commands() {
     let commands_tb = Table::new(&COMMANDS)
+        .with(Modify::new(Column(..1)).with(Alignment::left()))
         .with(Modify::new(Column(1..)).with(Alignment::left()))
-        .with(Modify::new(Column(..1)).with(Alignment::right()))
         .with(Modify::new(Row(..1)).with(Alignment::center_horizontal()))
         .with(Style::psql());
 

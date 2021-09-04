@@ -1,25 +1,24 @@
-use crate::core::{
-    io::messages::error::INVALID_TEMPLATE_NAME, repository::create_repository_if_not_exists,
-    repository::RepositoryConnection, template::TemplateManager,
-};
-use std::io::{Error, ErrorKind};
+use crate::cli::input::args::Args;
+use crate::utils::errors::invalid_input_error;
+use crate::utils::path::pathbuf_to_string;
+use crate::{cli::output::messages::error::INVALID_TEMPLATE_NAME, core::repo};
+use std::io::Error;
 
-pub fn describe(args: &[String]) -> Result<(), Error> {
-    create_repository_if_not_exists()?;
+pub fn run(args: Args) -> Result<(), Error> {
+    repo::create()?;
 
-    if args.len() < 1 {
-        return Err(Error::new(ErrorKind::InvalidInput, INVALID_TEMPLATE_NAME));
+    if args.inputs.len() == 0 {
+        return Err(invalid_input_error(INVALID_TEMPLATE_NAME));
     }
 
     // Get template from repository
-    let template = {
-        let repository = RepositoryConnection::new();
-        repository.get_template(&args[0])?
-    };
+    let template = repo::get_template(&args.inputs[0])?;
 
     // Describe template
-    let manager = TemplateManager::new(vec![template]);
-    manager.describe_templates();
+    template
+        .paths
+        .into_iter()
+        .for_each(|path| println!("{}", pathbuf_to_string(path.path)));
 
     Ok(())
 }

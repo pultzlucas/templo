@@ -1,76 +1,43 @@
+use crate::cli::input::args::Args;
+use crate::core::requester::{build_request, request, validate_url, Method};
+use crate::core::template::Template;
 use crate::{
-    core::{
-        io::messages::error::{INVALID_TEMPLATE_NAME, TEMPLATE_ALREADY_EXISTS},
-        repository::{create_repository_if_not_exists, RepositoryConnection},
-        requester::{Method, ProtternRequester},
-        template::Template,
-    },
+    cli::output::messages::error::TEMPLATE_ALREADY_EXISTS,
+    core::repo,
     paintln,
+    utils::errors::{already_exists_error, invalid_data_error, invalid_input_error, std_error},
 };
+use std::{io::Error, str, time::Instant};
 
-use serde_derive::{Deserialize, Serialize};
-use serde_json;
-use std::{
-    io::{Error, ErrorKind},
-    str,
-    time::Instant,
-};
+pub async fn run(args: Args) -> Result<(), Error> {
+    repo::create()?;
 
-#[derive(Deserialize, Serialize, Clone, Debug)]
-struct GetRequestBody {
-    templates_name: Vec<String>,
-}
-
-#[derive(Deserialize, Serialize, Clone, Debug)]
-struct GetResponseBody {
-    message: String,
-    getted: bool,
-    templates: Vec<Template>,
-}
-
-pub async fn get(args: &[String]) -> Result<(), Error> {
-    create_repository_if_not_exists()?;
-
-    if args.len() < 1 {
-        return Err(Error::new(ErrorKind::InvalidInput, INVALID_TEMPLATE_NAME));
+    if args.inputs.len() < 1 {
+        return Err(invalid_input_error("The template url must be specified."));
     }
 
-    let templates_name = &args[0..];
-    let repository = RepositoryConnection::new();
-
-    // Verify if some template already exists in repository
-    for name in templates_name.iter() {
-        if repository.template_exists(name) {
-            return Err(Error::new(
-                ErrorKind::AlreadyExists,
-                TEMPLATE_ALREADY_EXISTS,
-            ));
-        }
-    }
-
-    // Getting templates
     let start = Instant::now(); // start timing process
-    let response: GetResponseBody = {
-        let response = {
-            let requester = ProtternRequester::new();
-            let req = {
-                let body: GetRequestBody = GetRequestBody {
-                    templates_name: templates_name.to_vec(),
-                };
-                let body_as_string: String = serde_json::to_string(&body).unwrap();
-                requester.build_request("/templates/get", Method::GET, body_as_string)
-            };
-            paintln!("{gray}", "[Getting Templates]");
-            requester.request(req).await?
-        };
-        serde_json::from_str(&response).expect("Error when parsing JSON.")
-    };
 
-    // Save templates in repository
-    for temp in response.templates.iter() {
-        RepositoryConnection::new().save_template(&temp)?;
-        println!("Template {} was installed.", temp.name);
+    let url = validate_url(&args.inputs[0])?;
+
+    paintln!("{gray}", "[getting template]");
+    let req = build_request(url, Method::GET, None);
+    let res = request(req).await?;
+
+    // check if template data is valid
+    if serde_json::from_str::<Template>(&res).is_err() {
+        return Err(invalid_data_error("Template data is incorrect."));
     }
+
+    let template: Template = std_error(serde_json::from_str(&res))?;
+
+    //check if a template with the same name already exists in repo
+    if repo::template_exists(&template.name) {
+        return Err(already_exists_error(TEMPLATE_ALREADY_EXISTS));
+    }
+
+    repo::save_template(template.clone())?;
+    println!("Template \"{}\" was installed.", template.name);
 
     let end = Instant::now(); // stop timing process
     println!("Done in {:.2?}", end.duration_since(start));

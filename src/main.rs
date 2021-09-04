@@ -1,47 +1,45 @@
 extern crate tokio;
+mod cli;
 mod commands;
 mod core;
+mod utils;
 
+use crate::utils::errors::invalid_input_error;
+use cli::input::args::parse_args;
 use commands::*;
-use std::{
-    env,
-    io::{Error, ErrorKind},
-};
+use std::env;
 
 #[tokio::main]
 async fn main() {
     let env: Vec<String> = env::args().collect();
-    let args: &[String] = if env.len() > 2 { &env[2..] } else { &[] };
+    let args = parse_args(env.join(" ")).expect("Error when parsing command args.");
 
-    if env.len() == 1 {
-        prottern();
+    if let None = args.command {
+        templo::run();
         return;
     }
 
-    let output = {
-        let command = env[1].as_str();
-        match command {
-            "save" => save(args),
-            "generate" | "gen" => generate(args),
-            "delete" | "del" => delete(args),
-            "repo" | "repository" => repository(),
-            "describe" | "desc" => describe(args),
-            "profile" => profile(),
-            "help" | "h" => help(),
-            "version" | "v" => version(),
-            "logout" => logout(),
-            "documentation" | "docs" => documentation(),
-            "signup" => signup().await,
-            "login" => login().await,
-            "pub" => publish(args).await,
-            "unpub" => unpub(args).await,
-            "get" => get(args).await,
-            "explore" => explore().await,
-            _ => Err(Error::new(ErrorKind::InvalidInput, "Invalid command.")),
-        }
-    };
+    if let Some(command) = args.command.clone() {
+        let output = {
+            match command.as_str() {
+                "save" => save::run(args),
+                "gen" => generate::run(args),
+                "del" => delete::run(args),
+                "repo" => repository::run(args),
+                "desc" => describe::run(args),
+                "help" | "h" => help::run(),
+                "version" | "v" => version::run(),
+                "docs" => documentation::run(),
+                "get" => get::run(args).await,
+                _ => Err(invalid_input_error(&format!(
+                    "Invalid command \"{}\".",
+                    command
+                ))),
+            }
+        };
 
-    if let Err(e) = output {
-        eprintln!("{}: {}", paint_string!("{red}", "Error"), e);
+        if let Err(e) = output {
+            eprintln!("{}: {}", paint_string!("{red}", "Error"), e);
+        }
     }
 }

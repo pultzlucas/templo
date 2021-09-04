@@ -5,15 +5,15 @@ use std::time::Instant;
 
 const DOCS_URL: &'static str = "https://github.com/Lucas-Lopes-Pultz/prottern-docs";
 
-pub fn documentation() -> Result<(), Error> {
+pub fn run() -> Result<(), Error> {
     let start = Instant::now(); // start timing process
-    paintln!("{gray}", "[Opening browser]");
+    paintln!("{gray}", "[opening browser]");
 
-    //open browser
     open::that(DOCS_URL)?;
 
     let end = Instant::now(); // stop timing process
     println!("Done in {:.2?}", end.duration_since(start));
     println!("Look at your browser!");
+
     Ok(())
 }

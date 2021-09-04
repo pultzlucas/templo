@@ -1,34 +1,27 @@
-use crate::core::{
-    io::messages::error::{INVALID_TEMPLATE_NAME, NOT_FOUND_USER_AUTH},
-    repository::{create_repository_if_not_exists, RepositoryConnection},
-    user_account::UserAccountManager,
-};
+use crate::cli::input::args::Args;
+use crate::utils::errors::invalid_input_error;
+use crate::{cli::output::messages::error::INVALID_TEMPLATE_NAME, core::repo};
+use std::{io::Error, time::Instant};
 
-use std::{
-    io::{Error, ErrorKind},
-    time::Instant,
-};
+pub fn run(args: Args) -> Result<(), Error> {
+    repo::create()?;
 
-pub fn delete(args: &[String]) -> Result<(), Error> {
-    create_repository_if_not_exists()?;
-
-    if !UserAccountManager::user_auth_exists() {
-        return Err(Error::new(ErrorKind::NotFound, NOT_FOUND_USER_AUTH));
+    if args.inputs.len() < 1 {
+        return Err(invalid_input_error(INVALID_TEMPLATE_NAME));
     }
 
-    if args.len() < 1 {
-        return Err(Error::new(ErrorKind::InvalidInput, INVALID_TEMPLATE_NAME));
-    }
-
-    let templates_name = &args[0..];
+    let templates_name = &args.inputs[0..];
 
     // Deleting templates
     let start = Instant::now(); // start timing process
-    for name in templates_name.iter() {
-        RepositoryConnection::new().delete_template(name)?;
+
+    for name in templates_name.into_iter() {
+        repo::delete_template(name.to_string())?;
         println!("Template \"{}\" was deleted.", name);
     }
+
     let end = Instant::now(); // stop timing process
     println!("Done in {:.2?}", end.duration_since(start));
+
     Ok(())
 }

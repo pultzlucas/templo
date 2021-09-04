@@ -1,7 +1,7 @@
 use crate::core::info::VERSION;
 use std::io::Error;
 
-pub fn version() -> Result<(), Error> {
-    println!("{}v", VERSION);
+pub fn run() -> Result<(), Error> {
+    println!("{}", VERSION);
     Ok(())
 }
