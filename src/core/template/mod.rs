@@ -4,7 +4,6 @@ pub mod miner;
 
 use serde_derive::{Deserialize, Serialize};
 use std::fmt::{Display, Formatter, Result};
-//use std::ops::Deref;
 use std::path::PathBuf;
 use tabled::Tabled;
 
