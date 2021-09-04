@@ -12,19 +12,19 @@ pub const COMMANDS: [CommandInfo; 8] = [
         description: "Saves a template from directory."
     },
     CommandInfo {
-        command: "generate/gen",
+        command: "gen",
         description: "Generates a project from template."
     },
     CommandInfo {
-        command: "delete/del",
+        command: "del",
         description: "Deletes a template."
     },
     CommandInfo {
-        command: "repository/repo",
+        command: "repo",
         description: "Returns all templates existents on repository."
     },
     CommandInfo {
-        command: "describe/desc",
+        command: "desc",
         description: "Describes a template."
     },
     CommandInfo {
@@ -32,7 +32,7 @@ pub const COMMANDS: [CommandInfo; 8] = [
         description: "Installes a public template."
     },
     CommandInfo {
-        command: "documentation/docs",
+        command: "docs",
         description: "Open the Prottern documentation."
     },
     CommandInfo {

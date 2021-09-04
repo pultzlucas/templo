@@ -23,13 +23,13 @@ async fn main() {
         let output = {
             match command.as_str() {
                 "save" => save::run(args),
-                "generate" | "gen" => generate::run(args),
-                "delete" | "del" => delete::run(args),
-                "repo" | "repository" => repository::run(args),
-                "describe" | "desc" => describe::run(args),
+                "gen" => generate::run(args),
+                "del" => delete::run(args),
+                "repo" => repository::run(args),
+                "desc" => describe::run(args),
                 "help" | "h" => help::run(),
                 "version" | "v" => version::run(),
-                "documentation" | "docs" => documentation::run(),
+                "docs" => documentation::run(),
                 "get" => get::run(args).await,
                 _ => Err(invalid_input_error(&format!(
                     "Invalid command \"{}\".",
