@@ -18,7 +18,7 @@ coming soon...
 ### Getting Started
 
 ```command
-$ tpl
+$ tp
 ```
 
 If Templo was intalled a welcome message will appear in your console. 🎉
