@@ -12,5 +12,5 @@ const WELCOME_STRING: &'static str = r#"
 
 pub fn run() {
     print!("{}", WELCOME_STRING);
-    paintln!(r#"Type "{yellow}" for more information."#, "tpl help");
+    paintln!(r#"Type "{yellow}" for more information."#, "tp help");
 }

@@ -46,7 +46,7 @@ pub mod delete;
 pub mod describe;
 pub mod get;
 pub mod help;
-pub mod templo;
+pub mod welcome;
 pub mod save;
 pub mod repository;
 pub mod version;
