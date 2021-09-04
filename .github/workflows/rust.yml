@@ -2,9 +2,9 @@ name: Rust
 
 on:
   push:
-    branches: [ master, develop ]
+    branches: [ master ]
   pull_request:
-    branches: [ master, develop ]
+    branches: [ master ]
 
 env:
   CARGO_TERM_COLOR: always
@@ -13,6 +13,7 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    runs-on: windows
 
     steps:
     - uses: actions/checkout@v2
