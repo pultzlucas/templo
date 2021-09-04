@@ -1,27 +1,20 @@
-Prottern is a template manager that provide you more flexibility at software development time.
+Templo is a template manager that provide you more flexibility and agility at software development time and is built in Rust.
 
-- Faster software development process
+- Agile software development process
 - CLI Simple to use
 - Ships only a single executable file
-- Possibility to publish templates over the web for other people uses
-- Is built in Rust
+- Is open source
 
 ***
 
 ### Installation
-<a href="https://github.com/Lucas-Lopes-Pultz/prottern/releases/download/v0.1.0-beta/Prottern-v0.1.0-beta.zip" rel="external">Download Prottern Binary</a>
-***
+
+coming soon...
 
 ### Getting Started
 
-To Get started you first need to download prottern.
-
-if you downloaded the Prottern's binary, you need to add the binary path on [Windows PATH variable](https://docs.microsoft.com/en-us/previous-versions/office/developer/sharepoint-2010/ee537574(v=office.14)) before continue.
-
-Next verify if Prottern was installed...
-
 ```command
-$ prottern
+$ tpl
 ```
 
-If Prottern was intalled a welcome message will appear in your console. 🎉
+If Templo was intalled a welcome message will appear in your console. 🎉
