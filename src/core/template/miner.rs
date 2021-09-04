@@ -4,12 +4,12 @@ use fs_tree::FsTreeBuilder;
 use std::{fs, io::Error};
 use base64;
 
-pub fn mine_paths_from(directory: &str) -> Result<Vec<TempPath>, Error> {
-    valid_directory_path(directory)?;
-    let fs_tree = FsTreeBuilder::new(directory).build();
+pub fn mine_paths_from(directory_path: &str) -> Result<Vec<TempPath>, Error> {
+    valid_directory_path(directory_path)?;
+    let fs_tree = FsTreeBuilder::new(directory_path).build();
     let vec_fs_tree: Vec<TempPath> = fs_tree
         .into_iter()
-        .map(|path| TempPath::new(path.unwrap()))
+        .map(|path| TempPath::new(path.expect("Not is possible find the folder.")))
         .collect();
     Ok(vec_fs_tree)
 }

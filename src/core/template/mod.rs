@@ -2,9 +2,6 @@ pub mod generator;
 pub mod maker;
 pub mod miner;
 
-#[cfg(test)]
-mod tests;
-
 use serde_derive::{Deserialize, Serialize};
 use std::fmt::{Display, Formatter, Result};
 //use std::ops::Deref;
