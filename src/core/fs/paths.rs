@@ -22,7 +22,7 @@ fn get_app_data_path() -> Result<PathBuf, Error> {
         let data_path = home_dir
             .join("AppData")
             .join("Local")
-            .join("Prottern");
+            .join("Templo");
 
         return Ok(data_path);
     }

@@ -530,27 +530,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "ptn"
-version = "0.1.0-beta"
-dependencies = [
- "base64",
- "chrono",
- "fs-tree",
- "home",
- "hyper",
- "hyper-tls",
- "open",
- "regex",
- "rpassword",
- "serde",
- "serde_derive",
- "serde_json",
- "tabled",
- "termcolor",
- "tokio",
-]
-
-[[package]]
 name = "quote"
 version = "1.0.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -874,6 +853,27 @@ name = "tower-service"
 version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "360dfd1d6d30e05fda32ace2c8c70e9c0a9da713275777f5a4dbb8a1893930c6"
+
+[[package]]
+name = "tpl"
+version = "0.1.0-beta"
+dependencies = [
+ "base64",
+ "chrono",
+ "fs-tree",
+ "home",
+ "hyper",
+ "hyper-tls",
+ "open",
+ "regex",
+ "rpassword",
+ "serde",
+ "serde_derive",
+ "serde_json",
+ "tabled",
+ "termcolor",
+ "tokio",
+]
 
 [[package]]
 name = "tracing"

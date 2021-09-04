@@ -41,18 +41,12 @@ pub const COMMANDS: [CommandInfo; 8] = [
     }
 ];
 
-/* use std::io::Error;
-pub trait Command {
-    fn info() -> CommandInfo;
-    fn exec(args: &[String]) -> Result<(), Error>;
-} */
-
 pub mod generate;
 pub mod delete;
 pub mod describe;
 pub mod get;
 pub mod help;
-pub mod prottern;
+pub mod templo;
 pub mod save;
 pub mod repository;
 pub mod version;

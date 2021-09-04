@@ -15,7 +15,7 @@ async fn main() {
     let args = parse_args(env.join(" ")).expect("Error when parsing command args.");
 
     if let None = args.command {
-        prottern::run();
+        templo::run();
         return;
     }
 

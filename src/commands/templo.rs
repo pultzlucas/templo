@@ -5,12 +5,12 @@ const WELCOME_STRING: &'static str = r#"
 |   \ \/\/ / ||_ ||   //   ||  || ||\/|| ||_    |
 |    \_/\_/  ||_ ||__ \\__ ||__|| ||  || ||_    |
 |                      to                       |
-|._  _  _           Prottern      _     _      _|
+|._  _  _            Templo       _     _      _|
 \_______________________________________________|
 
 "#;
 
 pub fn run() {
     print!("{}", WELCOME_STRING);
-    paintln!(r#"Type "{yellow}" for more information."#, "prottern help");
+    paintln!(r#"Type "{yellow}" for more information."#, "tpl help");
 }
