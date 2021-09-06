@@ -3,7 +3,6 @@ pub mod maker;
 pub mod miner;
 
 use serde_derive::{Deserialize, Serialize};
-use std::fmt::{Display, Formatter, Result};
 use std::path::PathBuf;
 use tabled::Tabled;
 
@@ -13,7 +12,6 @@ use tabled::Tabled;
 pub struct Template {
     pub name: String,
     pub created_at: String,
-    pub template_type: TemplateType,
     pub paths: Vec<TempPath>,
     pub contents: Vec<TempContent>,
 }
@@ -34,16 +32,9 @@ pub struct TempContent {
 pub struct TemplateDisplayInfo {
     pub name: String,
     pub created_at: String,
-    pub template_type: TemplateType,
 }
 
 //ENUMS
-
-#[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
-pub enum TemplateType {
-    Local,
-    Remote,
-}
 
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 pub enum TempPathType {
@@ -72,22 +63,11 @@ impl TempContent {
     }
 }
 
-impl Display for TemplateType {
-    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
-        match *self {
-            TemplateType::Local => write!(f, "Local"),
-            TemplateType::Remote => write!(f, "Remote"),
-        }
-    }
-}
-
-
 impl Template {
     pub fn fmt(&self) -> TemplateDisplayInfo {
         TemplateDisplayInfo {
             name: self.name.clone(),
             created_at: self.created_at.clone(),
-            template_type: self.template_type.clone(),
         }
     }
 }
