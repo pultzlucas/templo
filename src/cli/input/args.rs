@@ -23,13 +23,24 @@ pub fn parse_args(string_command: String) -> Result<Args, Error> {
     let args = &split_by(string_command.clone(), " ")[1..];
     let raw = string_command.clone();
     let program = split_by(string_command.clone(), " ")[0].clone();
+
     let command = if args.len() > 0 {
         Some(args[0].clone())
-    } else {None};
+    } else {
+        None
+    };
+
     let flags = get_flags(&args.join(" "))?;
+
     let inputs = if args.len() > 1 {
-        get_inputs(args[1..].join(" "))?
-    }else {vec![]};
+        let inputs = get_inputs(args[1..].join(" "))?;
+        inputs
+            .into_iter()
+            .filter(|input| !flags.iter().any(|flag| input == flag))
+            .collect()
+    } else {
+        vec![]
+    };
 
     Ok(Args {
         raw,
