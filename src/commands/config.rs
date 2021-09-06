@@ -3,7 +3,9 @@ use crate::cli::input::{get, get_valid_input};
 use crate::core::config::{self, RemoteRepoRegistry};
 use crate::core::path::get_config_path;
 use crate::utils::path::pathbuf_to_string;
+use crate::utils::errors::invalid_input_error;
 use std::io::Error;
+use tabled::{Table, Style};
 
 pub fn run(args: Args) -> Result<(), Error> {
     config::create_files()?;
@@ -15,24 +17,38 @@ pub fn run(args: Args) -> Result<(), Error> {
 
     if args.has_flag("--add") {
         match args.inputs[0].as_str() {
-            "repo:remote" => add_registry_remote_repo()?,
+            "repos:remote" => add_registry_remote_repo()?,
             _ => return Ok(()),
         }
     }
 
     if args.has_flag("--remove") {
         match args.inputs[0].as_str() {
-            "repo:remote" => remove_registry_remote_repo()?,
+            "repos:remote" => remove_registry_remote_repo()?,
             _ => return Ok(()),
         }
     }
 
     if args.has_flag("--update") {
         match args.inputs[0].as_str() {
-            "repo:remote" => update_registry_remote_repo()?,
+            "repos:remote" => update_registry_remote_repo()?,
             _ => return Ok(()),
         }
     }
+
+    match args.inputs[0].as_str() {
+        "repos:remote" => show_registered_remote_repos()?,
+        _ => return Err(invalid_input_error("Invalid config option"))
+    }
+
+    Ok(())
+}
+
+fn show_registered_remote_repos() -> Result<(), Error> {
+    let repos = config::repos::remote::get_repos()?;
+    let repos_table = Table::new(repos).with(Style::pseudo());
+
+    println!("{}", repos_table);
 
     Ok(())
 }

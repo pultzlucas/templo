@@ -7,10 +7,11 @@ use serde_json::to_string_pretty;
 use std::fs;
 use std::io::Error;
 use crate::paintln;
+use tabled::Tabled;
 
 pub mod repos;
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Tabled, Debug)]
 pub struct RemoteRepoRegistry {
     pub name: String,
     pub url: String,

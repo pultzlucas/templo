@@ -8,24 +8,12 @@ use std::path::PathBuf;
 pub mod remote {
     use super::*;
 
-    fn get_remote_repos_filename() -> Result<PathBuf, Error> {
-        Ok(get_config_path()?.join("Repos").join("remote.json"))
-    }
-
-    fn get_repos() -> Result<Vec<RemoteRepoRegistry>, Error> {
+    pub fn get_repos() -> Result<Vec<RemoteRepoRegistry>, Error> {
         let remote_repos_filename = get_remote_repos_filename()?;
         let current_repos_json = fs::read_to_string(&remote_repos_filename)?;
         std_error(serde_json::from_str(&current_repos_json))
     }
-
-    fn update_remote_repos(repos: Vec<RemoteRepoRegistry>) -> Result<(), Error> {
-        fs::write(
-            get_remote_repos_filename()?,
-            std_error(serde_json::to_string_pretty(&repos))?,
-        )?;
-        Ok(())
-    }
-
+    
     pub fn add(repo_registry: RemoteRepoRegistry) -> Result<(), Error> {
         let mut repos = get_repos()?;
         repos.push(repo_registry);
@@ -72,5 +60,18 @@ pub mod remote {
             "Repo \"{}\" not is registered.",
             repo_updated.name
         )))
+    }
+
+    fn get_remote_repos_filename() -> Result<PathBuf, Error> {
+        Ok(get_config_path()?.join("Repos").join("remote.json"))
+    }
+
+    
+    fn update_remote_repos(repos: Vec<RemoteRepoRegistry>) -> Result<(), Error> {
+        fs::write(
+            get_remote_repos_filename()?,
+            std_error(serde_json::to_string_pretty(&repos))?,
+        )?;
+        Ok(())
     }
 }
