@@ -1,4 +1,4 @@
-use super::path::{get_config_path, get_repo_path};
+use crate::core::path::{get_config_path, get_repo_path};
 use std::path::Path;
 use crate::utils::errors::std_error;
 use crate::utils::path::pathbuf_to_string;
@@ -6,6 +6,7 @@ use serde_derive::{Deserialize, Serialize};
 use serde_json::to_string_pretty;
 use std::fs;
 use std::io::Error;
+use crate::paintln;
 
 pub mod repos;
 
@@ -13,7 +14,7 @@ pub mod repos;
 pub struct RemoteRepoRegistry {
     pub name: String,
     pub url: String,
-    pub authorization: Option<String>,
+    pub require_authorization: bool,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -30,7 +31,8 @@ pub fn create_files() -> Result<(), Error> {
     if exists() {
         return Ok(());
     } 
-    
+
+    paintln!("{gray}", "[creating config files]");
     let config_dir = get_config_path()?;
     fs::create_dir(&config_dir)?;
 
@@ -42,8 +44,8 @@ pub fn create_files() -> Result<(), Error> {
 
     let std_tools_repo = RemoteRepoRegistry {
         name: "std-tools".to_string(),
-        url: "https://templo-std-tools.herokuapp.com/v1/templates/{}".to_string(),
-        authorization: None,
+        url: "https://templo-std-tools.herokuapp.com/v1".to_string(),
+        require_authorization: false,
     };
 
     let repos_dir = config_dir.join("Repos");
@@ -59,6 +61,8 @@ pub fn create_files() -> Result<(), Error> {
         repos_dir.join("remote.json"), 
         std_error(to_string_pretty(&vec![std_tools_repo]))?
     )?;
+
+    println!("Config files was created.");
 
     Ok(())
 }
