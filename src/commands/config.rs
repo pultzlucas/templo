@@ -40,7 +40,7 @@ pub fn run(args: Args) -> Result<(), Error> {
 fn add_registry_remote_repo() -> Result<(), Error> {
     let name = get("Repo name: ")?;
     let url = get("Repo url: ")?;
-    let authorization = get_valid_input("Repo authorization key (null): ", None, |input| {
+    let authorization = get_valid_input("Repo requires authorization key? [y/n]: ", None, |input| {
         input != "n" && input != "y" && input != "N" && input != "Y"
     })?;
 
@@ -69,8 +69,8 @@ fn remove_registry_remote_repo() -> Result<(), Error> {
 fn update_registry_remote_repo() -> Result<(), Error> {
     let name = get("Repo name: ")?;
     let url = get("Repo url: ")?;
-    let authorization = get_valid_input("Repo authorization key (null): ", None, |input| {
-        input != "n" && input != "y" && input != "N" && input != "Y"
+    let authorization = get_valid_input("Repo requires authorization key? [y/n]: ", None, |input| {
+        input == "n" || input == "y" || input == "N" || input == "Y"
     })?;
 
     let repo_updated = RemoteRepoRegistry {
