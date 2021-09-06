@@ -42,11 +42,11 @@ pub mod remote {
         Ok(())
     }
 
-    pub fn update(repo_updated: RemoteRepoRegistry) -> Result<(), Error> {
+    pub fn update(current_name: &str, repo_updated: RemoteRepoRegistry) -> Result<(), Error> {
         let mut repos = get_repos()?;
         let repo = repos
             .iter()
-            .rposition(|reg_repo| reg_repo.name == repo_updated.name);
+            .rposition(|reg_repo| reg_repo.name == current_name);
 
         if let Some(repo_idx) = repo {
             repos.remove(repo_idx);

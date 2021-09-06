@@ -11,11 +11,11 @@ use tabled::Tabled;
 
 pub mod repos;
 
-#[derive(Serialize, Deserialize, Tabled, Debug)]
+#[derive(Serialize, Deserialize, Tabled, Debug, Clone)]
 pub struct RemoteRepoRegistry {
     pub name: String,
     pub url: String,
-    pub require_authorization: bool,
+    pub requires_authorization: bool,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -46,7 +46,7 @@ pub fn create_files() -> Result<(), Error> {
     let std_tools_repo = RemoteRepoRegistry {
         name: "std-tools".to_string(),
         url: "https://templo-std-tools.herokuapp.com/v1".to_string(),
-        require_authorization: false,
+        requires_authorization: false,
     };
 
     let repos_dir = config_dir.join("Repos");

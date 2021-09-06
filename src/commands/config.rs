@@ -10,30 +10,34 @@ use tabled::{Table, Style};
 pub fn run(args: Args) -> Result<(), Error> {
     config::create_files()?;
 
+    if args.inputs.len() == 0 {
+        return Ok(());
+    }
+
     if args.has_flag("--local") {
         println!("{}", pathbuf_to_string(get_config_path()?));
         return Ok(());
     }
 
     if args.has_flag("--add") {
-        match args.inputs[0].as_str() {
-            "repos:remote" => add_registry_remote_repo()?,
-            _ => return Ok(()),
-        }
+        return match args.inputs[0].as_str() {
+            "repos:remote" => add_registry_remote_repo(),
+            _ => Ok(()),
+        };
     }
 
     if args.has_flag("--remove") {
-        match args.inputs[0].as_str() {
-            "repos:remote" => remove_registry_remote_repo()?,
-            _ => return Ok(()),
-        }
+        return match args.inputs[0].as_str() {
+            "repos:remote" => remove_registry_remote_repo(),
+            _ => Ok(()),
+        };
     }
 
     if args.has_flag("--update") {
-        match args.inputs[0].as_str() {
-            "repos:remote" => update_registry_remote_repo()?,
-            _ => return Ok(()),
-        }
+        return match args.inputs[0].as_str() {
+            "repos:remote" => update_registry_remote_repo(),
+            _ => Ok(()),
+        };
     }
 
     match args.inputs[0].as_str() {
@@ -57,18 +61,18 @@ fn add_registry_remote_repo() -> Result<(), Error> {
     let name = get("Repo name: ")?;
     let url = get("Repo url: ")?;
     let authorization = get_valid_input("Repo requires authorization key? [y/n]: ", None, |input| {
-        input != "n" && input != "y" && input != "N" && input != "Y"
+        input == "n" || input == "y" || input == "N" || input == "Y"
     })?;
 
-    let registry = RemoteRepoRegistry {
+    let repo_registry = RemoteRepoRegistry {
         name: name.clone(),
         url,
-        require_authorization: authorization == "y"
+        requires_authorization: authorization == "y" || authorization == "Y"
     };
 
-    config::repos::remote::add(registry)?;
+    config::repos::remote::add(repo_registry.clone())?;
 
-    println!("Repo \"{}\" was registered.", name);
+    println!("Repo \"{}\" was registered.", repo_registry.name);
 
     Ok(())
 }
@@ -83,8 +87,11 @@ fn remove_registry_remote_repo() -> Result<(), Error> {
 }
 
 fn update_registry_remote_repo() -> Result<(), Error> {
-    let name = get("Repo name: ")?;
-    let url = get("Repo url: ")?;
+    println!("Press Enter if you want the field remains the same.");
+
+    let current_name = get("Current repo name: ")?;
+    let name = get("New repo name: ")?;
+    let url = get("New repo url: ")?;
     let authorization = get_valid_input("Repo requires authorization key? [y/n]: ", None, |input| {
         input == "n" || input == "y" || input == "N" || input == "Y"
     })?;
@@ -92,12 +99,12 @@ fn update_registry_remote_repo() -> Result<(), Error> {
     let repo_updated = RemoteRepoRegistry {
         name: name.clone(),
         url,
-        require_authorization: authorization == "y"
+        requires_authorization: authorization == "y" || authorization == "Y"
     };
 
-    config::repos::remote::update(repo_updated)?;
+    config::repos::remote::update(&current_name, repo_updated)?;
 
-    println!("Repo \"{}\" was updated.", name);
+    println!("Repo \"{}\" was updated.", current_name);
 
     Ok(())
 }
