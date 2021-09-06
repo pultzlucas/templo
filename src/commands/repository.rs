@@ -1,5 +1,5 @@
 use crate::cli::input::args::Args;
-use crate::core::fs::paths::get_repo_path;
+use crate::core::path::get_repo_path;
 use crate::utils::path::pathbuf_to_string;
 use crate::core::repo;
 use crate::core::template::{Template, TemplateDisplayInfo};

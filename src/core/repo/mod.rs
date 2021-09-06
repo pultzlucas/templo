@@ -1,5 +1,5 @@
 use crate::core::{
-    fs::{paths::get_templates_path, read_base64_file, write_base64_file},
+    path::get_templates_path,
     template::Template,
 };
 use crate::utils::errors::not_found_error;
@@ -25,15 +25,16 @@ pub fn create() -> Result<(), Error> {
 
 pub fn save_template(template: Template) -> Result<(), Error> {
     let template_path = get_template_path(&template.name);
-    let template_string = std_error(serde_json::to_string(&template))?;
-    write_base64_file(template_path, template_string)
+    let template_string = std_error(serde_json::to_string_pretty(&template))?;
+    fs::write(template_path, template_string)
 }
 
 pub fn get_templates() -> Result<Vec<Template>, Error> {
     fs::read_dir(&get_templates_path().unwrap())
         .unwrap()
         .map(|template| template.map(|e| e.path()))
-        .map(|file| read_base64_file(file?))
+        .map(|file| fs::read(file?))
+        .map(|bytes| std_error(String::from_utf8(bytes?)))
         .map(|temp_string| std_error(serde_json::from_str(&temp_string?)))
         .collect()
 }
