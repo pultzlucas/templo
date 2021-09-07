@@ -22,6 +22,7 @@ pub fn run(args: Args) -> Result<(), Error> {
     if args.has_flag("--add") {
         return match args.inputs[0].as_str() {
             "repos:remote" => add_registry_remote_repo(),
+            "repos:local" => add_registry_local_repo(),
             _ => Ok(()),
         };
     }
@@ -29,6 +30,7 @@ pub fn run(args: Args) -> Result<(), Error> {
     if args.has_flag("--remove") {
         return match args.inputs[0].as_str() {
             "repos:remote" => remove_registry_remote_repo(),
+            "repos:local" => remove_registry_local_repo(),
             _ => Ok(()),
         };
     }
@@ -36,17 +38,48 @@ pub fn run(args: Args) -> Result<(), Error> {
     if args.has_flag("--update") {
         return match args.inputs[0].as_str() {
             "repos:remote" => update_registry_remote_repo(),
+            "repos:local" => update_registry_local_repo(),
             _ => Ok(()),
         };
     }
 
     match args.inputs[0].as_str() {
         "repos:remote" => show_registered_remote_repos()?,
+        "repos:local"  => show_registered_local_repos()?,
         _ => return Err(invalid_input_error("Invalid config option")),
     }
 
     Ok(())
 }
+
+// LOCAL REPOS
+
+fn show_registered_local_repos() -> Result<(), Error> {
+
+
+    Ok(())
+}
+
+fn add_registry_local_repo() -> Result<(), Error> {
+
+
+    Ok(())
+}
+
+fn remove_registry_local_repo() -> Result<(), Error> {
+
+
+    Ok(())
+}
+
+fn update_registry_local_repo() -> Result<(), Error> {
+
+
+    Ok(())
+}
+
+
+// REMOTE REPOS
 
 fn show_registered_remote_repos() -> Result<(), Error> {
     let repos = config::repos::remote::get_repos_registered()?;
