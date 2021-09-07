@@ -1,8 +1,10 @@
 use crate::cli::input::args::Args;
 use crate::cli::input::{get, get_boolean_input};
 use crate::core::config;
+use crate::core::config::registry::remote_repos::get_repo_registry;
 use crate::core::config::registry::RemoteRepoRegistry;
 use crate::core::path::get_config_path;
+use crate::utils::errors::not_found_error;
 use crate::utils::path::pathbuf_to_string;
 use std::io::Error;
 use tabled::{Style, Table};
@@ -82,19 +84,37 @@ fn update_registry_remote_repo() -> Result<(), Error> {
     println!("Press Enter if you want the field remains the same.");
 
     let current_name = get("Current repo name: ")?;
-    let name = get("New repo name: ")?;
-    let url = get("New repo url: ")?;
-    let requires_authorization = get_boolean_input("Repo requires authorization key? [y/n]: ")?;
 
-    let repo_updated = RemoteRepoRegistry {
-        name: name.clone(),
-        url,
-        requires_authorization,
-    };
+    let current_repo = get_repo_registry(&current_name)?;
 
-    config::registry::remote_repos::update(&current_name, repo_updated)?;
+    if let Some(current_repo) = current_repo {
+        let name = get("New repo name: ")?;
+        let url = get("New repo url: ")?;
+        let requires_authorization = get_boolean_input("Repo requires authorization key? [y/n]: ")?;
 
-    println!("Remote repo \"{}\" was updated.", current_name);
+        let repo_updated = RemoteRepoRegistry {
+            name: if name.is_empty() {
+                current_repo.name
+            } else {
+                name
+            },
+            url: if url.is_empty() {
+                current_repo.url
+            } else {
+                url
+            },
+            requires_authorization
+        };
 
-    Ok(())
+        config::registry::remote_repos::update(&current_name, repo_updated)?;
+
+        println!("Remote repo \"{}\" was updated.", current_name);
+
+        return Ok(());
+    }
+
+    Err(not_found_error(&format!(
+        "Not found repo registered as \"{}\".",
+        current_name
+    )))
 }
