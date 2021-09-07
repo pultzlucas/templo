@@ -1,5 +1,4 @@
-pub mod remote;
-pub mod local;
+pub mod repo;
 
 use serde_derive::{Deserialize, Serialize};
 use tabled::Tabled;
@@ -9,10 +8,4 @@ pub struct RemoteRepoRegistry {
     pub name: String,
     pub url: String,
     pub requires_authorization: bool,
-}
-
-#[derive(Serialize, Deserialize)]
-pub struct LocalRepoRegistry {
-    pub name: String,
-    pub path: String,
 }

@@ -51,4 +51,4 @@ pub mod save;
 pub mod repository;
 pub mod version;
 pub mod documentation;
-pub mod config;
+pub mod reg;

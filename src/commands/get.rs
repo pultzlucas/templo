@@ -1,5 +1,5 @@
 use crate::cli::input::args::Args;
-use crate::core::config::repos::remote;
+use crate::core::config::registry::repo;
 use crate::core::requester::{build_request, request, validate_url, Method};
 use crate::core::template::Template;
 use crate::{
@@ -29,7 +29,7 @@ pub async fn run(args: Args) -> Result<(), Error> {
         }
 
         let repo_name = args.inputs[1].clone();
-        let repo_registry = remote::get_repo_registry(&repo_name)?;
+        let repo_registry = repo::get_repo_registry(&repo_name)?;
 
         if let Some(repo) = repo_registry {
             let url = format!("{}/templates/{}", repo.url, args.inputs[0]);
