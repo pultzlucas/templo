@@ -1,11 +1,11 @@
 use crate::cli::input::args::Args;
-use crate::cli::input::{get, get_valid_input};
+use crate::cli::input::{get, get_boolean_input};
 use crate::core::config::{self, RemoteRepoRegistry};
 use crate::core::path::get_config_path;
-use crate::utils::path::pathbuf_to_string;
 use crate::utils::errors::invalid_input_error;
+use crate::utils::path::pathbuf_to_string;
 use std::io::Error;
-use tabled::{Table, Style};
+use tabled::{Style, Table};
 
 pub fn run(args: Args) -> Result<(), Error> {
     config::create_files()?;
@@ -42,7 +42,7 @@ pub fn run(args: Args) -> Result<(), Error> {
 
     match args.inputs[0].as_str() {
         "repos:remote" => show_registered_remote_repos()?,
-        _ => return Err(invalid_input_error("Invalid config option"))
+        _ => return Err(invalid_input_error("Invalid config option")),
     }
 
     Ok(())
@@ -60,14 +60,12 @@ fn show_registered_remote_repos() -> Result<(), Error> {
 fn add_registry_remote_repo() -> Result<(), Error> {
     let name = get("Repo name: ")?;
     let url = get("Repo url: ")?;
-    let authorization = get_valid_input("Repo requires authorization key? [y/n]: ", None, |input| {
-        input == "n" || input == "y" || input == "N" || input == "Y"
-    })?;
+    let requires_authorization = get_boolean_input("Repo requires authorization key? [y/n]: ")?;
 
     let repo_registry = RemoteRepoRegistry {
         name: name.clone(),
         url,
-        requires_authorization: authorization == "y" || authorization == "Y"
+        requires_authorization,
     };
 
     config::repos::remote::add(repo_registry.clone())?;
@@ -79,6 +77,12 @@ fn add_registry_remote_repo() -> Result<(), Error> {
 
 fn remove_registry_remote_repo() -> Result<(), Error> {
     let name = get("Repo name: ")?;
+
+    let yes = get_boolean_input(&format!("You really want to remove the \"{}\" registry? [y/n]: ", &name))?;
+    if !yes {
+        return Ok(());
+    }
+
     config::repos::remote::remove(name.clone())?;
 
     println!("Repo \"{}\" was removed.", name);
@@ -92,14 +96,12 @@ fn update_registry_remote_repo() -> Result<(), Error> {
     let current_name = get("Current repo name: ")?;
     let name = get("New repo name: ")?;
     let url = get("New repo url: ")?;
-    let authorization = get_valid_input("Repo requires authorization key? [y/n]: ", None, |input| {
-        input == "n" || input == "y" || input == "N" || input == "Y"
-    })?;
+    let requires_authorization = get_boolean_input("Repo requires authorization key? [y/n]: ")?;
 
     let repo_updated = RemoteRepoRegistry {
         name: name.clone(),
         url,
-        requires_authorization: authorization == "y" || authorization == "Y"
+        requires_authorization,
     };
 
     config::repos::remote::update(&current_name, repo_updated)?;
