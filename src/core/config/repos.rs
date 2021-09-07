@@ -9,18 +9,18 @@ pub mod remote {
     use super::*;
 
     pub fn get_repo_registry(repo_name: &str) -> Result<Option<RemoteRepoRegistry>, Error> {
-        let repos = get_repos()?;
+        let repos = get_repos_registered()?;
         Ok(repos.into_iter().find(|repo| repo.name == repo_name))
     }
 
-    pub fn get_repos() -> Result<Vec<RemoteRepoRegistry>, Error> {
+    pub fn get_repos_registered() -> Result<Vec<RemoteRepoRegistry>, Error> {
         let remote_repos_filename = get_remote_repos_filename()?;
         let current_repos_json = fs::read_to_string(&remote_repos_filename)?;
         std_error(serde_json::from_str(&current_repos_json))
     }
 
     pub fn add(repo_registry: RemoteRepoRegistry) -> Result<(), Error> {
-        let mut repos = get_repos()?;
+        let mut repos = get_repos_registered()?;
         let name_already_is_used = repos.iter().any(|repo| repo.name == repo_registry.name);
 
         if name_already_is_used {
@@ -37,7 +37,7 @@ pub mod remote {
     }
 
     pub fn remove(repo_name: String) -> Result<(), Error> {
-        let repos = get_repos()?;
+        let repos = get_repos_registered()?;
 
         if let None = repos.iter().find(|repo| repo_name == repo.name) {
             return Err(not_found_error(&format!(
@@ -57,7 +57,7 @@ pub mod remote {
     }
 
     pub fn update(current_name: &str, repo_updated: RemoteRepoRegistry) -> Result<(), Error> {
-        let mut repos = get_repos()?;
+        let mut repos = get_repos_registered()?;
         let repo = repos
             .iter()
             .rposition(|reg_repo| reg_repo.name == current_name);

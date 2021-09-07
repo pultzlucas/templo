@@ -14,7 +14,7 @@ pub struct Args {
 
 impl Args {
     pub fn has_flag(&self, flag: &str) -> bool {
-        let regex = Regex::new(flag).unwrap();
+        let regex = Regex::new(&format!("{}$", flag)).unwrap();
         self.flags.iter().any(|flag| regex.is_match(flag))
     }
 }

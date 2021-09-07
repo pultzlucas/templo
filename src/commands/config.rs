@@ -9,13 +9,13 @@ use tabled::{Style, Table};
 
 pub fn run(args: Args) -> Result<(), Error> {
     config::create_files()?;
-
-    if args.inputs.len() == 0 {
-        return Ok(());
-    }
-
+    
     if args.has_flag("--local") {
         println!("{}", pathbuf_to_string(get_config_path()?));
+        return Ok(());
+    }
+    
+    if args.inputs.len() == 0 {
         return Ok(());
     }
 
@@ -49,7 +49,7 @@ pub fn run(args: Args) -> Result<(), Error> {
 }
 
 fn show_registered_remote_repos() -> Result<(), Error> {
-    let repos = config::repos::remote::get_repos()?;
+    let repos = config::repos::remote::get_repos_registered()?;
     let repos_table = Table::new(repos).with(Style::pseudo());
 
     println!("{}", repos_table);
