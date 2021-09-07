@@ -1,11 +1,14 @@
 use crate::cli::input::args::Args;
+use crate::core::config::repos::remote;
 use crate::core::requester::{build_request, request, validate_url, Method};
 use crate::core::template::Template;
 use crate::{
     cli::output::messages::error::TEMPLATE_ALREADY_EXISTS,
     core::repo,
     paintln,
-    utils::errors::{already_exists_error, invalid_data_error, invalid_input_error, std_error},
+    utils::errors::{
+        already_exists_error, invalid_data_error, invalid_input_error, not_found_error, std_error,
+    },
 };
 use std::{io::Error, str, time::Instant};
 
@@ -18,10 +21,29 @@ pub async fn run(args: Args) -> Result<(), Error> {
 
     let start = Instant::now(); // start timing process
 
-    let url = validate_url(&args.inputs[0])?;
+    let url = if args.has_flag("--url") {
+        validate_url(&args.inputs[0])?.to_string()
+    } else {
+        if args.inputs.len() < 2 {
+            return Err(invalid_input_error("Repo name must be specified"));
+        }
+
+        let repo_name = args.inputs[1].clone();
+        let repo_registry = remote::get_repo_registry(&repo_name)?;
+
+        if let Some(repo) = repo_registry {
+            let url = format!("{}/templates/{}", repo.url, args.inputs[0]);
+            validate_url(&url)?.to_string()
+        } else {
+            return Err(not_found_error(&format!(
+                "Repo \"{}\" not is registered.",
+                repo_name
+            )));
+        }    
+    };
 
     paintln!("{gray}", "[getting template]");
-    let req = build_request(url, Method::GET, None);
+    let req = build_request(&url, Method::GET, None);
     let res = request(req).await?;
 
     // check if template data is valid
