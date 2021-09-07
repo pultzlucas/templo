@@ -82,7 +82,7 @@ fn update_registry_local_repo() -> Result<(), Error> {
 // REMOTE REPOS
 
 fn show_registered_remote_repos() -> Result<(), Error> {
-    let repos = config::repos::remote::get_repos_registered()?;
+    let repos = config::repos::remote::get_registered_repos()?;
     let repos_table = Table::new(repos).with(Style::pseudo());
 
     println!("{}", repos_table);
