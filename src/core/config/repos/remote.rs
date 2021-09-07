@@ -1,4 +1,5 @@
-use crate::core::config::{get_config_path, RemoteRepoRegistry};
+use crate::core::config::get_config_path;
+use crate::core::config::repos::RemoteRepoRegistry;
 use crate::utils::errors::{already_exists_error, not_found_error, std_error};
 use serde_json;
 use std::fs;

@@ -1,6 +1,7 @@
 use crate::cli::input::args::Args;
 use crate::cli::input::{get, get_boolean_input};
-use crate::core::config::{self, RemoteRepoRegistry};
+use crate::core::config;
+use crate::core::config::repos::RemoteRepoRegistry;
 use crate::core::path::get_config_path;
 use crate::utils::errors::invalid_input_error;
 use crate::utils::path::pathbuf_to_string;
