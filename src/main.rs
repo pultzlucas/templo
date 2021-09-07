@@ -30,7 +30,7 @@ async fn main() {
                 "help" | "h" => help::run(),
                 "version" | "v" => version::run(),
                 "docs" => documentation::run(),
-                "reg" => reg::run(args),
+                "reg" => registry::run(args),
                 "get" => get::run(args).await,
                 _ => Err(invalid_input_error(&format!(
                     "Invalid command \"{}\".",
