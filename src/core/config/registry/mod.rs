@@ -1,4 +1,4 @@
-pub mod repo;
+pub mod remote_repos;
 
 use serde_derive::{Deserialize, Serialize};
 use tabled::Tabled;

@@ -1,10 +1,10 @@
 use crate::cli::input::args::Args;
-use crate::core::config::registry::repo;
+use crate::core::config::registry::remote_repos;
+use crate::core::repo;
 use crate::core::requester::{build_request, request, validate_url, Method};
 use crate::core::template::Template;
 use crate::{
     cli::output::messages::error::TEMPLATE_ALREADY_EXISTS,
-    core::repo,
     paintln,
     utils::errors::{
         already_exists_error, invalid_data_error, invalid_input_error, not_found_error, std_error,
@@ -29,7 +29,7 @@ pub async fn run(args: Args) -> Result<(), Error> {
         }
 
         let repo_name = args.inputs[1].clone();
-        let repo_registry = repo::get_repo_registry(&repo_name)?;
+        let repo_registry = remote_repos::get_repo_registry(&repo_name)?;
 
         if let Some(repo) = repo_registry {
             let url = format!("{}/templates/{}", repo.url, args.inputs[0]);
@@ -39,7 +39,7 @@ pub async fn run(args: Args) -> Result<(), Error> {
                 "Repo \"{}\" not is registered.",
                 repo_name
             )));
-        }    
+        }
     };
 
     paintln!("{gray}", "[getting template]");

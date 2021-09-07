@@ -33,7 +33,7 @@ pub fn run(args: Args) -> Result<(), Error> {
 }
 
 fn show_registered_remote_repos() -> Result<(), Error> {
-    let repos = config::registry::repo::get_registered_repos()?;
+    let repos = config::registry::remote_repos::get_registered_repos()?;
     let repos_table = Table::new(repos).with(Style::pseudo());
 
     println!("{}", repos_table);
@@ -52,7 +52,7 @@ fn add_registry_remote_repo() -> Result<(), Error> {
         requires_authorization,
     };
 
-    config::registry::repo::add(repo_registry.clone())?;
+    config::registry::remote_repos::add(repo_registry.clone())?;
 
     println!("Remote repo \"{}\" was registered.", repo_registry.name);
 
@@ -71,7 +71,7 @@ fn remove_registry_remote_repo() -> Result<(), Error> {
         return Ok(());
     }
 
-    config::registry::repo::remove(name.clone())?;
+    config::registry::remote_repos::remove(name.clone())?;
 
     println!("Remote repo \"{}\" was removed.", name);
 
@@ -92,7 +92,7 @@ fn update_registry_remote_repo() -> Result<(), Error> {
         requires_authorization,
     };
 
-    config::registry::repo::update(&current_name, repo_updated)?;
+    config::registry::remote_repos::update(&current_name, repo_updated)?;
 
     println!("Remote repo \"{}\" was updated.", current_name);
 
