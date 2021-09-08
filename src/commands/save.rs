@@ -12,6 +12,7 @@ pub fn run(args: Args) -> Result<(), Error> {
     if args.inputs.len() < 1 {
         return Err(invalid_input_error(INVALID_DIRECTORY_PATH_NAME));
     }
+
     if args.inputs.len() < 2 {
         return Err(invalid_input_error(INVALID_TEMPLATE_NAME));
     }
