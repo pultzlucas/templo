@@ -77,6 +77,12 @@ pub fn delete_template(template_name: String) -> Result<(), Error> {
     Ok(())
 }
 
+pub fn update_template_content(old_template_name: String, new_template: Template) -> Result<(), Error> {
+    delete_template(old_template_name)?;
+    save_template(new_template)?;
+    Ok(())
+}
+
 pub fn total_templates() -> usize {
     let temps = fs::read_dir(&get_templates_path().unwrap()).unwrap();
     temps.count()
