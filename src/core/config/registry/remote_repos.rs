@@ -5,6 +5,7 @@ use serde_json;
 use std::fs;
 use std::io::Error;
 use std::path::PathBuf;
+
 pub fn get_repo_registry(repo_name: &str) -> Result<Option<RemoteRepoRegistry>, Error> {
     let repos = get_registered_repos()?;
     Ok(repos.into_iter().find(|repo| repo.name == repo_name))

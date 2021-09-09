@@ -52,3 +52,4 @@ pub mod repository;
 pub mod version;
 pub mod documentation;
 pub mod registry;
+pub mod update;
