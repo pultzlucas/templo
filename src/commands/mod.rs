@@ -6,7 +6,7 @@ pub struct CommandInfo {
     description: &'static str,
 }
 
-pub const COMMANDS: [CommandInfo; 8] = [
+pub const COMMANDS: [CommandInfo; 9] = [
     CommandInfo {
         command: "save",
         description: "Saves a template from directory."
@@ -22,6 +22,10 @@ pub const COMMANDS: [CommandInfo; 8] = [
     CommandInfo {
         command: "repo",
         description: "Returns all templates existents on repository."
+    },
+    CommandInfo {
+        command: "update",
+        description: "Updates a template."
     },
     CommandInfo {
         command: "desc",
