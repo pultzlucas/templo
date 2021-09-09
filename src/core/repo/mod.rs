@@ -1,7 +1,4 @@
-use crate::core::{
-    path::get_templates_path,
-    template::Template,
-};
+use crate::core::{path::get_templates_path, template::Template};
 use crate::utils::errors::not_found_error;
 use crate::utils::errors::std_error;
 use std::{
@@ -74,10 +71,30 @@ pub fn delete_template(template_name: String) -> Result<(), Error> {
 
     let template_path = get_template_path(&template_name);
     fs::remove_file(template_path)?;
+
     Ok(())
 }
 
-pub fn update_template_content(old_template_name: String, new_template: Template) -> Result<(), Error> {
+pub fn update_template_name(old_template_name: &str, new_template_name: &str) -> Result<(), Error> {
+    let old_template = get_template(old_template_name)?;
+    delete_template(old_template_name.to_string())?;
+
+    let new_template = Template {
+        name: new_template_name.to_string(),
+        contents: old_template.contents,
+        created_at: old_template.created_at,
+        paths: old_template.paths,
+    };
+
+    save_template(new_template)?;
+
+    Ok(())
+}
+
+pub fn update_template_content(
+    old_template_name: String,
+    new_template: Template,
+) -> Result<(), Error> {
     delete_template(old_template_name)?;
     save_template(new_template)?;
     Ok(())
