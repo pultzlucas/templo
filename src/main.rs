@@ -1,7 +1,7 @@
 extern crate tokio;
 mod cli;
-mod methods;
 mod core;
+mod methods;
 mod utils;
 
 use crate::utils::errors::invalid_input_error;
@@ -22,17 +22,17 @@ async fn main() {
     if let Some(command) = args.command.clone() {
         let output = {
             match command.as_str() {
-                "save" => save::run(args),
                 "gen" => generate::run(args),
                 "del" => delete::run(args),
-                "update" => update::run(args),
-                "repo" => repo::run(args),
-                "desc" => describe::run(args),
-                "help" | "h" => help::run(),
-                "version" | "v" => version::run(),
-                "docs" => docs::run(),
                 "reg" => registry::run(args),
                 "get" => get::run(args).await,
+                "repo" => repo::run(args),
+                "desc" => describe::run(args),
+                "docs" => docs::run(),
+                "save" => save::run(args),
+                "update" => update::run(args),
+                "help" | "h" => help::run(),
+                "version" | "v" => version::run(),
                 _ => Err(invalid_input_error(&format!(
                     "Invalid method \"{}\".",
                     command

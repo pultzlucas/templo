@@ -1,4 +1,10 @@
+use crate::cli::input::args::Args;
+use std::io::Error;
 use tabled::Tabled;
+
+pub trait Method {
+    fn run(args: Args) -> Result<(), Error>;
+}
 
 #[derive(Tabled)]
 pub struct MethodInfo {
