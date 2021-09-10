@@ -54,6 +54,6 @@ pub mod welcome;
 pub mod save;
 pub mod repo;
 pub mod version;
-pub mod documentation;
+pub mod docs;
 pub mod registry;
 pub mod update;

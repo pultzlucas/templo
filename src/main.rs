@@ -30,7 +30,7 @@ async fn main() {
                 "desc" => describe::run(args),
                 "help" | "h" => help::run(),
                 "version" | "v" => version::run(),
-                "docs" => documentation::run(),
+                "docs" => docs::run(),
                 "reg" => registry::run(args),
                 "get" => get::run(args).await,
                 _ => Err(invalid_input_error(&format!(
