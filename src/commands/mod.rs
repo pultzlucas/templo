@@ -52,7 +52,7 @@ pub mod get;
 pub mod help;
 pub mod welcome;
 pub mod save;
-pub mod repository;
+pub mod repo;
 pub mod version;
 pub mod documentation;
 pub mod registry;

@@ -2,4 +2,5 @@
 /dir-tests
 *.txt
 /src/core/secrets.rs
-*.todo
+.todo
+.tree

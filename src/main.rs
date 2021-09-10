@@ -26,7 +26,7 @@ async fn main() {
                 "gen" => generate::run(args),
                 "del" => delete::run(args),
                 "update" => update::run(args),
-                "repo" => repository::run(args),
+                "repo" => repo::run(args),
                 "desc" => describe::run(args),
                 "help" | "h" => help::run(),
                 "version" | "v" => version::run(),
