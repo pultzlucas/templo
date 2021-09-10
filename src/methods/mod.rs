@@ -1,46 +1,46 @@
 use tabled::Tabled;
 
 #[derive(Tabled)]
-pub struct CommandInfo {
-    command: &'static str,
+pub struct MethodInfo {
+    method: &'static str,
     description: &'static str,
 }
 
-pub const COMMANDS: [CommandInfo; 9] = [
-    CommandInfo {
-        command: "save",
+pub const METHODS: [MethodInfo; 9] = [
+    MethodInfo {
+        method: "save",
         description: "Saves a template from directory."
     },
-    CommandInfo {
-        command: "gen",
+    MethodInfo {
+        method: "gen",
         description: "Generates a project from template."
     },
-    CommandInfo {
-        command: "del",
+    MethodInfo {
+        method: "del",
         description: "Deletes a template."
     },
-    CommandInfo {
-        command: "repo",
+    MethodInfo {
+        method: "repo",
         description: "Returns all templates existents on repository."
     },
-    CommandInfo {
-        command: "update",
+    MethodInfo {
+        method: "update",
         description: "Updates a template."
     },
-    CommandInfo {
-        command: "desc",
+    MethodInfo {
+        method: "desc",
         description: "Describes a template."
     },
-    CommandInfo {
-        command: "get",
+    MethodInfo {
+        method: "get",
         description: "Installes a public template."
     },
-    CommandInfo {
-        command: "docs",
+    MethodInfo {
+        method: "docs",
         description: "Open the Prottern documentation."
     },
-    CommandInfo {
-        command: "version/v",
+    MethodInfo {
+        method: "version/v",
         description: "Shows the prottern version installed."
     }
 ];

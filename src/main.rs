@@ -34,7 +34,7 @@ async fn main() {
                 "reg" => registry::run(args),
                 "get" => get::run(args).await,
                 _ => Err(invalid_input_error(&format!(
-                    "Invalid command \"{}\".",
+                    "Invalid method \"{}\".",
                     command
                 ))),
             }

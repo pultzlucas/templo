@@ -1,4 +1,4 @@
-use super::COMMANDS;
+use super::METHODS;
 use crate::core::info::{REPOSITORY, VERSION};
 use std::io::Error;
 use tabled::{Alignment, Column, Modify, Row, Style, Table, Tabled};
@@ -32,7 +32,7 @@ pub fn run() -> Result<(), Error> {
 }
 
 fn print_commands() {
-    let commands_tb = Table::new(&COMMANDS)
+    let commands_tb = Table::new(&METHODS)
         .with(Modify::new(Column(..1)).with(Alignment::left()))
         .with(Modify::new(Column(1..)).with(Alignment::left()))
         .with(Modify::new(Row(..1)).with(Alignment::center_horizontal()))
