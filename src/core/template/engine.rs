@@ -3,13 +3,13 @@ use regex::Regex;
 use std::io::Error;
 
 #[derive(Clone)]
-pub struct EngineArg {
+pub struct TempEngineArg {
     pub key: String,
     pub value: String,
 }
 
 // Args shape: {> arg <}
-pub fn parse(text: String, args: Vec<EngineArg>) -> Result<String, Error> {
+pub fn parse(text: String, args: Vec<TempEngineArg>) -> Result<String, Error> {
     let shapes_regex = std_error(Regex::new(r"\{>[\w|\s|]*<}"))?;
     let key_regex = std_error(Regex::new(r"[{}><\s]"))?;
 
