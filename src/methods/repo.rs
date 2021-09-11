@@ -1,5 +1,6 @@
 use crate::cli::input::args::Args;
 use crate::core::path::get_repo_path;
+use crate::methods::check_flags;
 use crate::utils::path::pathbuf_to_string;
 use crate::core::repo;
 use crate::core::template::{Template, TemplateDisplayInfo};
@@ -8,6 +9,9 @@ use tabled::{Disable, Style, Table};
 
 pub fn run(args: Args) -> Result<(), Error> {
     repo::create()?;
+
+    let flags = vec!["--local"];
+    check_flags(&args.flags, flags)?;
 
     if args.has_flag("--local") {
         println!("{}", pathbuf_to_string(get_repo_path().unwrap()));

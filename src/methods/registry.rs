@@ -4,6 +4,7 @@ use crate::core::config;
 use crate::core::config::registry::remote_repos::get_repo_registry;
 use crate::core::config::registry::RemoteRepoRegistry;
 use crate::core::path::get_config_path;
+use crate::methods::check_flags;
 use crate::utils::errors::not_found_error;
 use crate::utils::path::pathbuf_to_string;
 use std::io::Error;
@@ -11,6 +12,9 @@ use tabled::{Style, Table};
 
 pub fn run(args: Args) -> Result<(), Error> {
     config::create_files()?;
+
+    let flags = vec!["--local", "--add", "--remove", "--update"];
+    check_flags(&args.flags, flags)?;
 
     if args.has_flag("--local") {
         println!("{}", pathbuf_to_string(get_config_path()?));

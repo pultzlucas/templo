@@ -1,4 +1,3 @@
-use crate::utils::errors::std_error;
 use crate::utils::string::split_by;
 use regex::Regex;
 use std::io::Error;
@@ -56,7 +55,7 @@ fn get_inputs(string_command: String) -> Result<Vec<String>, Error> {
     let args: Vec<String> = commands
         .into_iter()
         .filter(|arg| {
-            let regex = Regex::new(r"\s(-|--)\w+").unwrap();
+            let regex = get_flags_regex();
             !regex.is_match(arg)
         })
         .collect();
@@ -65,7 +64,7 @@ fn get_inputs(string_command: String) -> Result<Vec<String>, Error> {
 }
 
 fn get_flags(string_command: &str) -> Result<Vec<String>, Error> {
-    let regex = std_error(Regex::new(r"\s(-|--)\w+"))?;
+    let regex = get_flags_regex();
     let flags: Vec<String> = regex
         .captures(&string_command)
         .into_iter()
@@ -73,4 +72,8 @@ fn get_flags(string_command: &str) -> Result<Vec<String>, Error> {
         .map(|(i, caps)| caps.get(i).unwrap().as_str().trim().to_owned())
         .collect();
     Ok(flags)
+}
+
+fn get_flags_regex() -> Regex {
+    Regex::new(r"\s(-|--)(\w|-|[^\s])+").unwrap()
 }

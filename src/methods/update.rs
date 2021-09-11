@@ -4,6 +4,7 @@ use crate::cli::output::messages::error::{
 };
 use crate::core::repo;
 use crate::core::template::maker::make_template;
+use crate::methods::check_flags;
 use crate::utils::errors::invalid_input_error;
 use crate::utils::path::str_to_pathbuf;
 use std::fs;
@@ -13,12 +14,16 @@ use std::time::Instant;
 pub fn run(args: Args) -> Result<(), Error> {
     repo::create()?;
 
-    if args.has_flag("--name") {
+    let flags = vec!["--name"];
+    check_flags(&args.flags, flags)?;
 
+    if args.has_flag("--name") {
         if args.inputs.len() < 1 {
-            return Err(invalid_input_error("Current template name must be specified."));
+            return Err(invalid_input_error(
+                "Current template name must be specified.",
+            ));
         }
-        
+
         if args.inputs.len() < 2 {
             return Err(invalid_input_error("New template name must be specified."));
         }
@@ -27,7 +32,10 @@ pub fn run(args: Args) -> Result<(), Error> {
         let new_template_name = &args.inputs[1];
         repo::update_template_name(old_template_name, new_template_name)?;
 
-        println!("Template \"{}\" name was changed to \"{}\".", old_template_name, new_template_name);
+        println!(
+            "Template \"{}\" name was changed to \"{}\".",
+            old_template_name, new_template_name
+        );
 
         return Ok(());
     }

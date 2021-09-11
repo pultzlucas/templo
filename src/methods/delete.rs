@@ -3,12 +3,6 @@ use crate::utils::errors::invalid_input_error;
 use crate::{cli::output::messages::error::INVALID_TEMPLATE_NAME, core::repo};
 use std::{io::Error, time::Instant};
 
-/* struct DeleteMethod {
-    template_name: String,
-    flags: Option<Vec<String>>,
-    options: Option<Vec<String>>,
-} */
-
 pub fn run(args: Args) -> Result<(), Error> {
     repo::create()?;
 

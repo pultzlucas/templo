@@ -3,6 +3,7 @@ use crate::core::config::registry::remote_repos;
 use crate::core::repo;
 use crate::core::requester::{build_request, request, validate_url, Method};
 use crate::core::template::Template;
+use crate::methods::check_flags;
 use crate::{
     cli::output::messages::error::TEMPLATE_ALREADY_EXISTS,
     paintln,
@@ -14,6 +15,9 @@ use std::{io::Error, str, time::Instant};
 
 pub async fn run(args: Args) -> Result<(), Error> {
     repo::create()?;
+
+    let flags = vec!["--url"];
+    check_flags(&args.flags, flags)?;
 
     if args.inputs.len() < 1 {
         return Err(invalid_input_error("The template url must be specified."));
