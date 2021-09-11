@@ -8,10 +8,31 @@ function {> fn_name <}(a, b) {
 console.log("Hello {> thing <}")
 
 const obj = {
+    id: {> id <}
     name: '{> name <}',
-    number: {> number <}
 }
 "#;
+
+fn get_args() -> Vec<TempEngineArg> {
+    vec![
+        TempEngineArg {
+            key: "id".to_string(),
+            value: "123".to_string(),
+        },
+        TempEngineArg {
+            key: "thing".to_string(),
+            value: "World!".to_string(),
+        },
+        TempEngineArg {
+            key: "name".to_string(),
+            value: "Lucas".to_string(),
+        },
+        TempEngineArg {
+            key: "fn_name".to_string(),
+            value: "add".to_string(),
+        },
+    ]
+}
 
 #[test]
 fn parse_template_text() {
@@ -25,30 +46,9 @@ function add(a, b) {
 console.log("Hello World!")
 
 const obj = {
+    id: 123
     name: 'Lucas',
-    number: 123
 }
 "#)
 }
 
-
-fn get_args() -> Vec<TempEngineArg> {
-    vec![
-        TempEngineArg {
-            key: "fn_name".to_string(),
-            value: "add".to_string(),
-        },
-        TempEngineArg {
-            key: "thing".to_string(),
-            value: "World!".to_string(),
-        },
-        TempEngineArg {
-            key: "name".to_string(),
-            value: "Lucas".to_string(),
-        },
-        TempEngineArg {
-            key: "number".to_string(),
-            value: "123".to_string(),
-        },
-    ]
-}
