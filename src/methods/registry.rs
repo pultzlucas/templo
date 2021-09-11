@@ -54,7 +54,7 @@ fn add_registry_remote_repo() -> Result<(), Error> {
 
     let repo_registry = RemoteRepoRegistry {
         name: name.clone(),
-        url,
+        url: if url.ends_with("/") {url[..url.len() - 1].to_string()} else {url},
         requires_authorization,
     };
 
