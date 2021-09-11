@@ -1,6 +1,10 @@
 pub mod generator;
 pub mod maker;
 pub mod miner;
+pub mod engine;
+
+#[cfg(test)]
+mod tests;
 
 use serde_derive::{Deserialize, Serialize};
 use std::path::PathBuf;
