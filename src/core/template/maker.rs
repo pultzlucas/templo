@@ -9,9 +9,9 @@ pub struct TempData {
     pub contents: Vec<TempContent>,
 }
 
-pub fn make_template(temp_name: String, dir_path: &str) -> Result<Template, Error> {
+pub fn make_template(temp_name: String) -> Result<Template, Error> {
     let (name, created_at) = make_template_metadata(temp_name)?;
-    let data = make_template_data(dir_path)?;
+    let data = make_template_data(".")?;
     Ok(Template {
         name,
         created_at,

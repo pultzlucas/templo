@@ -62,7 +62,7 @@ pub fn run(args: Args) -> Result<(), Error> {
 
     let start = Instant::now(); // start timing process
 
-    let new_template = make_template(template_name.clone(), directory)?;
+    let new_template = make_template(template_name.clone())?;
     repo::update_template_content(template_name.clone(), new_template)?;
 
     println!("Template \"{}\" was updated.", template_name);
