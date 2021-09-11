@@ -2,6 +2,7 @@ pub mod generator;
 pub mod maker;
 pub mod miner;
 pub mod engine;
+pub mod config;
 
 #[cfg(test)]
 mod tests;

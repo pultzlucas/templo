@@ -1,0 +1,12 @@
+[
+    {
+        "key": "name",
+        "query": "Your name (pultzlucas): ",
+        "default": "pultzlucas"
+    },
+
+    {
+        "key": "lastName",
+        "query": "Your last name: "
+    }
+]
