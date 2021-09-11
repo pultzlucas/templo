@@ -6,7 +6,7 @@ use base64;
 
 pub fn mine_paths_from(directory_path: &str) -> Result<Vec<TempPath>, Error> {
     valid_directory_path(directory_path)?;
-    let fs_tree = FsTreeBuilder::new(directory_path).build();
+    let fs_tree = FsTreeBuilder::new(directory_path).ignore_paths(&["./TemplateConfig"]).build();
     let vec_fs_tree: Vec<TempPath> = fs_tree
         .into_iter()
         .map(|path| TempPath::new(path.expect("Not is possible find the folder.")))
