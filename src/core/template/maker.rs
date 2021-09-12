@@ -2,6 +2,7 @@ use super::{miner, TempContent, TempPath, Template};
 use crate::utils::date::get_date_now_string;
 use crate::utils::path::{format_path_namespace, pathbuf_to_string, remove_dir_prefix};
 use std::io::Error;
+use super::config::get_config_args;
 
 #[derive(Debug, PartialEq)]
 pub struct TempData {
@@ -12,11 +13,13 @@ pub struct TempData {
 pub fn make_template(temp_name: String) -> Result<Template, Error> {
     let (name, created_at) = make_template_metadata(temp_name)?;
     let data = make_template_data(".")?;
+    let args = get_config_args(".")?;
     Ok(Template {
         name,
         created_at,
         paths: data.paths,
         contents: data.contents,
+        args
     })
 }
 

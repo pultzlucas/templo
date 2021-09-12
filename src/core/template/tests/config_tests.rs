@@ -1,4 +1,4 @@
-use super::config::{get_config_args, ConfigArgs};
+use super::config::{get_config_args, ConfigArg};
 
 #[test]
 fn it_should_get_config_args_from_dir() {
@@ -7,12 +7,12 @@ fn it_should_get_config_args_from_dir() {
     assert_eq!(
         config_args,
         vec![
-            ConfigArgs {
+            ConfigArg {
                 key: "name".to_string(),
                 query: "Your name (pultzlucas): ".to_string(),
                 default: Some("pultzlucas".to_string())
             },
-            ConfigArgs {
+            ConfigArg {
                 key: "lastName".to_string(),
                 query: "Your last name: ".to_string(),
                 default: None

@@ -1,12 +1,16 @@
 use super::{TempContent, TempPath, TempPathType};
-use crate::utils::path::{pathbuf_to_string, format_path_namespace, valid_directory_path, remove_dir_prefix};
+use crate::utils::path::{
+    format_path_namespace, pathbuf_to_string, remove_dir_prefix, valid_directory_path,
+};
+use base64;
 use fs_tree::FsTreeBuilder;
 use std::{fs, io::Error};
-use base64;
 
 pub fn mine_paths_from(directory_path: &str) -> Result<Vec<TempPath>, Error> {
     valid_directory_path(directory_path)?;
-    let fs_tree = FsTreeBuilder::new(directory_path).ignore_paths(&["./TemplateConfig"]).build();
+    let fs_tree = FsTreeBuilder::new(directory_path)
+        .ignore_paths(&["./TemplateConfig"])
+        .build();
     let vec_fs_tree: Vec<TempPath> = fs_tree
         .into_iter()
         .map(|path| TempPath::new(path.expect("Not is possible find the folder.")))

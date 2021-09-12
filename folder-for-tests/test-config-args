@@ -1,0 +1,4 @@
+var obj = {
+    name: '{> name <}',
+    lastName: '{> lastName <}'
+}

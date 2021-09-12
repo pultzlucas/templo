@@ -20,15 +20,15 @@ pub fn run(args: Args) -> Result<(), Error> {
     } else {
         Path::new(&args.inputs[1])
     };
-
+    
     if directory.extension() != None {
         return Err(invalid_input_error(INVALID_DIRECTORY_PATH_TYPE));
     }
-
+    
     if !directory.exists() {
         fs::create_dir_all(directory)?;
     }
-
+    
     let start = Instant::now(); // start timing process
     let template = repo::get_template(&template_name)?;
 

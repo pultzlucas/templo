@@ -1,6 +1,7 @@
 use crate::core::{path::get_templates_path, template::Template};
 use crate::utils::errors::not_found_error;
 use crate::utils::errors::std_error;
+use serde_json::{from_str, to_string_pretty};
 use std::{
     fs,
     io::Error,
@@ -22,7 +23,7 @@ pub fn create() -> Result<(), Error> {
 
 pub fn save_template(template: Template) -> Result<(), Error> {
     let template_path = get_template_path(&template.name);
-    let template_string = std_error(serde_json::to_string_pretty(&template))?;
+    let template_string = std_error(to_string_pretty(&template))?;
     fs::write(template_path, template_string)
 }
 
@@ -30,9 +31,8 @@ pub fn get_templates() -> Result<Vec<Template>, Error> {
     fs::read_dir(&get_templates_path().unwrap())
         .unwrap()
         .map(|template| template.map(|e| e.path()))
-        .map(|file| fs::read(file?))
-        .map(|bytes| std_error(String::from_utf8(bytes?)))
-        .map(|temp_string| std_error(serde_json::from_str(&temp_string?)))
+        .map(|file| fs::read_to_string(file?))
+        .map(|temp_string| std_error(from_str(&temp_string?)))
         .collect()
 }
 
@@ -84,6 +84,7 @@ pub fn update_template_name(old_template_name: &str, new_template_name: &str) ->
         contents: old_template.contents,
         created_at: old_template.created_at,
         paths: old_template.paths,
+        args: old_template.args,
     };
 
     save_template(new_template)?;

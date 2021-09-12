@@ -7,6 +7,7 @@ pub mod config;
 #[cfg(test)]
 mod tests;
 
+use config::ConfigArg;
 use serde_derive::{Deserialize, Serialize};
 use std::path::PathBuf;
 use tabled::Tabled;
@@ -19,6 +20,7 @@ pub struct Template {
     pub created_at: String,
     pub paths: Vec<TempPath>,
     pub contents: Vec<TempContent>,
+    pub args: Vec<ConfigArg>
 }
 
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]

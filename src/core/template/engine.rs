@@ -2,7 +2,7 @@ use crate::utils::errors::{std_error, not_found_error};
 use regex::Regex;
 use std::io::Error;
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct TempEngineArg {
     pub key: String,
     pub value: String,
