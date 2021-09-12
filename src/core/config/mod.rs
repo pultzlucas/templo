@@ -23,7 +23,7 @@ pub fn create_files() -> Result<(), Error> {
 
     let std_tools_repo = registry::RemoteRepoRegistry {
         name: "std-tools".to_string(),
-        url: "https://templo-std-tools.herokuapp.com/v1".to_string(),
+        base_url: "https://templo-std-tools.herokuapp.com/v1".to_string(),
         requires_authorization: false,
     };
 

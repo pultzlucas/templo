@@ -36,7 +36,7 @@ pub async fn run(args: Args) -> Result<(), Error> {
         let repo_registry = remote_repos::get_repo_registry(&repo_name)?;
 
         if let Some(repo) = repo_registry {
-            let url = format!("{}/templates/{}", repo.url, args.inputs[0]);
+            let url = format!("{}/templates/{}", repo.base_url, args.inputs[0]);
             validate_url(&url)?.to_string()
         } else {
             return Err(not_found_error(&format!(

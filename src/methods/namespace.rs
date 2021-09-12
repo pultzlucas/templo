@@ -22,23 +22,23 @@ pub fn run(args: Args) -> Result<(), Error> {
     }
 
     if args.has_flag("--add") {
-        return add_registry_remote_repo();
+        return add_namespace();
     }
 
     if args.has_flag("--remove") {
-        return remove_registry_remote_repo();
+        return remove_namespac();
     }
 
     if args.has_flag("--update") {
-        return update_registry_remote_repo();
+        return update_namespace();
     }
 
-    show_registered_remote_repos()?;
+    show_saved_namespaces()?;
 
     Ok(())
 }
 
-fn show_registered_remote_repos() -> Result<(), Error> {
+fn show_saved_namespaces() -> Result<(), Error> {
     let repos = config::registry::remote_repos::get_registered_repos()?;
     let repos_table = Table::new(repos).with(Style::pseudo());
 
@@ -47,14 +47,18 @@ fn show_registered_remote_repos() -> Result<(), Error> {
     Ok(())
 }
 
-fn add_registry_remote_repo() -> Result<(), Error> {
+fn add_namespace() -> Result<(), Error> {
     let name = get("Repo name: ")?;
-    let url = get("Repo url: ")?;
+    let base_url = get("Repo base url: ")?;
     let requires_authorization = get_boolean_input("Repo requires authorization key? [y/n]: ")?;
 
     let repo_registry = RemoteRepoRegistry {
         name: name.clone(),
-        url: if url.ends_with("/") {url[..url.len() - 1].to_string()} else {url},
+        base_url: if base_url.ends_with("/") {
+            base_url[..base_url.len() - 1].to_string()
+        } else {
+            base_url
+        },
         requires_authorization,
     };
 
@@ -65,7 +69,7 @@ fn add_registry_remote_repo() -> Result<(), Error> {
     Ok(())
 }
 
-fn remove_registry_remote_repo() -> Result<(), Error> {
+fn remove_namespac() -> Result<(), Error> {
     let name = get("Repo name: ")?;
 
     let yes = get_boolean_input(&format!(
@@ -84,7 +88,7 @@ fn remove_registry_remote_repo() -> Result<(), Error> {
     Ok(())
 }
 
-fn update_registry_remote_repo() -> Result<(), Error> {
+fn update_namespace() -> Result<(), Error> {
     println!("Press Enter if you want the field remains the same.");
 
     let current_name = get("Current repo name: ")?;
@@ -93,7 +97,7 @@ fn update_registry_remote_repo() -> Result<(), Error> {
 
     if let Some(current_repo) = current_repo {
         let name = get("New repo name: ")?;
-        let url = get("New repo url: ")?;
+        let base_url = get("New repo url: ")?;
         let requires_authorization = get_boolean_input("Repo requires authorization key? [y/n]: ")?;
 
         let repo_updated = RemoteRepoRegistry {
@@ -102,12 +106,12 @@ fn update_registry_remote_repo() -> Result<(), Error> {
             } else {
                 name
             },
-            url: if url.is_empty() {
-                current_repo.url
+            base_url: if base_url.is_empty() {
+                current_repo.base_url
             } else {
-                url
+                base_url
             },
-            requires_authorization
+            requires_authorization,
         };
 
         config::registry::remote_repos::update(&current_name, repo_updated)?;

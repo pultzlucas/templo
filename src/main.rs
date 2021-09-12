@@ -24,7 +24,7 @@ async fn main() {
             match command.as_str() {
                 "gen" => generate::run(args),
                 "del" => delete::run(args),
-                "reg" => registry::run(args),
+                "reg" => namespace::run(args),
                 "get" => get::run(args).await,
                 "repo" => repo::run(args),
                 "desc" => describe::run(args),

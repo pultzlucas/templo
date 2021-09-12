@@ -23,7 +23,7 @@ pub struct MethodInfo {
     description: &'static str,
 }
 
-pub const METHODS: [MethodInfo; 9] = [
+pub const METHODS: [MethodInfo; 10] = [
     MethodInfo {
         method: "save",
         description: "Saves a template from directory.",
@@ -57,6 +57,10 @@ pub const METHODS: [MethodInfo; 9] = [
         description: "Open the Prottern documentation.",
     },
     MethodInfo {
+        method: "namespace",
+        description: "Manage remote repos namespaces.",
+    },
+    MethodInfo {
         method: "version/v",
         description: "Shows the prottern version installed.",
     },
@@ -68,7 +72,7 @@ pub mod docs;
 pub mod generate;
 pub mod get;
 pub mod help;
-pub mod registry;
+pub mod namespace;
 pub mod repo;
 pub mod save;
 pub mod update;
