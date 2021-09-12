@@ -29,14 +29,13 @@ pub fn gen_template(template: Template, directory: &Path) -> Result<(), Error> {
         });
     }
 
-    paintln!("{gray}", "[creating files and folders...]");
+    paintln!("{gray}", "\n[creating files and folders...]");
     for path in template.paths.into_iter() {
         create_path(path, directory)?;
     }
 
     if template_contents.len() > 0 {
-        print!("\n");
-        paintln!("{gray}", "[writing contents...]");
+        paintln!("{gray}", "\n[writing contents...]");
         write_contents(template_contents.clone(), directory)?;
     }
 
