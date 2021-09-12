@@ -30,13 +30,7 @@ pub fn get_saved_namespaces() -> Result<Vec<RemoteRepoNamespace>, Error> {
 }
 
 
-fn update_namespace_file(repos: Vec<RemoteRepoNamespace>) -> Result<(), Error> {
-    let namespaces_file_not_exists = !Path::new(&get_namespaces_file_path()?).exists();
-    
-    if namespaces_file_not_exists {
-        create_namespaces_file()?
-    }
-    
+fn update_namespace_file(repos: Vec<RemoteRepoNamespace>) -> Result<(), Error> {    
     fs::write(
         get_namespaces_file_path()?,
         std_error(to_string_pretty(&repos))?,
@@ -44,12 +38,16 @@ fn update_namespace_file(repos: Vec<RemoteRepoNamespace>) -> Result<(), Error> {
     Ok(())
 }
 
-fn create_namespaces_file() -> Result<(), Error> {
-    let initial_content = vec![get_std_tools_namespace()];
-    fs::write(
-        get_namespaces_file_path()?,
-        std_error(to_string_pretty(&initial_content))?,
-    )?;
+pub fn create_namespaces_file() -> Result<(), Error> {
+    let namespaces_file_not_exists = !Path::new(&get_namespaces_file_path()?).exists();
+    
+    if namespaces_file_not_exists {
+        let initial_content = vec![get_std_tools_namespace()];
+        fs::write(
+            get_namespaces_file_path()?,
+            std_error(to_string_pretty(&initial_content))?,
+        )?;    
+    }
 
     Ok(())
 }

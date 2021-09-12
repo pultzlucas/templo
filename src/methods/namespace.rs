@@ -1,7 +1,7 @@
 use crate::cli::input::args::Args;
 use crate::cli::input::{get, get_boolean_input};
 use crate::core::path::get_namespaces_file_path;
-use crate::core::namespaces::{self, get_namespace, get_saved_namespaces, RemoteRepoNamespace};
+use crate::core::namespaces::{self, get_namespace, get_saved_namespaces, create_namespaces_file, RemoteRepoNamespace};
 use crate::methods::check_flags;
 use crate::utils::errors::not_found_error;
 use crate::utils::path::pathbuf_to_string;
@@ -9,6 +9,8 @@ use std::io::Error;
 use tabled::{Style, Table};
 
 pub fn run(args: Args) -> Result<(), Error> {
+    create_namespaces_file()?;
+
     let flags = vec!["--local", "--add", "--remove", "--update"];
     check_flags(&args.flags, flags)?;
 
