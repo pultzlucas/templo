@@ -6,7 +6,7 @@ fn it_should_get_config_args_from_dir() {
 
     assert_eq!(
         config_args,
-        vec![
+        Some(vec![
             ConfigArg {
                 key: "name".to_string(),
                 query: "Your name (pultzlucas): ".to_string(),
@@ -18,5 +18,5 @@ fn it_should_get_config_args_from_dir() {
                 default: None
             }
         ]
-    )
+    ))
 }

@@ -16,18 +16,25 @@ use std::{
 };
 
 pub fn gen_template(template: Template, directory: &Path) -> Result<(), Error> {
-    let mut template_contents: Vec<TempContent> = vec![];
-    
-    for content in template.contents.into_iter() {
-        let engine_args = get_engine_args(template.args.clone())?;
-        template_contents.push(TempContent {
-            file_path: content.file_path,
-            text: parse(
-                decode_base64(content.text).expect("Error when decoding contents text."),
+
+    let template_contents: Result<Vec<TempContent>, Error> = if let Some(args) = template.args {
+        template.contents.into_iter().map(|content| {
+            let engine_args = get_engine_args(args.clone())?;
+            let text_parsed = base64::encode(parse(
+                decode_base64(content.text)?,
                 engine_args,
-            )?
-        });
-    }
+            )?);
+            Ok(TempContent {
+                file_path: content.file_path,
+                text: text_parsed
+            })
+        }).collect()
+
+    } else {
+        Ok(template.contents)
+    };
+
+    let template_contents = template_contents?;
 
     paintln!("{gray}", "\n[creating files and folders...]");
     for path in template.paths.into_iter() {
@@ -90,7 +97,7 @@ fn write_contents(contents: Vec<TempContent>, directory: &Path) -> Result<(), Er
     for content in contents.into_iter() {
         let file_path = get_real_path(directory, str_to_pathbuf(&content.file_path));
         if file_path.exists() {
-            fs::write(&file_path, content.text)?;
+            fs::write(&file_path, decode_base64(content.text)?)?;
 
             print!("{}", pathbuf_to_string(format_path_namespace(file_path)));
             paintln!("...{green}", "ok");

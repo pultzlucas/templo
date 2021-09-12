@@ -20,7 +20,7 @@ pub struct Template {
     pub created_at: String,
     pub paths: Vec<TempPath>,
     pub contents: Vec<TempContent>,
-    pub args: Vec<ConfigArg>
+    pub args: Option<Vec<ConfigArg>>
 }
 
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
