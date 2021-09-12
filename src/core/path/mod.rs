@@ -3,8 +3,8 @@ use crate::utils::errors::not_found_error;
 use std::io::Error;
 use std::path::PathBuf;
 
-pub fn get_config_path() -> Result<PathBuf, Error> {
-    Ok(get_app_local_path()?.join("Config"))
+pub fn get_namespaces_file_path() -> Result<PathBuf, Error> {
+    Ok(get_app_local_path()?.join("namespaces.json"))
 }
 
 pub fn get_templates_path() -> Result<PathBuf, Error> {
