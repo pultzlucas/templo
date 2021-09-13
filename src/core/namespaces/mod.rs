@@ -1,5 +1,6 @@
 use crate::core::path::get_namespaces_file_path;
-use crate::utils::errors::std_error;
+use crate::utils::errors::{invalid_input_error, not_found_error, std_error};
+use regex::Regex;
 use serde_derive::{Deserialize, Serialize};
 use serde_json::{from_str, to_string_pretty};
 use std::fs;
@@ -18,9 +19,30 @@ pub struct RemoteRepoNamespace {
     pub requires_authorization: bool,
 }
 
-pub fn get_namespace(repo_name: &str) -> Result<Option<RemoteRepoNamespace>, Error> {
+pub fn parse_to_raw_url(route: String) -> Result<String, Error> {
+    let regex = std_error(Regex::new(r"^[\w-]+"))?;
+    let namespace_name = regex.find(&route);
+
+    if let Some(namespace_name) = namespace_name {
+        if let Some(namespace) = get_namespace(namespace_name.as_str())? {
+            let raw_url = regex.replace(&route, namespace.base_url).to_string();
+            return Ok(raw_url);
+        } else {
+            return Err(not_found_error(&format!(
+                "Not found namespace named as \"{}\".",
+                namespace_name.as_str()
+            )));
+        }
+    }
+
+    Err(invalid_input_error("Invalid namespace syntax."))
+}
+
+pub fn get_namespace(namespace_name: &str) -> Result<Option<RemoteRepoNamespace>, Error> {
     let repos = get_saved_namespaces()?;
-    Ok(repos.into_iter().find(|repo| repo.name == repo_name))
+    Ok(repos
+        .into_iter()
+        .find(|namespace| namespace.name == namespace_name))
 }
 
 pub fn get_saved_namespaces() -> Result<Vec<RemoteRepoNamespace>, Error> {
@@ -29,8 +51,7 @@ pub fn get_saved_namespaces() -> Result<Vec<RemoteRepoNamespace>, Error> {
     std_error(from_str(&current_repos_json))
 }
 
-
-fn update_namespace_file(repos: Vec<RemoteRepoNamespace>) -> Result<(), Error> {    
+fn update_namespace_file(repos: Vec<RemoteRepoNamespace>) -> Result<(), Error> {
     fs::write(
         get_namespaces_file_path()?,
         std_error(to_string_pretty(&repos))?,
@@ -40,13 +61,12 @@ fn update_namespace_file(repos: Vec<RemoteRepoNamespace>) -> Result<(), Error> {
 
 pub fn create_namespaces_file() -> Result<(), Error> {
     let namespaces_file_not_exists = !Path::new(&get_namespaces_file_path()?).exists();
-    
     if namespaces_file_not_exists {
         let initial_content = vec![get_std_tools_namespace()];
         fs::write(
             get_namespaces_file_path()?,
             std_error(to_string_pretty(&initial_content))?,
-        )?;    
+        )?;
     }
 
     Ok(())

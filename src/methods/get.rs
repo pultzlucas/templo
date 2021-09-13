@@ -1,23 +1,17 @@
 use crate::cli::input::args::Args;
-use crate::core::namespaces::get_namespace;
+use crate::core::namespaces::parse_to_raw_url;
 use crate::core::repo;
-use crate::core::requester::{build_request, request, validate_url, Method};
+use crate::core::requester::{build_request, request, str_is_url, validate_url, Method};
 use crate::core::template::Template;
-use crate::methods::check_flags;
 use crate::{
     cli::output::messages::error::TEMPLATE_ALREADY_EXISTS,
     paintln,
-    utils::errors::{
-        already_exists_error, invalid_data_error, invalid_input_error, not_found_error, std_error,
-    },
+    utils::errors::{already_exists_error, invalid_data_error, invalid_input_error, std_error},
 };
 use std::{io::Error, str, time::Instant};
 
 pub async fn run(args: Args) -> Result<(), Error> {
     repo::create()?;
-
-    let flags = vec!["--url"];
-    check_flags(&args.flags, flags)?;
 
     if args.inputs.len() < 1 {
         return Err(invalid_input_error("The template url must be specified."));
@@ -25,25 +19,12 @@ pub async fn run(args: Args) -> Result<(), Error> {
 
     let start = Instant::now(); // start timing process
 
-    let url = if args.has_flag("--url") {
+    let url = if str_is_url(&args.inputs[0]) {
         validate_url(&args.inputs[0])?.to_string()
     } else {
-        if args.inputs.len() < 2 {
-            return Err(invalid_input_error("Repo name must be specified"));
-        }
-
-        let repo_name = args.inputs[1].clone();
-        let repo_namespace = get_namespace(&repo_name)?;
-
-        if let Some(repo) = repo_namespace {
-            let url = format!("{}/templates/{}", repo.base_url, args.inputs[0]);
-            validate_url(&url)?.to_string()
-        } else {
-            return Err(not_found_error(&format!(
-                "Repo \"{}\" not is registered.",
-                repo_name
-            )));
-        }
+        let template_url_path = args.inputs[0].clone();
+        let url = parse_to_raw_url(template_url_path)?;
+        validate_url(&url)?.to_string()
     };
 
     paintln!("{gray}", "[getting template]");
