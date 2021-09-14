@@ -1,4 +1,5 @@
 pub mod args;
+pub mod command;
 
 use std::io::{stdin, stdout, Error, Write};
 
