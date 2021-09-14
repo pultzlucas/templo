@@ -15,21 +15,19 @@ async fn main() {
     let command = parse_command(env.join(" ").clone()).expect("Error when parsing command string.");
     let args = parse_args(env.join(" ")).expect("Error when parsing command args.");
 
-    println!("{:?}", command);
-
-    if let None = args.command {
+    if let None = command.method {
         welcome::run();
         return;
     }
 
-    if let Some(command) = args.command.clone() {
+    if let Some(method) = command.method.clone() {
         let output = {
-            match command.as_str() {
+            match method.as_str() {
                 "gen" => generate::run(args),
                 "del" => delete::run(args),
                 "namespace" => namespace::run(args),
                 "get" => get::run(args).await,
-                "repo" => repo::run(args),
+                "repo" => repo::run(command),
                 "desc" => describe::run(args),
                 "docs" => docs::run(),
                 "save" => save::run(args),
@@ -38,7 +36,7 @@ async fn main() {
                 "version" | "v" => version::run(),
                 _ => Err(invalid_input_error(&format!(
                     "Invalid method \"{}\".",
-                    command
+                    method
                 ))),
             }
         };

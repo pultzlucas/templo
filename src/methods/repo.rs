@@ -1,4 +1,4 @@
-use crate::cli::input::args::Args;
+use crate::cli::input::command::Command;
 use crate::core::path::get_repo_path;
 use crate::methods::check_flags;
 use crate::utils::path::pathbuf_to_string;
@@ -7,13 +7,13 @@ use crate::core::template::{Template, TemplateDisplayInfo};
 use std::io::Error;
 use tabled::{Disable, Style, Table};
 
-pub fn run(args: Args) -> Result<(), Error> {
+pub fn run(command: Command) -> Result<(), Error> {
     repo::create()?;
 
     let flags = vec!["--local"];
-    check_flags(&args.flags, flags)?;
+    check_flags(&command.flags, flags)?;
 
-    if args.has_flag("--local") {
+    if command.has_flag("--local") {
         println!("{}", pathbuf_to_string(get_repo_path().unwrap()));
         return Ok(());
     }

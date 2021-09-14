@@ -112,7 +112,8 @@ fn get_flags(command: &str) -> Result<Vec<String>, Error> {
 }
 
 mod tests {
-    use super::*;
+    #[warn(unused_imports)]
+    use super::{parse_command, Command, CommandOption};
 
     #[test]
     fn it_should_return_a_valid_command_struct() {
