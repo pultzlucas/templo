@@ -5,14 +5,17 @@ mod methods;
 mod utils;
 
 use crate::utils::errors::invalid_input_error;
-use cli::input::args::parse_args;
+use cli::input::{args::parse_args, command::parse_command};
 use methods::*;
 use std::env;
 
 #[tokio::main]
 async fn main() {
     let env: Vec<String> = env::args().collect();
+    let command = parse_command(env.join(" ").clone()).expect("Error when parsing command string.");
     let args = parse_args(env.join(" ")).expect("Error when parsing command args.");
+
+    println!("{:?}", command);
 
     if let None = args.command {
         welcome::run();

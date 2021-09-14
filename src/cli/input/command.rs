@@ -10,6 +10,7 @@ pub struct CommandOption {
 
 #[derive(Debug, PartialEq)]
 pub struct Command {
+    pub method: Option<String>,
     pub submethod: Option<String>,
     pub flags: Vec<String>,
     pub args: Option<Vec<String>>,
@@ -24,21 +25,35 @@ impl Command {
 }
 
 pub fn parse_command(command: String) -> Result<Command, Error> {
+    let command = command.split(" ").collect::<Vec<&str>>()[1..].join(" ");
     let flags = get_flags(&command)?;
     let options = get_options(&command)?;
     let args = get_args(&command)?;
+    let method = get_method(&command)?;
     let submethod = get_submethod(&command)?;
 
     Ok(Command {
         flags,
         args,
         options,
+        method,
         submethod,
     })
 }
 
+fn get_method(command: &str) -> Result<Option<String>, Error> {
+    let method_regex = std_error(Regex::new(r"^\w+"))?;
+
+    if let Some(caps) = method_regex.captures(command) {
+        let method = caps[0].to_string();
+        return Ok(Some(method));
+    }
+
+    Ok(None)
+}
+
 fn get_submethod(command: &str) -> Result<Option<String>, Error> {
-    let submethod_regex_start = std_error(Regex::new(r"(^\w+\s+\w+)\s"))?;
+    let submethod_regex_start = std_error(Regex::new(r"^\w+\s+"))?;
     let submethod_regex_end = std_error(Regex::new(r"^\w+"))?;
     let submethod_end = submethod_regex_start.replace_all(command, "");
 
@@ -51,7 +66,7 @@ fn get_submethod(command: &str) -> Result<Option<String>, Error> {
 }
 
 fn get_args(command: &str) -> Result<Option<Vec<String>>, Error> {
-    let args_regex = std_error(Regex::new(r"(\s--[\w-]+=[\w-]+)|(\s-[\w-]+)|(^\w+\s+\w+)"))?;
+    let args_regex = std_error(Regex::new(r"(\s--[\w-]+=[\w-]+)|(\s-[\w-]+)|(^\w+)"))?;
     let args_string = args_regex.replace_all(command, "").trim().to_string();
 
     if args_string.is_empty() {
@@ -105,6 +120,7 @@ mod tests {
         let struct_tested = parse_command(command).unwrap();
 
         let correct_struct = Command {
+            method: Some("method".to_string()),
             submethod: Some("submethod".to_string()),
             flags: vec![
                 "-f".to_string(),
