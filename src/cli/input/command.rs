@@ -13,7 +13,7 @@ pub struct Command {
     pub method: Option<String>,
     pub submethod: Option<String>,
     pub flags: Vec<String>,
-    pub args: Option<Vec<String>>,
+    pub args: Vec<String>,
     pub options: Vec<CommandOption>,
 }
 
@@ -65,20 +65,16 @@ fn get_submethod(command: &str) -> Result<Option<String>, Error> {
     Ok(None)
 }
 
-fn get_args(command: &str) -> Result<Option<Vec<String>>, Error> {
+fn get_args(command: &str) -> Result<Vec<String>, Error> {
     let args_regex = std_error(Regex::new(r"(\s--[\w-]+=[\w-]+)|(\s-[\w-]+)|(^\w+)"))?;
     let args_string = args_regex.replace_all(command, "").trim().to_string();
-
-    if args_string.is_empty() {
-        return Ok(None);
-    }
 
     let args = args_string
         .split(" ")
         .map(|arg| arg.to_string())
         .filter(|arg| !arg.is_empty());
 
-    Ok(Some(args.collect()))
+    Ok(args.collect())
 }
 
 fn get_options(command: &str) -> Result<Vec<CommandOption>, Error> {
@@ -138,13 +134,13 @@ mod tests {
                     value: "value-2".to_string(),
                 },
             ],
-            args: Some(vec![
+            args: vec![
                 "submethod".to_string(),
                 "arg1".to_string(),
                 "./arg2".to_string(),
                 "arg-3".to_string(),
                 "arg_4".to_string(),
-            ]),
+            ],
         };
 
         assert_eq!(correct_struct, struct_tested)
