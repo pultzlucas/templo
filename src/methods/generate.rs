@@ -1,4 +1,4 @@
-use crate::cli::input::args::Args;
+use crate::cli::input::command::Command;
 use crate::core::template::generator;
 use crate::utils::errors::invalid_input_error;
 use crate::{
@@ -7,18 +7,18 @@ use crate::{
 };
 use std::{fs, io::Error, path::Path, time::Instant};
 
-pub fn run(args: Args) -> Result<(), Error> {
+pub fn run(command: Command) -> Result<(), Error> {
     repo::create()?;
 
-    if args.inputs.len() < 1 {
+    if command.args.len() < 1 {
         return Err(invalid_input_error(INVALID_TEMPLATE_NAME));
     }
 
-    let template_name = &args.inputs[0];
-    let directory = if args.inputs.len() < 2 {
+    let template_name = &command.args[0];
+    let directory = if command.args.len() < 2 {
         Path::new(".")
     } else {
-        Path::new(&args.inputs[1])
+        Path::new(&command.args[1])
     };
     
     if directory.extension() != None {

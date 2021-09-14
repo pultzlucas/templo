@@ -5,7 +5,7 @@ mod methods;
 mod utils;
 
 use crate::utils::errors::invalid_input_error;
-use cli::input::{args::parse_args, command::parse_command};
+use cli::input::command::parse_command;
 use methods::*;
 use std::env;
 
@@ -13,7 +13,6 @@ use std::env;
 async fn main() {
     let env: Vec<String> = env::args().collect();
     let command = parse_command(env.join(" ").clone()).expect("Error when parsing command string.");
-    let args = parse_args(env.join(" ")).expect("Error when parsing command args.");
 
     if let None = command.method {
         welcome::run();
@@ -23,15 +22,15 @@ async fn main() {
     if let Some(method) = command.method.clone() {
         let output = {
             match method.as_str() {
-                "gen" => generate::run(args),
-                "del" => delete::run(args),
-                "namespace" => namespace::run(args),
-                "get" => get::run(args).await,
+                "gen" => generate::run(command),
+                "del" => delete::run(command),
+                "namespace" => namespace::run(command),
+                "get" => get::run(command).await,
                 "repo" => repo::run(command),
-                "desc" => describe::run(args),
+                "desc" => describe::run(command),
                 "docs" => docs::run(),
-                "save" => save::run(args),
-                "update" => update::run(args),
+                "save" => save::run(command),
+                "update" => update::run(command),
                 "help" | "h" => help::run(),
                 "version" | "v" => version::run(),
                 _ => Err(invalid_input_error(&format!(

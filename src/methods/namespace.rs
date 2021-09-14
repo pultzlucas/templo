@@ -1,4 +1,4 @@
-use crate::cli::input::args::Args;
+use crate::cli::input::command::Command;
 use crate::cli::input::{get, get_boolean_input};
 use crate::core::path::get_namespaces_file_path;
 use crate::core::namespaces::{self, get_namespace, get_saved_namespaces, create_namespaces_file, RemoteRepoNamespace};
@@ -8,26 +8,26 @@ use crate::utils::path::pathbuf_to_string;
 use std::io::Error;
 use tabled::{Style, Table};
 
-pub fn run(args: Args) -> Result<(), Error> {
+pub fn run(command: Command) -> Result<(), Error> {
     create_namespaces_file()?;
 
     let flags = vec!["--local", "--add", "--remove", "--update"];
-    check_flags(&args.flags, flags)?;
+    check_flags(&command.flags, flags)?;
 
-    if args.has_flag("--local") {
+    if command.has_flag("--local") {
         println!("{}", pathbuf_to_string(get_namespaces_file_path()?));
         return Ok(());
     }
 
-    if args.has_flag("--add") {
+    if command.has_flag("--add") {
         return add_namespace();
     }
 
-    if args.has_flag("--remove") {
+    if command.has_flag("--remove") {
         return remove_namespac();
     }
 
-    if args.has_flag("--update") {
+    if command.has_flag("--update") {
         return update_namespace();
     }
 

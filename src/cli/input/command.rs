@@ -107,42 +107,37 @@ fn get_flags(command: &str) -> Result<Vec<String>, Error> {
     Ok(flags.collect())
 }
 
-mod tests {
-    #[warn(unused_imports)]
-    use super::{parse_command, Command, CommandOption};
+#[test]
+fn it_should_return_a_valid_command_struct() {
+    let command = "tp method  submethod arg1 -f --flag1 ./arg2  --flag-2  arg-3 --option1=value1 arg_4 --option-2=value-2".to_string();
+    let struct_tested = parse_command(command).unwrap();
 
-    #[test]
-    fn it_should_return_a_valid_command_struct() {
-        let command = "tp method  submethod arg1 -f --flag1 ./arg2  --flag-2  arg-3 --option1=value1 arg_4 --option-2=value-2".to_string();
-        let struct_tested = parse_command(command).unwrap();
+    let correct_struct = Command {
+        method: Some("method".to_string()),
+        submethod: Some("submethod".to_string()),
+        flags: vec![
+            "-f".to_string(),
+            "--flag1".to_string(),
+            "--flag-2".to_string(),
+        ],
+        options: vec![
+            CommandOption {
+                name: "option1".to_string(),
+                value: "value1".to_string(),
+            },
+            CommandOption {
+                name: "option-2".to_string(),
+                value: "value-2".to_string(),
+            },
+        ],
+        args: vec![
+            "submethod".to_string(),
+            "arg1".to_string(),
+            "./arg2".to_string(),
+            "arg-3".to_string(),
+            "arg_4".to_string(),
+        ],
+    };
 
-        let correct_struct = Command {
-            method: Some("method".to_string()),
-            submethod: Some("submethod".to_string()),
-            flags: vec![
-                "-f".to_string(),
-                "--flag1".to_string(),
-                "--flag-2".to_string(),
-            ],
-            options: vec![
-                CommandOption {
-                    name: "option1".to_string(),
-                    value: "value1".to_string(),
-                },
-                CommandOption {
-                    name: "option-2".to_string(),
-                    value: "value-2".to_string(),
-                },
-            ],
-            args: vec![
-                "submethod".to_string(),
-                "arg1".to_string(),
-                "./arg2".to_string(),
-                "arg-3".to_string(),
-                "arg_4".to_string(),
-            ],
-        };
-
-        assert_eq!(correct_struct, struct_tested)
-    }
+    assert_eq!(correct_struct, struct_tested)
 }

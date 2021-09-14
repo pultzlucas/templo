@@ -1,4 +1,4 @@
-use crate::cli::input::args::Args;
+use crate::cli::input::command::Command;
 use crate::core::namespaces::parse_to_raw_url;
 use crate::core::repo;
 use crate::core::requester::{build_request, request, str_is_url, validate_url, Method};
@@ -10,19 +10,19 @@ use crate::{
 };
 use std::{io::Error, str, time::Instant};
 
-pub async fn run(args: Args) -> Result<(), Error> {
+pub async fn run(command: Command) -> Result<(), Error> {
     repo::create()?;
 
-    if args.inputs.len() < 1 {
+    if command.args.len() < 1 {
         return Err(invalid_input_error("The template url must be specified."));
     }
 
     let start = Instant::now(); // start timing process
 
-    let url = if str_is_url(&args.inputs[0]) {
-        validate_url(&args.inputs[0])?.to_string()
+    let url = if str_is_url(&command.args[0]) {
+        validate_url(&command.args[0])?.to_string()
     } else {
-        let template_url_path = args.inputs[0].clone();
+        let template_url_path = command.args[0].clone();
         let url = parse_to_raw_url(template_url_path)?;
         validate_url(&url)?.to_string()
     };

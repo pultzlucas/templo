@@ -1,4 +1,4 @@
-use crate::cli::input::args::Args;
+use crate::cli::input::command::Command;
 use crate::{
     cli::output::messages::error::INVALID_TEMPLATE_NAME,
     core::{repo, template::maker::make_template},
@@ -6,14 +6,14 @@ use crate::{
 };
 use std::{io::Error, time::Instant};
 
-pub fn run(args: Args) -> Result<(), Error> {
+pub fn run(command: Command) -> Result<(), Error> {
     repo::create()?;
 
-    if args.inputs.len() < 1 {
+    if command.args.len() < 1 {
         return Err(invalid_input_error(INVALID_TEMPLATE_NAME));
     }
 
-    let template_name = args.inputs[0].clone();
+    let template_name = command.args[0].clone();
 
     if repo::template_exists(&template_name) {
         return Err(already_exists_error(&format!(
