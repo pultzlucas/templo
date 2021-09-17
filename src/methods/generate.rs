@@ -1,7 +1,8 @@
 use serde_json::from_str;
 
 use crate::cli::input::command::Command;
-use crate::core::template::{Template, generator};
+use crate::core::template::engine::get_engine_args;
+use crate::core::template::{generator, Template};
 use crate::utils::errors::{invalid_input_error, std_error};
 use crate::{
     cli::output::messages::error::{INVALID_DIRECTORY_PATH_TYPE, INVALID_TEMPLATE_NAME},
@@ -23,19 +24,24 @@ pub fn run(command: Command) -> Result<(), Error> {
         if directory.extension() != None {
             return Err(invalid_input_error(INVALID_DIRECTORY_PATH_TYPE));
         }
-        
+
         if !directory.exists() {
             fs::create_dir_all(directory)?;
         }
 
         if !tpo_filename.ends_with(".tpo") {
-            return Err(invalid_input_error("The file must have TPO extension."))
+            return Err(invalid_input_error("The file must have TPO extension."));
         }
 
         let template_string = fs::read_to_string(tpo_filename)?;
         let template: Template = std_error(from_str(&template_string))?;
+        let temp_args = if let Some(args) = template.args.clone() {
+            get_engine_args(args)?
+        } else {
+            vec![]
+        };
 
-        generator::gen_template(template, directory)?;
+        generator::gen_template(template, directory, temp_args)?;
 
         return Ok(());
     }
@@ -50,19 +56,24 @@ pub fn run(command: Command) -> Result<(), Error> {
     } else {
         Path::new(&command.args[1])
     };
-    
+
     if directory.extension() != None {
         return Err(invalid_input_error(INVALID_DIRECTORY_PATH_TYPE));
     }
-    
+
     if !directory.exists() {
         fs::create_dir_all(directory)?;
     }
-    
+
     let start = Instant::now(); // start timing process
     let template = repo::get_template(&template_name)?;
+    let temp_args = if let Some(args) = template.args.clone() {
+        get_engine_args(args)?
+    } else {
+        vec![]
+    };
 
-    generator::gen_template(template, directory)?;
+    generator::gen_template(template, directory, temp_args)?;
     println!("Template \"{}\" was generated.", template_name);
 
     let end = Instant::now(); // stop timing process

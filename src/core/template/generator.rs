@@ -1,8 +1,6 @@
-use super::config::ConfigArg;
 use super::engine::parse;
 use super::engine::TempEngineArg;
 use super::Template;
-use crate::cli::input;
 use crate::core::template::{TempContent, TempPath, TempPathType};
 use crate::utils::string::decode_base64;
 use crate::{
@@ -15,21 +13,23 @@ use std::{
     path::{Path, PathBuf},
 };
 
-pub fn gen_template(template: Template, directory: &Path) -> Result<(), Error> {
-
-    let template_contents: Result<Vec<TempContent>, Error> = if let Some(args) = template.args {
-        template.contents.into_iter().map(|content| {
-            let engine_args = get_engine_args(args.clone())?;
-            let text_parsed = base64::encode(parse(
-                decode_base64(content.text)?,
-                engine_args,
-            )?);
-            Ok(TempContent {
-                file_path: content.file_path,
-                text: text_parsed
+pub fn gen_template(
+    template: Template,
+    directory: &Path,
+    temp_args: Vec<TempEngineArg>,
+) -> Result<(), Error> {
+    let template_contents: Result<Vec<TempContent>, Error> = if !temp_args.is_empty() {
+        template
+            .contents
+            .into_iter()
+            .map(|content| {
+                let text_parsed = base64::encode(parse(decode_base64(content.text)?, temp_args.clone())?);
+                Ok(TempContent {
+                    file_path: content.file_path,
+                    text: text_parsed,
+                })
             })
-        }).collect()
-
+            .collect()
     } else {
         Ok(template.contents)
     };
@@ -48,26 +48,6 @@ pub fn gen_template(template: Template, directory: &Path) -> Result<(), Error> {
 
     print!("\n");
     Ok(())
-}
-
-fn get_engine_args(args: Vec<ConfigArg>) -> Result<Vec<TempEngineArg>, Error> {
-    args.into_iter()
-        .map(|arg| {
-            let value = input::get(&arg.query)?;
-            Ok(TempEngineArg {
-                key: arg.key,
-                value: if value.is_empty() {
-                    if let Some(default) = arg.default {
-                        default
-                    } else {
-                        "".to_string()
-                    }
-                } else {
-                    value
-                },
-            })
-        })
-        .collect()
 }
 
 fn create_path(path: TempPath, directory: &Path) -> Result<(), Error> {

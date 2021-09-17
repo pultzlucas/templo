@@ -1,4 +1,6 @@
-use crate::utils::errors::{std_error, not_found_error};
+use super::ConfigArg;
+use crate::cli::input;
+use crate::utils::errors::{not_found_error, std_error};
 use regex::Regex;
 use std::io::Error;
 
@@ -24,9 +26,32 @@ pub fn parse(text: String, args: Vec<TempEngineArg>) -> Result<String, Error> {
             let shape_regex = std_error(Regex::new(&format!(r"\{}", shape)))?;
             final_text = shape_regex.replace_all(&final_text, &arg.value).to_string();
         } else {
-            return Err(not_found_error(&format!("Key \"{}\" was not informed.", key)))
+            return Err(not_found_error(&format!(
+                "Key \"{}\" was not informed.",
+                key
+            )));
         }
     }
 
     Ok(final_text)
+}
+
+pub fn get_engine_args(args: Vec<ConfigArg>) -> Result<Vec<TempEngineArg>, Error> {
+    args.into_iter()
+        .map(|arg| {
+            let value = input::get(&arg.query)?;
+            Ok(TempEngineArg {
+                key: arg.key,
+                value: if value.is_empty() {
+                    if let Some(default) = arg.default {
+                        default
+                    } else {
+                        "".to_string()
+                    }
+                } else {
+                    value
+                },
+            })
+        })
+        .collect()
 }
