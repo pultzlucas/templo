@@ -66,7 +66,7 @@ fn get_submethod(command: &str) -> Result<Option<String>, Error> {
 }
 
 fn get_args(command: &str) -> Result<Vec<String>, Error> {
-    let args_regex = std_error(Regex::new(r"(\s--[\w-]+=[\w-]+)|(\s-[\w-]+)|(^\w+)"))?;
+    let args_regex = std_error(Regex::new(r"(\s--[\w-]+=[^\s]*)|(\s-[\w-]+)|(^\w+)"))?;
     let args_string = args_regex.replace_all(command, "").trim().to_string();
 
     let args = args_string
@@ -78,8 +78,8 @@ fn get_args(command: &str) -> Result<Vec<String>, Error> {
 }
 
 fn get_options(command: &str) -> Result<Vec<CommandOption>, Error> {
-    let get_options = std_error(Regex::new(r"(--[\w-]+)=[^\s]+"))?;
-    let get_option_name = std_error(Regex::new(r"--|(=.+)"))?;
+    let get_options = std_error(Regex::new(r"(--[\w-]+)=[^\s]*"))?;
+    let get_option_name = std_error(Regex::new(r"--|=.*"))?;
     let get_option_value = std_error(Regex::new(r"--[\w-]+="))?;
 
     let command_options = get_options.captures_iter(command).map(|caps| {
@@ -109,7 +109,7 @@ fn get_flags(command: &str) -> Result<Vec<String>, Error> {
 
 #[test]
 fn it_should_return_a_valid_command_struct() {
-    let command = "tp method  submethod arg1 -f --flag1 ./arg2  --flag-2  arg-3 --option1=value1 arg_4 --option-2=value-2".to_string();
+    let command = "tp method  submethod arg1 -f --flag1 ./arg2  --flag-2  arg-3 --option1=value1 arg_4 --option-2=value-2 --empty-option=".to_string();
     let struct_tested = parse_command(command).unwrap();
 
     let correct_struct = Command {
@@ -128,6 +128,10 @@ fn it_should_return_a_valid_command_struct() {
             CommandOption {
                 name: "option-2".to_string(),
                 value: "value-2".to_string(),
+            },
+            CommandOption {
+                name: "empty-option".to_string(),
+                value: "".to_string(),
             },
         ],
         args: vec![
