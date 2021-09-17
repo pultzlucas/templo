@@ -1,7 +1,7 @@
 use serde_json::from_str;
 
-use crate::cli::input::command::Command;
-use crate::core::template::engine::get_engine_args;
+use crate::cli::input::command::{Command, CommandOption};
+use crate::core::template::engine::{get_engine_args_input, TempEngineArg};
 use crate::core::template::{generator, Template};
 use crate::utils::errors::{invalid_input_error, std_error};
 use crate::{
@@ -35,10 +35,11 @@ pub fn run(command: Command) -> Result<(), Error> {
 
         let template_string = fs::read_to_string(tpo_filename)?;
         let template: Template = std_error(from_str(&template_string))?;
-        let temp_args = if let Some(args) = template.args.clone() {
-            get_engine_args(args)?
+
+        let temp_args = if !command.options.is_empty() {
+            get_template_args_by_options(command.options)
         } else {
-            vec![]
+            get_template_args_by_temp(&template)?
         };
 
         generator::gen_template(template, directory, temp_args)?;
@@ -67,10 +68,11 @@ pub fn run(command: Command) -> Result<(), Error> {
 
     let start = Instant::now(); // start timing process
     let template = repo::get_template(&template_name)?;
-    let temp_args = if let Some(args) = template.args.clone() {
-        get_engine_args(args)?
+
+    let temp_args = if !command.options.is_empty() {
+        get_template_args_by_options(command.options)
     } else {
-        vec![]
+        get_template_args_by_temp(&template)?
     };
 
     generator::gen_template(template, directory, temp_args)?;
@@ -78,6 +80,23 @@ pub fn run(command: Command) -> Result<(), Error> {
 
     let end = Instant::now(); // stop timing process
     println!("Done in {:.2?}", end.duration_since(start));
-
     Ok(())
+}
+
+fn get_template_args_by_options(options: Vec<CommandOption>) -> Vec<TempEngineArg> {
+    options
+        .into_iter()
+        .map(|option| TempEngineArg {
+            key: option.name,
+            value: option.value,
+        })
+        .collect()
+}
+
+fn get_template_args_by_temp(template: &Template) -> Result<Vec<TempEngineArg>, Error> {
+    if let Some(args) = &template.args {
+        return get_engine_args_input(args);
+    }
+
+    Ok(vec![])
 }

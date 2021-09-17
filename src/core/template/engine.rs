@@ -36,15 +36,15 @@ pub fn parse(text: String, args: Vec<TempEngineArg>) -> Result<String, Error> {
     Ok(final_text)
 }
 
-pub fn get_engine_args(args: Vec<ConfigArg>) -> Result<Vec<TempEngineArg>, Error> {
+pub fn get_engine_args_input(args: &Vec<ConfigArg>) -> Result<Vec<TempEngineArg>, Error> {
     args.into_iter()
         .map(|arg| {
             let value = input::get(&arg.query)?;
             Ok(TempEngineArg {
-                key: arg.key,
+                key: arg.key.to_string(),
                 value: if value.is_empty() {
-                    if let Some(default) = arg.default {
-                        default
+                    if let Some(default) = &arg.default {
+                        default.to_owned()
                     } else {
                         "".to_string()
                     }
