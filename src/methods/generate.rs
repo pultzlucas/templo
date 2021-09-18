@@ -1,7 +1,7 @@
 use serde_json::from_str;
 
 use crate::cli::input::command::{Command, CommandOption};
-use crate::core::template::engine::{get_engine_args_input, TempEngineArg};
+use crate::core::template::engine::{get_engine_args_input, set_arg_default_value, TempEngineArg};
 use crate::core::template::{generator, Template};
 use crate::utils::errors::{invalid_input_error, std_error};
 use crate::{
@@ -94,8 +94,12 @@ fn get_template_args_by_options(options: Vec<CommandOption>) -> Vec<TempEngineAr
 }
 
 fn get_template_args_by_temp(template: &Template) -> Result<Vec<TempEngineArg>, Error> {
-    if let Some(args) = &template.args {
-        return get_engine_args_input(args);
+    if let Some(config_args) = &template.args {
+        let temp_args = get_engine_args_input(config_args)?
+            .into_iter()
+            .map(|arg| set_arg_default_value(arg, config_args));
+        
+        return temp_args.collect();
     }
 
     Ok(vec![])
