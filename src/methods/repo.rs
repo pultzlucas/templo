@@ -10,11 +10,16 @@ use tabled::{Disable, Style, Table};
 pub fn run(command: Command) -> Result<(), Error> {
     repo::create()?;
 
-    let flags = vec!["--local"];
+    let flags = vec!["--local", "--total"];
     check_flags(&command.flags, flags)?;
 
     if command.has_flag("--local") {
         println!("{}", pathbuf_to_string(get_repo_path().unwrap()));
+        return Ok(());
+    }
+
+    if command.has_flag("--total") {
+        println!("{}", repo::total_templates());
         return Ok(());
     }
 
@@ -34,7 +39,6 @@ pub fn run(command: Command) -> Result<(), Error> {
         .with(Style::pseudo());
 
     println!("{}", template_tb);
-    println!("Total templates: {}", repo::total_templates());
 
     Ok(())
 }
