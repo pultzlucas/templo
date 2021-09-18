@@ -37,7 +37,7 @@ pub fn run(command: Command) -> Result<(), Error> {
         let template: Template = std_error(from_str(&template_string))?;
 
         let temp_args = if !command.options.is_empty() {
-            get_template_args_by_options(command.options)
+            get_template_args_by_options(command.options, &template)?
         } else {
             get_template_args_by_temp(&template)?
         };
@@ -70,7 +70,7 @@ pub fn run(command: Command) -> Result<(), Error> {
     let template = repo::get_template(&template_name)?;
 
     let temp_args = if !command.options.is_empty() {
-        get_template_args_by_options(command.options)
+        get_template_args_by_options(command.options, &template)?
     } else {
         get_template_args_by_temp(&template)?
     };
@@ -83,12 +83,22 @@ pub fn run(command: Command) -> Result<(), Error> {
     Ok(())
 }
 
-fn get_template_args_by_options(options: Vec<CommandOption>) -> Vec<TempEngineArg> {
+fn get_template_args_by_options(
+    options: Vec<CommandOption>,
+    template: &Template,
+) -> Result<Vec<TempEngineArg>, Error> {
     options
         .into_iter()
         .map(|option| TempEngineArg {
             key: option.name,
             value: option.value,
+        })
+        .map(|engine_arg| {
+            if let Some(config_args) = &template.args {
+                set_arg_default_value(engine_arg, config_args)
+            } else {
+                Ok(engine_arg)
+            }
         })
         .collect()
 }
@@ -98,7 +108,7 @@ fn get_template_args_by_temp(template: &Template) -> Result<Vec<TempEngineArg>, 
         let temp_args = get_engine_args_input(config_args)?
             .into_iter()
             .map(|arg| set_arg_default_value(arg, config_args));
-        
+
         return temp_args.collect();
     }
 
