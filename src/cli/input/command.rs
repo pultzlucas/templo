@@ -22,6 +22,10 @@ impl Command {
         let regex = Regex::new(&format!("{}$", flag)).unwrap();
         self.flags.iter().any(|flag| regex.is_match(flag))
     }
+
+    pub fn get_opt_by_name(&self, name: &str) -> Option<&CommandOption> {
+        self.options.iter().find(|opt| opt.name == name)
+    }
 }
 
 pub fn parse_command(command: String) -> Result<Command, Error> {
