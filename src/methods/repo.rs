@@ -38,7 +38,7 @@ pub fn run(command: Command) -> Result<(), Error> {
         .with(Disable::Column(4..))
         .with(Style::pseudo());
 
-    println!("{}", template_tb);
+    print!("{}", template_tb);
 
     Ok(())
 }

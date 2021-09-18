@@ -43,7 +43,7 @@ fn show_saved_namespaces() -> Result<(), Error> {
     let repos = get_saved_namespaces()?;
     let repos_table = Table::new(repos).with(Style::pseudo());
 
-    println!("{}", repos_table);
+    print!("{}", repos_table);
 
     Ok(())
 }
