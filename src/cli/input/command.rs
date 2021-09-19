@@ -23,6 +23,11 @@ impl Command {
         self.flags.iter().any(|flag| regex.is_match(flag))
     }
 
+    pub fn has_option(&self, option: &str) -> bool {
+        let regex = Regex::new(&format!("{}$", option)).unwrap();
+        self.options.iter().any(|opt| regex.is_match(&opt.name))
+    }
+
     pub fn get_opt_by_name(&self, name: &str) -> Option<&CommandOption> {
         self.options.iter().find(|opt| opt.name == name)
     }

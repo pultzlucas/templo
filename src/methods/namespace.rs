@@ -5,7 +5,7 @@ use crate::core::namespaces::{
 };
 use crate::core::path::get_namespaces_file_path;
 use crate::methods::check_flags;
-use crate::utils::errors::{invalid_input_error, not_found_error};
+use crate::utils::errors::invalid_input_error;
 use crate::utils::path::pathbuf_to_string;
 use crate::utils::string::str_to_bool;
 use std::io::Error;
@@ -148,62 +148,55 @@ fn update_namespace(command: Command) -> Result<(), Error> {
 
     let current_repo = get_namespace(&current_name)?;
 
-    if let Some(current_repo) = current_repo {
-        let name = if command.options.is_empty() {
-            get("New repo name: ")?
+    let name = if command.options.is_empty() {
+        get("New repo name: ")?
+    } else {
+        let input = command.get_opt_by_name("name");
+        if let None = input {
+            return Err(invalid_input_error("Name of namespace is required."));
+        }
+        input.unwrap().value.to_owned()
+    };
+
+    let base_url = if command.options.is_empty() {
+        get("New repo base url: ")?
+    } else {
+        let input = command.get_opt_by_name("base-url");
+        if let None = input {
+            return Err(invalid_input_error("Base url of namespace is required."));
+        }
+        input.unwrap().value.to_owned()
+    };
+
+    let requires_authorization = if command.options.is_empty() {
+        get_boolean_input("Repo requires authorization key? [y/n]: ")?
+    } else {
+        let input = command.get_opt_by_name("req-auth");
+        if let None = input {
+            return Err(invalid_input_error(
+                "The requires authorization key information of namespace is required.",
+            ));
+        }
+        str_to_bool(&input.unwrap().value)
+    };
+
+    let repo_updated = RemoteRepoNamespace {
+        name: if name.is_empty() {
+            current_repo.name
         } else {
-            let input = command.get_opt_by_name("name");
-            if let None = input {
-                return Err(invalid_input_error("Name of namespace is required."));
-            }
-            input.unwrap().value.to_owned()
-        };
-
-        let base_url = if command.options.is_empty() {
-            get("New repo base url: ")?
+            name
+        },
+        base_url: if base_url.is_empty() {
+            current_repo.base_url
         } else {
-            let input = command.get_opt_by_name("base-url");
-            if let None = input {
-                return Err(invalid_input_error("Base url of namespace is required."));
-            }
-            input.unwrap().value.to_owned()
-        };
+            base_url
+        },
+        requires_authorization,
+    };
 
-        let requires_authorization = if command.options.is_empty() {
-            get_boolean_input("Repo requires authorization key? [y/n]: ")?
-        } else {
-            let input = command.get_opt_by_name("req-auth");
-            if let None = input {
-                return Err(invalid_input_error(
-                    "The requires authorization key information of namespace is required.",
-                ));
-            }
-            str_to_bool(&input.unwrap().value)
-        };
+    namespaces::update(&current_name, repo_updated)?;
 
-        let repo_updated = RemoteRepoNamespace {
-            name: if name.is_empty() {
-                current_repo.name
-            } else {
-                name
-            },
-            base_url: if base_url.is_empty() {
-                current_repo.base_url
-            } else {
-                base_url
-            },
-            requires_authorization,
-        };
+    println!("Remote repo \"{}\" was updated.", current_name);
 
-        namespaces::update(&current_name, repo_updated)?;
-
-        println!("Remote repo \"{}\" was updated.", current_name);
-
-        return Ok(());
-    }
-
-    Err(not_found_error(&format!(
-        "Not found repo registered as \"{}\".",
-        current_name
-    )))
+    return Ok(());
 }

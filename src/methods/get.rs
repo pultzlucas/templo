@@ -1,7 +1,9 @@
 use crate::cli::input::command::Command;
-use crate::core::namespaces::parse_to_raw_url;
+use crate::core::namespaces::{get_namespace, parse_to_raw_url};
 use crate::core::repo;
-use crate::core::requester::{build_request, request, str_is_url, validate_url, Method};
+use crate::core::requester::{
+    build_request, request, str_is_url, validate_url, HeaderValue, Method,
+};
 use crate::core::template::Template;
 use crate::{
     cli::output::messages::error::TEMPLATE_ALREADY_EXISTS,
@@ -27,13 +29,30 @@ pub async fn run(command: Command) -> Result<(), Error> {
         validate_url(&url)?.to_string()
     };
 
+    let namespace_name = command.args[0].split("/").collect::<Vec<&str>>()[0];
+    let namespace = get_namespace(namespace_name)?;
+
+    let key = if namespace.requires_authorization && command.has_option("key") {
+        Ok(command.get_opt_by_name("key").unwrap().value.clone())
+    } else {
+        Err(invalid_input_error(
+            "This remote repo requires authorization key. Add --key=<key> option.",
+        ))
+    }?;
+
     paintln!("{gray}", "[getting template]");
-    let req = build_request(&url, Method::GET, None);
+    let mut req = build_request(&url, Method::GET, None);
+
+    req.headers_mut().insert(
+        "authorization",
+        HeaderValue::from_str(&key).expect("Error when set headers."),
+    );
+
     let res = request(req).await?;
 
     // check if template data is valid
     if serde_json::from_str::<Template>(&res).is_err() {
-        return Err(invalid_data_error("Template data is incorrect."));
+        return Err(invalid_data_error("The remote repo returns an invalid template."));
     }
 
     let template: Template = std_error(serde_json::from_str(&res))?;

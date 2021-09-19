@@ -24,25 +24,27 @@ pub fn parse_to_raw_url(route: String) -> Result<String, Error> {
     let namespace_name = regex.find(&route);
 
     if let Some(namespace_name) = namespace_name {
-        if let Some(namespace) = get_namespace(namespace_name.as_str())? {
-            let raw_url = regex.replace(&route, namespace.base_url).to_string();
-            return Ok(raw_url);
-        } else {
-            return Err(not_found_error(&format!(
-                "Not found namespace named as \"{}\".",
-                namespace_name.as_str()
-            )));
-        }
+        let namespace = get_namespace(namespace_name.as_str())?;
+        let raw_url = regex.replace(&route, namespace.base_url).to_string();
+        return Ok(raw_url);
     }
 
     Err(invalid_input_error("Invalid namespace syntax."))
 }
 
-pub fn get_namespace(namespace_name: &str) -> Result<Option<RemoteRepoNamespace>, Error> {
+pub fn get_namespace(namespace_name: &str) -> Result<RemoteRepoNamespace, Error> {
     let repos = get_saved_namespaces()?;
-    Ok(repos
+    let namespace = repos
         .into_iter()
-        .find(|namespace| namespace.name == namespace_name))
+        .find(|namespace| namespace.name == namespace_name);
+    if let Some(namespace) = namespace {
+        Ok(namespace)
+    } else {
+        Err(not_found_error(&format!(
+            "Not is possible to find a namespace named as \"{}\"",
+            namespace.unwrap().name
+        )))
+    }
 }
 
 pub fn get_saved_namespaces() -> Result<Vec<RemoteRepoNamespace>, Error> {
