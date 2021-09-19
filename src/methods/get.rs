@@ -34,25 +34,46 @@ pub async fn run(command: Command) -> Result<(), Error> {
     let namespace_name = command.args[0].split("/").collect::<Vec<&str>>()[0];
     let namespace = get_namespace(namespace_name)?;
 
-    let key = if namespace.requires_authorization && command.has_option("key") {
-        Ok(command.get_opt_by_name("key").unwrap().value.clone())
+    let key = if namespace.requires_authorization {
+        let key = command.get_opt_by_name("key");
+        if let None = key {
+            return Err(invalid_input_error(
+                "This remote repo requires authorization key. Add --key=<key> option.",
+            ));
+        }
+        Some(key.unwrap().value.clone())
     } else {
-        Err(invalid_input_error(
-            "This remote repo requires authorization key. Add --key=<key> option.",
-        ))
-    }?;
+        None
+    };
 
-    paintln!("{gray}", "[getting template]");
     let mut req = build_request(&url, Method::GET, None);
 
-    req.headers_mut().insert(
-        "authorization",
-        HeaderValue::from_str(&key).expect("Error when set headers."),
-    );
+    if let Some(key) = &key {
+        req.headers_mut().insert(
+            "authorization",
+            HeaderValue::from_str(key).expect("Error when set headers."),
+        );
+    }
 
+    paintln!("{gray}", "[getting template]");
     let mut res = request(req).await?;
     let res_body = get_reponse_body(&mut res).await;
 
+    // check if template data is valid
+    if serde_json::from_str::<Template>(&res_body).is_err() {
+        return Err(invalid_data_error(
+            "The remote repo returned an invalid template.",
+        ));
+    }
+
+    let template: Template = std_error(serde_json::from_str(&res_body))?;
+
+    //check if a template with the same name already exists in repo
+    if repo::template_exists(&template.name) {
+        return Err(already_exists_error(TEMPLATE_ALREADY_EXISTS));
+    }
+
+    // show remote repo message
     if res.headers().contains_key("message") {
         let is_error = if res.headers().contains_key("isError") {
             let err = std_error(res.headers().get("isError").unwrap().to_str())?;
@@ -68,20 +89,6 @@ pub async fn run(command: Command) -> Result<(), Error> {
         }
 
         println!("{}\n", msg);
-    }
-
-    // check if template data is valid
-    if serde_json::from_str::<Template>(&res_body).is_err() {
-        return Err(invalid_data_error(
-            "The remote repo returns an invalid template.",
-        ));
-    }
-
-    let template: Template = std_error(serde_json::from_str(&res_body))?;
-
-    //check if a template with the same name already exists in repo
-    if repo::template_exists(&template.name) {
-        return Err(already_exists_error(TEMPLATE_ALREADY_EXISTS));
     }
 
     repo::save_template(template.clone())?;
