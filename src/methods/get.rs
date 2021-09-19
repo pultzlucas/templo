@@ -2,9 +2,11 @@ use crate::cli::input::command::Command;
 use crate::core::namespaces::{get_namespace, parse_to_raw_url};
 use crate::core::repo;
 use crate::core::requester::{
-    build_request, request, str_is_url, validate_url, HeaderValue, Method,
+    build_request, get_reponse_body, request, str_is_url, validate_url, HeaderValue, Method,
 };
 use crate::core::template::Template;
+use crate::utils::errors::other_error;
+use crate::utils::string::str_to_bool;
 use crate::{
     cli::output::messages::error::TEMPLATE_ALREADY_EXISTS,
     paintln,
@@ -48,14 +50,34 @@ pub async fn run(command: Command) -> Result<(), Error> {
         HeaderValue::from_str(&key).expect("Error when set headers."),
     );
 
-    let res = request(req).await?;
+    let mut res = request(req).await?;
+    let res_body = get_reponse_body(&mut res).await;
 
-    // check if template data is valid
-    if serde_json::from_str::<Template>(&res).is_err() {
-        return Err(invalid_data_error("The remote repo returns an invalid template."));
+    if res.headers().contains_key("message") {
+        let is_error = if res.headers().contains_key("isError") {
+            let err = std_error(res.headers().get("isError").unwrap().to_str())?;
+            str_to_bool(err)
+        } else {
+            false
+        };
+
+        let msg = std_error(res.headers().get("message").unwrap().to_str())?;
+
+        if is_error {
+            return Err(other_error(msg));
+        }
+
+        println!("{}\n", msg);
     }
 
-    let template: Template = std_error(serde_json::from_str(&res))?;
+    // check if template data is valid
+    if serde_json::from_str::<Template>(&res_body).is_err() {
+        return Err(invalid_data_error(
+            "The remote repo returns an invalid template.",
+        ));
+    }
+
+    let template: Template = std_error(serde_json::from_str(&res_body))?;
 
     //check if a template with the same name already exists in repo
     if repo::template_exists(&template.name) {

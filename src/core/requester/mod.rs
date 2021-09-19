@@ -4,7 +4,7 @@ pub use http_utils::*;
 pub use hyper::http::HeaderValue;
 pub use hyper::Method;
 
-use hyper::{body::to_bytes, Body, Client, Request as Req};
+use hyper::{Body, Client, Request as Req, Response};
 use hyper_tls::HttpsConnector;
 use serde_derive::{Deserialize, Serialize};
 use std::io::{Error, ErrorKind};
@@ -30,7 +30,7 @@ pub fn build_request(url: &str, method: Method, body_op: Option<String>) -> Req<
 }
 
 
-pub async fn request(req: Req<hyper::Body>) -> Result<String, Error> {
+pub async fn request(req: Req<hyper::Body>) -> Result<Response<Body>, Error> {
     let response = {
         let https = HttpsConnector::new();
         let client = Client::builder().build::<_, hyper::Body>(https);
@@ -39,23 +39,6 @@ pub async fn request(req: Req<hyper::Body>) -> Result<String, Error> {
             Ok(r) => r,
         }
     };
-    let is_404_error = response.status() == 404;
 
-    let data = {
-        let bytes = to_bytes(response.into_body())
-            .await
-            .expect("Internal error when converting body response.");
-        String::from_utf8(bytes.into_iter().collect())
-            .expect("Internal error when converting body response.")
-    };
-
-    if is_404_error {
-        return Err({
-            let err_msg: NotFoundResponse =
-                serde_json::from_str(&data).expect("Error when parsing JSON.");
-            Error::new(ErrorKind::NotFound, err_msg.message)
-        });
-    }
-
-    Ok(data)
+    Ok(response)
 }
