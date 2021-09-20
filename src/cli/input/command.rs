@@ -62,11 +62,10 @@ fn get_method(command: &str) -> Result<Option<String>, Error> {
 }
 
 fn get_submethod(command: &str) -> Result<Option<String>, Error> {
-    let submethod_regex_start = std_error(Regex::new(r"^\w+\s+"))?;
+    let submethod_regex_start = std_error(Regex::new(r"^\w+|\s+"))?;
     let submethod_regex_end = std_error(Regex::new(r"^\w+"))?;
     let submethod_end = submethod_regex_start.replace_all(command, "");
-
-    if let Some(caps) = submethod_regex_end.captures(submethod_end.trim()) {
+    if let Some(caps) = submethod_regex_end.captures(submethod_end.to_string().as_str()) {
         let submethod = caps[0].trim().to_string();
         return Ok(Some(submethod));
     }
