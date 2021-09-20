@@ -14,7 +14,7 @@ use tabled::{Style, Table};
 pub fn run(command: Command) -> Result<(), Error> {
     create_namespaces_file()?;
 
-    let flags = vec!["--local", "--add", "--remove", "--update", "-y"];
+    let flags = vec!["--local", "-y"];
     check_flags(&command.flags, flags)?;
 
     if command.has_flag("--local") {
@@ -22,18 +22,15 @@ pub fn run(command: Command) -> Result<(), Error> {
         return Ok(());
     }
 
-    if command.has_flag("--add") {
-        return add_namespace(command);
+    if let Some(submethod) = command.submethod.as_ref() {
+        return match submethod.as_str() {
+            "add" => add_namespace(command),
+            "remove" => remove_namespace(command),
+            "update" => update_namespace(command),
+            _ => Err(invalid_input_error(&format!("Invalid namespace method \"{}\"", submethod)))
+        };
     }
-
-    if command.has_flag("--remove") {
-        return remove_namespace(command);
-    }
-
-    if command.has_flag("--update") {
-        return update_namespace(command);
-    }
-
+    
     show_saved_namespaces()?;
 
     Ok(())
