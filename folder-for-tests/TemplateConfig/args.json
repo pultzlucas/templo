@@ -10,6 +10,11 @@
     },
     {
         "key": "filename",
-        "query": "filename: "
+        "query": "Javascript filename (script): ",
+        "default": "script"
+    },
+    {
+        "key": "folder1",
+        "query": "Folder name: "
     }
 ]
