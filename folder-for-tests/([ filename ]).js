@@ -1,4 +1,4 @@
-function {>filename<}()
+function {>name<}()
 {
     return '{> filename <}'
 }

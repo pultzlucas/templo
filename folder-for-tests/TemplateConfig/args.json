@@ -4,9 +4,12 @@
         "query": "Your name (pultzlucas): ",
         "default": "pultzlucas"
     },
-
     {
         "key": "lastName",
         "query": "Your last name: "
+    },
+    {
+        "key": "filename",
+        "query": "filename: "
     }
 ]
