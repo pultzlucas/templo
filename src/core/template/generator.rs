@@ -1,4 +1,4 @@
-use super::engine::parse;
+use super::engine::parse_content;
 use super::engine::TempEngineArg;
 use super::Template;
 use crate::core::template::{TempContent, TempPath, TempPathType};
@@ -23,7 +23,7 @@ pub fn gen_template(
             .contents
             .into_iter()
             .map(|content| {
-                let text_parsed = base64::encode(parse(decode_base64(content.text)?, temp_args.clone())?);
+                let text_parsed = base64::encode(parse_content(decode_base64(content.text)?, temp_args.clone())?);
                 Ok(TempContent {
                     file_path: content.file_path,
                     text: text_parsed,

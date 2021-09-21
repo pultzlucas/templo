@@ -1,6 +1,6 @@
 use super::{
     config::ConfigArg,
-    engine::{parse, set_arg_default_value, TempEngineArg},
+    engine::{parse_content, set_arg_default_value, TempEngineArg},
 };
 
 const TEXT: &'static str = r#"
@@ -38,8 +38,8 @@ fn get_args() -> Vec<TempEngineArg> {
 }
 
 #[test]
-fn parse_template_text() {
-    let parsed = parse(TEXT.to_string(), get_args()).unwrap();
+fn parse_template_content() {
+    let parsed = parse_content(TEXT.to_string(), get_args()).unwrap();
 
     assert_eq!(
         parsed,
