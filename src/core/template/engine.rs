@@ -28,9 +28,9 @@ pub fn parse_content(content: String, args: Vec<TempEngineArg>) -> Result<String
 }
 
 // Args shape: ([ arg ])
-pub fn parse_filename(filename: String, args: Vec<TempEngineArg>) -> Result<String, Error> {
+pub fn parse_path(path: String, args: Vec<TempEngineArg>) -> Result<String, Error> {
     parse(
-        filename,
+        path,
         args,
         EngineRegex {
             shape: Regex::new(r"\(\[[\w|\s|-]*\]\)").unwrap(),

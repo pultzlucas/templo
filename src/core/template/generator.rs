@@ -1,6 +1,7 @@
 use super::engine::parse_content;
 use super::engine::TempEngineArg;
 use super::Template;
+use crate::core::template::engine::parse_path;
 use crate::core::template::{TempContent, TempPath, TempPathType};
 use crate::utils::string::decode_base64;
 use crate::{
@@ -23,10 +24,14 @@ pub fn gen_template(
             .contents
             .into_iter()
             .map(|content| {
-                let text_parsed = base64::encode(parse_content(decode_base64(content.text)?, temp_args.clone())?);
+                let text_content_parsed = base64::encode(parse_content(
+                    decode_base64(content.text)?,
+                    temp_args.clone(),
+                )?);
+                let filename_parsed = parse_path(content.file_path, temp_args.clone())?;
                 Ok(TempContent {
-                    file_path: content.file_path,
-                    text: text_parsed,
+                    file_path: filename_parsed,
+                    text: text_content_parsed,
                 })
             })
             .collect()
@@ -38,6 +43,15 @@ pub fn gen_template(
 
     paintln!("{gray}", "\n[creating files and folders...]");
     for path in template.paths.into_iter() {
+        let path = if !temp_args.is_empty() {
+            let path_parsed = parse_path(pathbuf_to_string(path.path), temp_args.clone())?;
+            TempPath {
+                path: str_to_pathbuf(&path_parsed),
+                path_type: path.path_type,
+            }
+        } else {
+            path
+        };
         create_path(path, directory)?;
     }
 

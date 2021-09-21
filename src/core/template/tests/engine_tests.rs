@@ -1,4 +1,4 @@
-use crate::core::template::engine::parse_filename;
+use crate::core::template::engine::parse_path;
 
 use super::{
     config::ConfigArg,
@@ -81,13 +81,24 @@ const obj = {
 }
 
 #[test]
-fn parse_template_filename1() {
-    let filename = "folder1/folder2/([ filename ])".to_string();
+fn parse_template_path1() {
+    let path = "folder1/folder2/([ filename ])".to_string();
     let args = vec![TempEngineArg {
         key: "filename".to_string(),
         value: "template.tpo".to_string(),
     }];
-    let parsed = parse_filename(filename, args).unwrap();
+    let parsed = parse_path(path, args).unwrap();
+    assert_eq!(parsed, "folder1/folder2/template.tpo")
+}
+
+#[test]
+fn parse_template_path2() {
+    let path = "folder1/([ folder-name ])/template.tpo".to_string();
+    let args = vec![TempEngineArg {
+        key: "folder-name".to_string(),
+        value: "folder2".to_string(),
+    }];
+    let parsed = parse_path(path, args).unwrap();
     assert_eq!(parsed, "folder1/folder2/template.tpo")
 }
 
