@@ -33,8 +33,8 @@ impl Command {
     }
 }
 
-pub fn parse_command(command: String) -> Result<Command, Error> {
-    let command = command.split(" ").collect::<Vec<&str>>()[1..].join(" ");
+pub fn parse_command(raw_command: String) -> Result<Command, Error> {
+    let command = raw_command.split(" ").collect::<Vec<&str>>()[1..].join(" ");
     let flags = get_flags(&command)?;
     let options = get_options(&command)?;
     let args = get_args(&command)?;
@@ -62,11 +62,12 @@ fn get_method(command: &str) -> Result<Option<String>, Error> {
 }
 
 fn get_submethod(command: &str) -> Result<Option<String>, Error> {
-    let submethod_regex_start = std_error(Regex::new(r"^\w+|\s+"))?;
-    let submethod_regex_end = std_error(Regex::new(r"^\w+"))?;
+    let submethod_regex_start = std_error(Regex::new(r"^\w+"))?;
+    let submethod_regex_end = std_error(Regex::new(r"\w+"))?;
     let submethod_end = submethod_regex_start.replace_all(command, "");
+    
     if let Some(caps) = submethod_regex_end.captures(submethod_end.to_string().as_str()) {
-        let submethod = caps[0].trim().to_string();
+        let submethod = caps[0].to_string();
         return Ok(Some(submethod));
     }
 
@@ -117,7 +118,7 @@ fn get_flags(command: &str) -> Result<Vec<String>, Error> {
 
 #[test]
 fn it_should_return_a_valid_command_struct() {
-    let command = "tp method  submethod arg1 -f --flag1 ./arg2  --flag-2  arg-3 --option1=value1 arg_4 --option-2=value-2 --empty-option=".to_string();
+    let command = "tp method  submethod  arg1 -f --flag1 ./arg2  --flag-2  arg-3 --option1=value1 arg_4 --option-2=value-2 --empty-option=".to_string();
     let struct_tested = parse_command(command).unwrap();
 
     let correct_struct = Command {
