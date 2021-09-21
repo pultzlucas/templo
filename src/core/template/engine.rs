@@ -1,6 +1,6 @@
 use super::ConfigArg;
 use crate::cli::input;
-use crate::utils::errors::{not_found_error, std_error};
+use crate::utils::errors::not_found_error;
 use regex::Regex;
 use std::io::Error;
 
@@ -16,9 +16,9 @@ struct EngineRegex {
 }
 
 // Args shape: {> arg <}
-pub fn parse_content(text: String, args: Vec<TempEngineArg>) -> Result<String, Error> {
+pub fn parse_content(content: String, args: Vec<TempEngineArg>) -> Result<String, Error> {
     parse(
-        text,
+        content,
         args,
         EngineRegex {
             shape: Regex::new(r"\{>[\w|\s|-]*<}").unwrap(),
@@ -28,13 +28,13 @@ pub fn parse_content(text: String, args: Vec<TempEngineArg>) -> Result<String, E
 }
 
 // Args shape: ([ arg ])
-pub fn parse_filename(text: String, args: Vec<TempEngineArg>) -> Result<String, Error> {
+pub fn parse_filename(filename: String, args: Vec<TempEngineArg>) -> Result<String, Error> {
     parse(
-        text,
+        filename,
         args,
         EngineRegex {
             shape: Regex::new(r"\(\[[\w|\s|-]*\]\)").unwrap(),
-            key: Regex::new(r"[()\[\]\s]").unwrap(),
+            key: Regex::new(r"[\(\)\[\]\s]").unwrap(),
         },
     )
 }
@@ -48,8 +48,11 @@ fn parse(text: String, args: Vec<TempEngineArg>, regex: EngineRegex) -> Result<S
         let arg = args.clone().into_iter().find(|arg| arg.key == key);
 
         if let Some(arg) = arg {
+            // format shape to use it as a regex
+            let formated_shape = format_shape_string_to_reg(shape);
+
             // regex for substitute the shapes in text by key value
-            let shape_regex = Regex::new(&format!(r"\{}", shape)).unwrap();
+            let shape_regex = Regex::new(&formated_shape).unwrap();
             final_text = shape_regex.replace_all(&final_text, &arg.value).to_string();
         } else {
             return Err(not_found_error(&format!(
@@ -94,4 +97,11 @@ pub fn set_arg_default_value(
     }
 
     Ok(arg)
+}
+
+fn format_shape_string_to_reg(shape: &str) -> String {
+    Regex::new(r"(?P<symbol>[\()\[\]\{\}])")
+    .unwrap()
+    .replace_all(shape, r"\$symbol")
+    .to_string()
 }
