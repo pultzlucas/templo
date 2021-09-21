@@ -41,6 +41,10 @@ pub fn gen_template(
 
     let template_contents = template_contents?;
 
+    if !directory.exists() {
+        fs::create_dir_all(directory)?;
+    }
+
     paintln!("{gray}", "\n[creating files and folders...]");
     for path in template.paths.into_iter() {
         let path = if !temp_args.is_empty() {

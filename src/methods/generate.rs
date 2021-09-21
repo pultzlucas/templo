@@ -25,10 +25,6 @@ pub fn run(command: Command) -> Result<(), Error> {
             return Err(invalid_input_error(INVALID_DIRECTORY_PATH_TYPE));
         }
 
-        if !directory.exists() {
-            fs::create_dir_all(directory)?;
-        }
-
         if !tpo_filename.ends_with(".tpo") {
             return Err(invalid_input_error("The file must have TPO extension."));
         }
@@ -60,10 +56,6 @@ pub fn run(command: Command) -> Result<(), Error> {
 
     if directory.extension() != None {
         return Err(invalid_input_error(INVALID_DIRECTORY_PATH_TYPE));
-    }
-
-    if !directory.exists() {
-        fs::create_dir_all(directory)?;
     }
 
     let start = Instant::now(); // start timing process
