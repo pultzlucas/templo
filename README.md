@@ -8,6 +8,8 @@ Templo is a template manager that provide you more flexibility and agility at so
 - Ships only a single executable file.
 - Is open source.
 
+For a better vision see the [Templo Website](https://templo-website.herokuapp.com/).
+
 ---
 
 ### Installation
