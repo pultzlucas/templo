@@ -4,16 +4,19 @@ Status: in development
 
 Templo is a template manager that provide you more flexibility and agility at software development time and is built in Rust.
 
-- Agile software development process
-- CLI Simple to use
-- Ships only a single executable file
-- Is open source
+- Has an Interactive command line interface.
+- Ships only a single executable file.
+- Is open source.
+
+For a better vision see the [Templo Website](https://templo-website.herokuapp.com/).
 
 ---
 
 ### Installation
 
-coming soon...
+To use Templo you can download the executable file.
+
+Another ways to download Templo is coming soon...
 
 ### Getting Started
 
@@ -21,4 +24,4 @@ coming soon...
 $ tp
 ```
 
-If Templo was installed a welcome message will appear in your console. 🎉
+If Templo was installed a WELCOME message will appear in your console. 🎉
