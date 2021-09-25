@@ -21,6 +21,15 @@ pub fn run(command: Command) -> Result<(), Error> {
             ));
         }
 
+        let template_name = &command.args[0];
+        let template = repo::get_template(template_name)?;
+
+        if let Some(description) = template.description {
+            println!("Current description: {}", description);
+        } else {
+            println!("This template not has a description yet.")
+        }
+
         // Get template description
         let new_description = input::get("New template description: ")?;
         let new_description = if new_description.is_empty() {
@@ -29,7 +38,6 @@ pub fn run(command: Command) -> Result<(), Error> {
             Some(new_description)
         };
 
-        let template_name = &command.args[0];
         repo::update_template_description(template_name, new_description)?;
 
         println!("Template \"{}\" was updated.", template_name);
