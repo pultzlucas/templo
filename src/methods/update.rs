@@ -1,3 +1,4 @@
+use crate::cli::input;
 use crate::cli::input::command::Command;
 use crate::cli::output::messages::error::INVALID_TEMPLATE_NAME;
 use crate::core::repo;
@@ -10,8 +11,30 @@ use std::time::Instant;
 pub fn run(command: Command) -> Result<(), Error> {
     repo::create()?;
 
-    let flags = vec!["--name"];
+    let flags = vec!["--name", "--description"];
     check_flags(&command.flags, flags)?;
+
+    if command.has_flag("--description") {
+        if command.args.len() < 1 {
+            return Err(invalid_input_error(
+                "Current template name must be specified.",
+            ));
+        }
+
+        // Get template description
+        let new_description = input::get("New template description: ")?;
+        let new_description = if new_description.is_empty() {
+            None
+        } else {
+            Some(new_description)
+        };
+
+        let template_name = &command.args[0];
+        repo::update_template_description(template_name, new_description)?;
+
+        println!("Template \"{}\" was updated.", template_name);
+        return Ok(())
+    }
 
     if command.has_flag("--name") {
         if command.args.len() < 1 {
@@ -19,14 +42,15 @@ pub fn run(command: Command) -> Result<(), Error> {
                 "Current template name must be specified.",
             ));
         }
+        
+        let old_template_name = &command.args[0]; 
+        let new_template_name = input::get("New template name: ")?;
 
-        if command.args.len() < 2 {
+        if new_template_name.is_empty() {
             return Err(invalid_input_error("New template name must be specified."));
         }
 
-        let old_template_name = &command.args[0];
-        let new_template_name = &command.args[1];
-        repo::update_template_name(old_template_name, new_template_name)?;
+        repo::update_template_name(old_template_name, new_template_name.clone())?;
 
         println!(
             "Template \"{}\" name was changed to \"{}\".",
@@ -42,7 +66,9 @@ pub fn run(command: Command) -> Result<(), Error> {
 
     let start = Instant::now(); // start timing process
     let template_name = command.args[0].clone();
-    let new_template = make_template(template_name.clone())?;
+
+    let description = repo::get_template(&template_name)?.description;
+    let new_template = make_template(template_name.clone(), description)?;
     repo::update_template_content(template_name.clone(), new_template)?;
 
     println!("Template \"{}\" was updated.", template_name);

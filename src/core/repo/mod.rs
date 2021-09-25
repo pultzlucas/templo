@@ -75,12 +75,31 @@ pub fn delete_template(template_name: String) -> Result<(), Error> {
     Ok(())
 }
 
-pub fn update_template_name(old_template_name: &str, new_template_name: &str) -> Result<(), Error> {
+pub fn update_template_name(old_template_name: &str, new_template_name: String) -> Result<(), Error> {
     let old_template = get_template(old_template_name)?;
     delete_template(old_template_name.to_string())?;
 
     let new_template = Template {
-        name: new_template_name.to_string(),
+        name: new_template_name,
+        description: old_template.description,
+        contents: old_template.contents,
+        created_at: old_template.created_at,
+        paths: old_template.paths,
+        args: old_template.args,
+    };
+
+    save_template(new_template)?;
+
+    Ok(())
+}
+
+pub fn update_template_description(template_name: &str, new_template_description: Option<String>) -> Result<(), Error> {
+    let old_template = get_template(template_name)?;
+    delete_template(template_name.to_string())?;
+
+    let new_template = Template {
+        name: old_template.name,
+        description: new_template_description,
         contents: old_template.contents,
         created_at: old_template.created_at,
         paths: old_template.paths,

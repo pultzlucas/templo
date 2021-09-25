@@ -1,3 +1,4 @@
+use crate::cli::input;
 use crate::cli::input::command::Command;
 use crate::{
     cli::output::messages::error::INVALID_TEMPLATE_NAME,
@@ -23,7 +24,16 @@ pub fn run(command: Command) -> Result<(), Error> {
     }
 
     let start = Instant::now(); // start timing process
-    let template = make_template(template_name)?;
+
+    // Get template description
+    let description = input::get("Template description: ")?;
+    let description = if description.is_empty() {
+        None
+    } else {
+        Some(description)
+    };
+
+    let template = make_template(template_name, description)?;
 
     repo::save_template(template)?;
     println!("Template was saved successfully.");

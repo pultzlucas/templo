@@ -17,6 +17,7 @@ use tabled::Tabled;
 #[derive(Debug, PartialEq, Deserialize, Serialize, Clone)]
 pub struct Template {
     pub name: String,
+    pub description: Option<String>,
     pub created_at: String,
     pub paths: Vec<TempPath>,
     pub contents: Vec<TempContent>,
