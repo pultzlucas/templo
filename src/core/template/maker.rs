@@ -10,10 +10,14 @@ pub struct TempData {
     pub contents: Vec<TempContent>,
 }
 
-pub fn make_template(temp_name: String, description: Option<String>) -> Result<Template, Error> {
+pub fn make_template(
+    temp_name: String,
+    description: Option<String>,
+    ref_path: &str,
+) -> Result<Template, Error> {
     let (name, created_at) = make_template_metadata(temp_name)?;
-    let data = make_template_data(".")?;
-    let args = get_config_args(".")?;
+    let data = make_template_data(ref_path)?;
+    let args = get_config_args(ref_path)?;
     Ok(Template {
         name,
         description,

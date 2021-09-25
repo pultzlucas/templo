@@ -1,20 +1,15 @@
 use crate::cli::input;
 use crate::cli::input::command::Command;
 use crate::{
-    cli::output::messages::error::INVALID_TEMPLATE_NAME,
     core::{repo, template::maker::make_template},
-    utils::errors::{already_exists_error, invalid_input_error},
+    utils::errors::already_exists_error,
 };
 use std::{io::Error, time::Instant};
 
 pub fn run(command: Command) -> Result<(), Error> {
     repo::create()?;
 
-    if command.args.len() < 1 {
-        return Err(invalid_input_error(INVALID_TEMPLATE_NAME));
-    }
-
-    let template_name = command.args[0].clone();
+    let template_name = input::get("Template name: ")?;
 
     if repo::template_exists(&template_name) {
         return Err(already_exists_error(&format!(
@@ -23,9 +18,6 @@ pub fn run(command: Command) -> Result<(), Error> {
         )));
     }
 
-    let start = Instant::now(); // start timing process
-
-    // Get template description
     let description = input::get("Template description: ")?;
     let description = if description.is_empty() {
         None
@@ -33,7 +25,14 @@ pub fn run(command: Command) -> Result<(), Error> {
         Some(description)
     };
 
-    let template = make_template(template_name, description)?;
+    let ref_path = if !command.args.is_empty() {
+        command.args[0].as_str()
+    } else {
+        "."
+    };
+
+    let start = Instant::now(); // start timing process
+    let template = make_template(template_name, description, ref_path)?;
 
     repo::save_template(template)?;
     println!("Template was saved successfully.");

@@ -6,17 +6,15 @@ use crate::utils::{
 use base64;
 use fs_tree::FsTreeBuilder;
 use serde_json::from_str;
-use std::{fs, io::Error};
+use std::{fs, io::Error, path::Path};
 
 pub fn mine_paths_from(directory_path: &str) -> Result<Vec<TempPath>, Error> {
     valid_directory_path(directory_path)?;
 
-    let mut paths_to_ignore = get_paths_to_ignore()?;
-    paths_to_ignore.push("./TemplateConfig".to_string());
-    let paths_to_ignore_formatted = format_paths_to_ignore(paths_to_ignore)?;
+    let paths_to_ignore = get_paths_to_ignore(directory_path)?;
 
     let fs_tree = (FsTreeBuilder::new(directory_path))
-        .ignore_paths(&paths_to_ignore_formatted[..])
+        .ignore_paths(&paths_to_ignore[..])
         .build();
 
     let vec_fs_tree: Vec<TempPath> = fs_tree
@@ -40,20 +38,20 @@ pub fn mine_files_from_paths(paths: Vec<TempPath>, directory: &str) -> Vec<TempC
         .collect()
 }
 
-fn get_paths_to_ignore() -> Result<Vec<String>, Error> {
-    std_error(from_str(&fs::read_to_string(
-        "./TemplateConfig/ignore.json",
-    )?))
-}
+fn get_paths_to_ignore(directory_path: &str) -> Result<Vec<String>, Error> {
+    let ignore_filename = Path::new(directory_path)
+        .join("TemplateConfig")
+        .join("ignore.json");
 
-fn format_paths_to_ignore(paths: Vec<String>) -> Result<Vec<String>, Error> {
-    Ok(paths
+    let mut paths_to_ignore: Vec<String> =
+        std_error(from_str(&fs::read_to_string(ignore_filename)?))?;
+    paths_to_ignore.push("./TemplateConfig/".to_string());
+
+    let real_paths_to_ignore: Vec<String> = paths_to_ignore
         .into_iter()
-        .map(|path| {
-            if !path.starts_with("./") {
-                return format!("./{}", path);
-            }
-            path
-        })
-        .collect())
+        .map(|path| Path::new(directory_path).join(path))
+        .map(pathbuf_to_string)
+        .collect();
+
+    Ok(real_paths_to_ignore)
 }

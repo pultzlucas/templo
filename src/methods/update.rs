@@ -76,7 +76,7 @@ pub fn run(command: Command) -> Result<(), Error> {
     let template_name = command.args[0].clone();
 
     let description = repo::get_template(&template_name)?.description;
-    let new_template = make_template(template_name.clone(), description)?;
+    let new_template = make_template(template_name.clone(), description, ".")?;
     repo::update_template_content(template_name.clone(), new_template)?;
 
     println!("Template \"{}\" was updated.", template_name);
