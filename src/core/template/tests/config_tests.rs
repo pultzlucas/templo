@@ -16,6 +16,16 @@ fn it_should_get_config_args_from_dir() {
                 key: "lastName".to_string(),
                 query: "Your last name: ".to_string(),
                 default: None
+            },
+            ConfigArg {
+                key: "filename".to_string(),
+                query: "Javascript filename (script): ".to_string(),
+                default: Some("script".to_string())
+            },
+            ConfigArg {
+                key: "folder1".to_string(),
+                query: "Folder name: ".to_string(),
+                default: None
             }
         ]
     ))

@@ -56,6 +56,10 @@ fn get_args() -> Vec<TempEngineArg> {
             key: "fn_name".to_string(),
             value: "add".to_string(),
         },
+        TempEngineArg {
+            key: "folder1".to_string(),
+            value: "folder1".to_string(),
+        },
     ]
 }
 
