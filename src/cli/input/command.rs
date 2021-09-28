@@ -64,7 +64,7 @@ fn get_submethod(command: Vec<String>) -> Option<String> {
 }
 
 fn get_args(args: Vec<String>) -> Result<Vec<String>, Error> {
-    let args = args
+    let args = args[1..].to_vec()
         .into_iter()
         .filter(|arg| {
             !arg.starts_with("-") 

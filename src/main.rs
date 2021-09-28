@@ -12,10 +12,7 @@ use std::env;
 #[tokio::main]
 async fn main() {
     let env: Vec<String> = env::args().collect();
-    println!("{:?}", env);
     let command = parse_command(env).expect("Error when parsing command string.");
-
-    println!("{:?}", command);
 
     if let None = command.method {
         welcome::run();
