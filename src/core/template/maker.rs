@@ -1,6 +1,7 @@
 use super::config::get_config_args;
 use super::{miner, TempContent, TempPath, Template};
 use crate::utils::date::get_date_now_string;
+use crate::utils::errors::invalid_input_error;
 use crate::utils::path::{format_path_namespace, pathbuf_to_string, remove_dir_prefix};
 use std::io::Error;
 
@@ -15,9 +16,14 @@ pub fn make_template(
     description: Option<String>,
     ref_path: &str,
 ) -> Result<Template, Error> {
+    if temp_name.is_empty() {
+        return Err(invalid_input_error("The template name cannot be empty."))
+    }
+
     let (name, created_at) = make_template_metadata(temp_name)?;
     let data = make_template_data(ref_path)?;
     let args = get_config_args(ref_path)?;
+
     Ok(Template {
         name,
         description,

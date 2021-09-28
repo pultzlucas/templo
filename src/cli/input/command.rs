@@ -1,8 +1,7 @@
-use crate::utils::errors::std_error;
 use regex::Regex;
 use std::io::Error;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct CommandOption {
     pub name: String,
     pub value: String,
@@ -23,23 +22,23 @@ impl Command {
         self.flags.iter().any(|flag| regex.is_match(flag))
     }
 
-    // pub fn has_option(&self, option: &str) -> bool {
-    //     let regex = Regex::new(&format!("{}$", option)).unwrap();
-    //     self.options.iter().any(|opt| regex.is_match(&opt.name))
-    // }
+    pub fn has_option(&self, option: &str) -> bool {
+        let regex = Regex::new(&format!("{}$", option)).unwrap();
+        self.options.iter().any(|opt| regex.is_match(&opt.name))
+    }
 
     pub fn get_opt_by_name(&self, name: &str) -> Option<&CommandOption> {
         self.options.iter().find(|opt| opt.name == name)
     }
 }
 
-pub fn parse_command(raw_command: String) -> Result<Command, Error> {
-    let command = raw_command.split(" ").collect::<Vec<&str>>()[1..].join(" ");
-    let flags = get_flags(&command)?;
-    let options = get_options(&command)?;
-    let args = get_args(&command)?;
-    let method = get_method(&command)?;
-    let submethod = get_submethod(&command)?;
+pub fn parse_command(args: Vec<String>) -> Result<Command, Error> {
+    let command = args[1..].to_vec();
+    let flags = get_flags(command.clone())?;
+    let options = get_options(command.clone())?;
+    let args = get_args(command.clone())?;
+    let method = get_method(command.clone());
+    let submethod = get_submethod(command.clone());
 
     Ok(Command {
         flags,
@@ -50,107 +49,59 @@ pub fn parse_command(raw_command: String) -> Result<Command, Error> {
     })
 }
 
-fn get_method(command: &str) -> Result<Option<String>, Error> {
-    let method_regex = std_error(Regex::new(r"^\w+"))?;
-
-    if let Some(caps) = method_regex.captures(command) {
-        let method = caps[0].to_string();
-        return Ok(Some(method));
+fn get_method(command: Vec<String>) -> Option<String> {
+    if command.len() < 1 {
+        return None;
     }
-
-    Ok(None)
+    Some(command[0].clone())
 }
 
-fn get_submethod(command: &str) -> Result<Option<String>, Error> {
-    let submethod_regex_start = std_error(Regex::new(r"^\w+"))?;
-    let submethod_regex_end = std_error(Regex::new(r"\w+"))?;
-    let submethod_end = submethod_regex_start.replace_all(command, "");
-    
-    if let Some(caps) = submethod_regex_end.captures(submethod_end.to_string().as_str()) {
-        let submethod = caps[0].to_string();
-        return Ok(Some(submethod));
+fn get_submethod(command: Vec<String>) -> Option<String> {
+    if command.len() < 2 {
+        return None;
     }
-
-    Ok(None)
+    Some(command[1].clone())
 }
 
-fn get_args(command: &str) -> Result<Vec<String>, Error> {
-    let args_regex = std_error(Regex::new(r"(\s--[\w-]+=[^\s]*)|(\s-[\w-]+)|(^\w+)"))?;
-    let args_string = args_regex.replace_all(command, "").trim().to_string();
-
-    let args = args_string
-        .split(" ")
-        .map(|arg| arg.to_string())
-        .filter(|arg| !arg.is_empty());
+fn get_args(args: Vec<String>) -> Result<Vec<String>, Error> {
+    let args = args
+        .into_iter()
+        .filter(|arg| {
+            !arg.starts_with("-") 
+            && !arg.starts_with("--")
+            && !Regex::new("=").unwrap().is_match(arg)
+        });
 
     Ok(args.collect())
 }
 
-fn get_options(command: &str) -> Result<Vec<CommandOption>, Error> {
-    let get_options = std_error(Regex::new(r"(--[\w-]+)=[^\s]*"))?;
-    let get_option_name = std_error(Regex::new(r"--|=.*"))?;
-    let get_option_value = std_error(Regex::new(r"--[\w-]+="))?;
+fn get_options(args: Vec<String>) -> Result<Vec<CommandOption>, Error> {
+    let options_regex = Regex::new(r"--[\w-]+=").unwrap();
+    let options = args
+        .into_iter()
+        .filter(|arg| options_regex.is_match(arg))
+        .map(|option| {
+            let name = options_regex
+                .find(&option)
+                .unwrap()
+                .as_str()
+                .to_string()
+                .replace("--", "")
+                .replace("=", "");
+            let value = options_regex.replace_all(&option.clone(), "").to_string();
+            CommandOption { name, value }
+        });
 
-    let command_options = get_options.captures_iter(command).map(|caps| {
-        let option = &caps[0];
-        let option_name = get_option_name.replace_all(option, "").to_string();
-        let option_value = get_option_value.replace_all(option, "").to_string();
-
-        CommandOption {
-            name: option_name,
-            value: option_value,
-        }
-    });
-
-    Ok(command_options.collect())
+    Ok(options.collect())
 }
 
-fn get_flags(command: &str) -> Result<Vec<String>, Error> {
-    let flags_regex = std_error(Regex::new(r"\s(-|--)(\w|-|[^\s])+"))?;
-    let filter_regex = Regex::new(r"=").unwrap();
-    let flags = flags_regex
-        .captures_iter(command)
-        .filter(|caps| !filter_regex.is_match(&caps[0]))
-        .map(|flag| flag[0].trim().to_string());
+fn get_flags(args: Vec<String>) -> Result<Vec<String>, Error> {
+    let flags = args
+        .into_iter()
+        .filter(|arg| {
+            (arg.starts_with("-") || arg.starts_with("--"))
+            && !Regex::new("=").unwrap().is_match(arg)
+        });
 
     Ok(flags.collect())
-}
-
-#[test]
-fn it_should_return_a_valid_command_struct() {
-    let command = "tp method  submethod  arg1 -f --flag1 ./arg2  --flag-2  arg-3 --option1=value1 arg_4 --option-2=value-2 --empty-option=".to_string();
-    let struct_tested = parse_command(command).unwrap();
-
-    let correct_struct = Command {
-        method: Some("method".to_string()),
-        submethod: Some("submethod".to_string()),
-        flags: vec![
-            "-f".to_string(),
-            "--flag1".to_string(),
-            "--flag-2".to_string(),
-        ],
-        options: vec![
-            CommandOption {
-                name: "option1".to_string(),
-                value: "value1".to_string(),
-            },
-            CommandOption {
-                name: "option-2".to_string(),
-                value: "value-2".to_string(),
-            },
-            CommandOption {
-                name: "empty-option".to_string(),
-                value: "".to_string(),
-            },
-        ],
-        args: vec![
-            "submethod".to_string(),
-            "arg1".to_string(),
-            "./arg2".to_string(),
-            "arg-3".to_string(),
-            "arg_4".to_string(),
-        ],
-    };
-
-    assert_eq!(correct_struct, struct_tested)
 }

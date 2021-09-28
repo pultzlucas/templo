@@ -9,7 +9,11 @@ use std::{io::Error, time::Instant};
 pub fn run(command: Command) -> Result<(), Error> {
     repo::create()?;
 
-    let template_name = input::get("Template name: ")?;
+    let template_name = if command.has_option("name") {
+        command.get_opt_by_name("name").unwrap().value.clone()
+    } else {
+        input::get("Template name: ")?
+    };
 
     if repo::template_exists(&template_name) {
         return Err(already_exists_error(&format!(
@@ -18,11 +22,16 @@ pub fn run(command: Command) -> Result<(), Error> {
         )));
     }
 
-    let description = input::get("Template description: ")?;
-    let description = if description.is_empty() {
+    let description_value = if command.has_option("description") {
+        command.get_opt_by_name("description").unwrap().value.clone()
+    } else {
+        input::get("Template description: ")?
+    };
+
+    let description = if description_value.is_empty() {
         None
     } else {
-        Some(description)
+        Some(description_value)
     };
 
     let ref_path = if !command.args.is_empty() {
