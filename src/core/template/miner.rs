@@ -39,10 +39,13 @@ pub fn mine_files_from_paths(paths: Vec<TempPath>, directory: &str) -> Vec<TempC
 }
 
 fn get_paths_to_ignore(directory_path: &str) -> Result<Vec<String>, Error> {
-    let ignore_filename = Path::new(directory_path)
-        .join("TemplateConfig")
-        .join("ignore.json");
+    let template_config = Path::new(directory_path).join("TemplateConfig");
 
+    if !template_config.exists() {
+        return Ok(vec!["".to_string()]);
+    }
+
+    let ignore_filename = template_config.join("ignore.json");
     let mut paths_to_ignore: Vec<String> =
         std_error(from_str(&fs::read_to_string(ignore_filename)?))?;
     paths_to_ignore.push("./TemplateConfig/".to_string());

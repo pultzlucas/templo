@@ -16,6 +16,7 @@ pub fn make_template(
     description: Option<String>,
     ref_path: &str,
 ) -> Result<Template, Error> {
+
     if temp_name.is_empty() {
         return Err(invalid_input_error("The template name cannot be empty."))
     }
