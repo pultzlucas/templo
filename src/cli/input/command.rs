@@ -64,13 +64,13 @@ fn get_submethod(command: Vec<String>) -> Option<String> {
 }
 
 fn get_args(args: Vec<String>) -> Result<Vec<String>, Error> {
-    let args = args[1..].to_vec()
-        .into_iter()
-        .filter(|arg| {
-            !arg.starts_with("-") 
-            && !arg.starts_with("--")
-            && !Regex::new("=").unwrap().is_match(arg)
-        });
+    if args.is_empty() {
+        return Ok(vec![])
+    }
+
+    let args = args[1..].to_vec().into_iter().filter(|arg| {
+        !arg.starts_with("-") && !arg.starts_with("--") && !Regex::new("=").unwrap().is_match(arg)
+    });
 
     Ok(args.collect())
 }
@@ -96,12 +96,67 @@ fn get_options(args: Vec<String>) -> Result<Vec<CommandOption>, Error> {
 }
 
 fn get_flags(args: Vec<String>) -> Result<Vec<String>, Error> {
-    let flags = args
-        .into_iter()
-        .filter(|arg| {
-            (arg.starts_with("-") || arg.starts_with("--"))
-            && !Regex::new("=").unwrap().is_match(arg)
-        });
+    let flags = args.into_iter().filter(|arg| {
+        (arg.starts_with("-") || arg.starts_with("--")) && !Regex::new("=").unwrap().is_match(arg)
+    });
 
     Ok(flags.collect())
+}
+
+#[test]
+fn it_should_return_a_valid_command_struct() {
+    let command: Vec<String> = vec![
+        "tp".to_string(),
+        "method".to_string(),
+        "submethod".to_string(),
+        "arg1".to_string(),
+        "-f".to_string(),
+        "--flag1".to_string(),
+        "./arg2".to_string(),
+        "--flag-2".to_string(),
+        "arg-3".to_string(),
+        "--option1=value1".to_string(),
+        "arg_4".to_string(),
+        "--option-2=value-2".to_string(),
+        "--empty-option=".to_string(),
+        "--option_quotes=A text inside of double quotes.".to_string(),
+    ];
+
+    let struct_tested = parse_command(command).unwrap();
+    let correct_struct = Command {
+        method: Some("method".to_string()),
+        submethod: Some("submethod".to_string()),
+        flags: vec![
+            "-f".to_string(),
+            "--flag1".to_string(),
+            "--flag-2".to_string(),
+        ],
+        options: vec![
+            CommandOption {
+                name: "option1".to_string(),
+                value: "value1".to_string(),
+            },
+            CommandOption {
+                name: "option-2".to_string(),
+                value: "value-2".to_string(),
+            },
+            CommandOption {
+                name: "empty-option".to_string(),
+                value: "".to_string(),
+            },
+            CommandOption {
+                name: "option_quotes".to_string(),
+                value: "A text inside of double quotes.".to_string(),
+            },
+        ],
+        args: vec![
+            "submethod".to_string(),
+            "arg1".to_string(),
+            "./arg2".to_string(),
+            "arg-3".to_string(),
+            "arg_4".to_string(),
+        ],
+    };
+
+    assert_eq!(correct_struct, struct_tested)
 }
