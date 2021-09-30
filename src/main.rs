@@ -15,7 +15,27 @@ async fn main() {
     let command = parse_command(env).expect("Error when parsing command string.");
 
     if let None = command.method {
-        welcome::run();
+        let flags = vec!["--help", "-h", "-H", "--version", "-v", "-V"];
+        if let Err(err) = check_flags(&command.flags, flags) {
+            eprintln!("{}: {}", paint_string!("{red}", "Error"), err)
+        };
+
+        if command.has_flag("--help") || command.has_flag("-h") || command.has_flag("-H") {
+            if let Err(err) = help::run() {
+                eprintln!("{}: {}", paint_string!("{red}", "Error"), err)
+            };
+        }
+
+        if command.has_flag("--version") || command.has_flag("-v") || command.has_flag("-V") {
+            if let Err(err) = version::run() {
+                eprintln!("{}: {}", paint_string!("{red}", "Error"), err)
+            };
+        }
+
+        if command.flags.is_empty() {
+            welcome::run();
+        }
+
         return;
     }
 

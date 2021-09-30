@@ -50,10 +50,18 @@ pub fn parse_command(args: Vec<String>) -> Result<Command, Error> {
 }
 
 fn get_method(command: Vec<String>) -> Option<String> {
-    if command.len() < 1 {
+    if command.is_empty() {
         return None;
     }
-    Some(command[0].clone())
+
+    let method_regex = Regex::new("-|=").unwrap();
+    let is_method = !method_regex.is_match(&command[0]);
+
+    if is_method {
+       return Some(command[0].clone());
+    }
+
+    None
 }
 
 fn get_submethod(command: Vec<String>) -> Option<String> {
