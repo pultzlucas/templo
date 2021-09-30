@@ -7,7 +7,7 @@ pub struct CommandOption {
     pub value: String,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct Command {
     pub method: Option<String>,
     pub submethod: Option<String>,

@@ -45,7 +45,7 @@ pub fn gen_template(
         fs::create_dir_all(directory)?;
     }
 
-    paintln!("{gray}", "\n[creating files and folders...]");
+    paintln!("{gray}", "[creating files and folders...]");
     for path in template.paths.into_iter() {
         let path = if !temp_args.is_empty() {
             let path_parsed = parse_path(pathbuf_to_string(path.path), temp_args.clone())?;

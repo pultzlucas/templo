@@ -42,10 +42,10 @@ async fn main() {
     if let Some(method) = command.method.clone() {
         let output = {
             match method.as_str() {
-                "gen" => generate::run(command),
+                "gen" => generate::run(command).await,
+                "get" => get::run(command).await,
                 "del" => delete::run(command),
                 "namespace" => namespace::run(command),
-                "get" => get::run(command).await,
                 "repo" => repo::run(command),
                 "desc" => describe::run(command),
                 "docs" => docs::run(),

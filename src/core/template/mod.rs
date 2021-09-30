@@ -3,6 +3,7 @@ pub mod maker;
 pub mod miner;
 pub mod engine;
 pub mod config;
+pub mod getter;
 
 #[cfg(test)]
 mod tests;

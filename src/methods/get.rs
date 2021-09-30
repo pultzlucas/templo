@@ -1,16 +1,12 @@
 use crate::cli::input::command::Command;
 use crate::core::namespaces::{get_namespace, parse_to_raw_url};
 use crate::core::repo;
-use crate::core::requester::{
-    build_request, get_reponse_body, request, str_is_url, validate_url, HeaderValue, Method,
-};
-use crate::core::template::Template;
-use crate::utils::errors::other_error;
-use crate::utils::string::str_to_bool;
+use crate::core::requester::{str_is_url, validate_url};
+use crate::core::template::getter::get_remote_template;
 use crate::{
     cli::output::messages::error::TEMPLATE_ALREADY_EXISTS,
     paintln,
-    utils::errors::{already_exists_error, invalid_data_error, invalid_input_error, std_error},
+    utils::errors::{already_exists_error, invalid_input_error},
 };
 use std::{io::Error, str, time::Instant};
 
@@ -46,49 +42,18 @@ pub async fn run(command: Command) -> Result<(), Error> {
         None
     };
 
-    let mut req = build_request(&url, Method::GET, None);
-
-    if let Some(key) = &key {
-        req.headers_mut().insert(
-            "authorization",
-            HeaderValue::from_str(key).expect("Error when set headers."),
-        );
-    }
-
     paintln!("{gray}", "[getting template]");
-    let mut res = request(req).await?;
-    let res_body = get_reponse_body(&mut res).await;
+    let response = get_remote_template(&url, key).await?;
 
-    // check if template data is valid
-    if serde_json::from_str::<Template>(&res_body).is_err() {
-        return Err(invalid_data_error(
-            "The remote repo returned an invalid template.",
-        ));
+    if let Some(msg) = response.message {
+        println!("{}", msg);
     }
 
-    let template: Template = std_error(serde_json::from_str(&res_body))?;
+    let template = response.template;
 
     //check if a template with the same name already exists in repo
     if repo::template_exists(&template.name) {
         return Err(already_exists_error(TEMPLATE_ALREADY_EXISTS));
-    }
-
-    // show remote repo message
-    if res.headers().contains_key("message") {
-        let is_error = if res.headers().contains_key("isError") {
-            let err = std_error(res.headers().get("isError").unwrap().to_str())?;
-            str_to_bool(err)
-        } else {
-            false
-        };
-
-        let msg = std_error(res.headers().get("message").unwrap().to_str())?;
-
-        if is_error {
-            return Err(other_error(msg));
-        }
-
-        println!("{}\n", msg);
     }
 
     repo::save_template(template.clone())?;
