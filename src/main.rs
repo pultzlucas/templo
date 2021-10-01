@@ -7,6 +7,7 @@ mod utils;
 use crate::utils::errors::invalid_input_error;
 use cli::input::command::parse_command;
 use methods::*;
+use crate::core::repos::Repository;
 use std::env;
 
 #[tokio::main]
@@ -37,6 +38,10 @@ async fn main() {
         }
 
         return;
+    }
+
+    if let Err(err) = Repository::create("main") {
+        eprintln!("{}: {}", paint_string!("{red}", "Error"), err)
     }
 
     if let Some(method) = command.method.clone() {

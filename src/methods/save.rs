@@ -1,21 +1,19 @@
 use crate::cli::input;
 use crate::cli::input::command::Command;
 use crate::{
-    core::{repo, template::maker::make_template},
+    core::{repos, template::maker::make_template},
     utils::errors::already_exists_error,
 };
 use std::{io::Error, time::Instant};
 
 pub fn run(command: Command) -> Result<(), Error> {
-    repo::create()?;
-
     let template_name = if command.has_option("name") {
         command.get_opt_by_name("name").unwrap().value.clone()
     } else {
         input::get("Template name: ")?
     };
 
-    if repo::template_exists(&template_name) {
+    if repos::template_exists(&template_name) {
         return Err(already_exists_error(&format!(
             r#"Template "{}" already exists in your repository."#,
             template_name
@@ -43,7 +41,7 @@ pub fn run(command: Command) -> Result<(), Error> {
     let start = Instant::now(); // start timing process
     let template = make_template(template_name, description, ref_path)?;
 
-    repo::save_template(template)?;
+    repos::save_template(template)?;
     println!("Template was saved successfully.");
 
     let end = Instant::now(); // stop timing process

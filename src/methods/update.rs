@@ -1,7 +1,7 @@
 use crate::cli::input;
 use crate::cli::input::command::Command;
 use crate::cli::output::messages::error::INVALID_TEMPLATE_NAME;
-use crate::core::repo;
+use crate::core::repos;
 use crate::core::template::maker::make_template;
 use crate::methods::check_flags;
 use crate::utils::errors::invalid_input_error;
@@ -9,8 +9,6 @@ use std::io::Error;
 use std::time::Instant;
 
 pub fn run(command: Command) -> Result<(), Error> {
-    repo::create()?;
-
     let flags = vec!["--name", "--description"];
     check_flags(&command.flags, flags)?;
 
@@ -22,7 +20,7 @@ pub fn run(command: Command) -> Result<(), Error> {
         }
 
         let template_name = &command.args[0];
-        let template = repo::get_template(template_name)?;
+        let template = repos::get_template(template_name)?;
 
         if let Some(description) = template.description {
             println!("Current description: {}", description);
@@ -38,7 +36,7 @@ pub fn run(command: Command) -> Result<(), Error> {
             Some(new_description)
         };
 
-        repo::update_template_description(template_name, new_description)?;
+        repos::update_template_description(template_name, new_description)?;
 
         println!("Template \"{}\" was updated.", template_name);
         return Ok(())
@@ -58,7 +56,7 @@ pub fn run(command: Command) -> Result<(), Error> {
             return Err(invalid_input_error("New template name must be specified."));
         }
 
-        repo::update_template_name(old_template_name, new_template_name.clone())?;
+        repos::update_template_name(old_template_name, new_template_name.clone())?;
 
         println!(
             "Template \"{}\" name was changed to \"{}\".",
@@ -75,9 +73,9 @@ pub fn run(command: Command) -> Result<(), Error> {
     let start = Instant::now(); // start timing process
     let template_name = command.args[0].clone();
 
-    let description = repo::get_template(&template_name)?.description;
+    let description = repos::get_template(&template_name)?.description;
     let new_template = make_template(template_name.clone(), description, ".")?;
-    repo::update_template_content(template_name.clone(), new_template)?;
+    repos::update_template_content(template_name.clone(), new_template)?;
 
     println!("Template \"{}\" was updated.", template_name);
 

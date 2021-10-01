@@ -1,6 +1,6 @@
 use crate::cli::input::command::Command;
 use crate::core::namespaces::{get_namespace, parse_to_raw_url};
-use crate::core::repo;
+use crate::core::repos;
 use crate::core::requester::{str_is_url, validate_url};
 use crate::core::template::getter::get_remote_template;
 use crate::{
@@ -11,8 +11,6 @@ use crate::{
 use std::{io::Error, str, time::Instant};
 
 pub async fn run(command: Command) -> Result<(), Error> {
-    repo::create()?;
-
     if command.args.len() < 1 {
         return Err(invalid_input_error("The template url must be specified."));
     }
@@ -52,11 +50,11 @@ pub async fn run(command: Command) -> Result<(), Error> {
     let template = response.template;
 
     //check if a template with the same name already exists in repo
-    if repo::template_exists(&template.name) {
+    if repos::template_exists(&template.name) {
         return Err(already_exists_error(TEMPLATE_ALREADY_EXISTS));
     }
 
-    repo::save_template(template.clone())?;
+    repos::save_template(template.clone())?;
     println!("Template \"{}\" was installed.", template.name);
 
     let end = Instant::now(); // stop timing process

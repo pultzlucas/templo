@@ -11,13 +11,11 @@ use crate::paintln;
 use crate::utils::errors::{invalid_input_error, std_error};
 use crate::{
     cli::output::messages::error::{INVALID_DIRECTORY_PATH_TYPE, INVALID_TEMPLATE_NAME},
-    core::repo,
+    core::repos,
 };
 use std::{fs, io::Error, path::Path, time::Instant};
 
 pub async fn run(command: Command) -> Result<(), Error> {
-    repo::create()?;
-
     let flags = vec!["--file", "-f", "--remote"];
     check_flags(&command.flags, flags)?;
 
@@ -46,7 +44,7 @@ pub async fn run(command: Command) -> Result<(), Error> {
     }
 
     let template_name = &command.args[0];
-    let template = repo::get_template(&template_name)?;
+    let template = repos::get_template(&template_name)?;
 
     let temp_args = if !command.options.is_empty() {
         get_template_args_by_options(command.options, &template)?

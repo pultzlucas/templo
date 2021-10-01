@@ -21,6 +21,10 @@ pub fn not_found_error(msg: &str) -> Error {
 //     return Error::new(ErrorKind::NotFound, msg);
 // }
 
+pub fn repo_connection_error(msg: &str) -> Error {
+    return Error::new(ErrorKind::ConnectionAborted, msg);
+}
+
 pub fn other_error(msg: &str) -> Error {
     return Error::new(ErrorKind::NotFound, msg);
 }

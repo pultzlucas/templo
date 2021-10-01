@@ -7,13 +7,13 @@ pub fn get_namespaces_file_path() -> Result<PathBuf, Error> {
     Ok(get_app_local_path()?.join("namespaces.json"))
 }
 
-pub fn get_templates_path() -> Result<PathBuf, Error> {
-    Ok(get_repo_path()?.join("Templates"))
+pub fn get_root_repos_path() -> Result<PathBuf, Error> {
+    let data_path = get_app_local_path()?;
+    Ok(data_path.join("Repositories"))
 }
 
-pub fn get_repo_path() -> Result<PathBuf, Error> {
-    let data_path = get_app_local_path()?;
-    Ok(data_path.join("Repository"))
+pub fn get_repo_path(repo_name: &str) -> Result<PathBuf, Error> {
+    Ok(get_root_repos_path()?.join(repo_name))
 }
 
 pub fn get_app_local_path() -> Result<PathBuf, Error> {
