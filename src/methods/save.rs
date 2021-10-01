@@ -1,9 +1,7 @@
 use crate::cli::input;
 use crate::cli::input::command::Command;
-use crate::{
-    core::{repos, template::maker::make_template},
-    utils::errors::already_exists_error,
-};
+use crate::core::repos::Repository;
+use crate::{core::template::maker::make_template, utils::errors::already_exists_error};
 use std::{io::Error, time::Instant};
 
 pub fn run(command: Command) -> Result<(), Error> {
@@ -13,7 +11,9 @@ pub fn run(command: Command) -> Result<(), Error> {
         input::get("Template name: ")?
     };
 
-    if repos::template_exists(&template_name) {
+    let repo = Repository::connect(command.args[1].clone())?;
+
+    if repo.template_exists(&template_name) {
         return Err(already_exists_error(&format!(
             r#"Template "{}" already exists in your repository."#,
             template_name
@@ -21,7 +21,11 @@ pub fn run(command: Command) -> Result<(), Error> {
     }
 
     let description_value = if command.has_option("description") {
-        command.get_opt_by_name("description").unwrap().value.clone()
+        command
+            .get_opt_by_name("description")
+            .unwrap()
+            .value
+            .clone()
     } else {
         input::get("Template description: ")?
     };
@@ -41,7 +45,7 @@ pub fn run(command: Command) -> Result<(), Error> {
     let start = Instant::now(); // start timing process
     let template = make_template(template_name, description, ref_path)?;
 
-    repos::save_template(template)?;
+    repo.save_template(template)?;
     println!("Template was saved successfully.");
 
     let end = Instant::now(); // stop timing process

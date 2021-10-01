@@ -1,4 +1,3 @@
-use crate::core::path::get_root_repos_path;
 use crate::core::template::Template;
 use crate::utils::errors::not_found_error;
 use crate::utils::errors::repo_connection_error;
@@ -13,12 +12,12 @@ use std::{
 use super::path::get_repo_path;
 
 pub struct Repository {
-    name: String,
+    pub name: String,
 }
 
 impl Repository {
     pub fn connect(name: String) -> Result<Self, Error> {
-        if Self::exists(&name) {
+        if !Self::exists(&name) {
             let err_msg = format!("Error when connect to repo. Repo \"{}\" not exists.", name);
             return Err(repo_connection_error(&err_msg));
         }
@@ -28,9 +27,9 @@ impl Repository {
 
     pub fn create(repo_name: &str) -> Result<(), Error> {
         if !Self::exists(repo_name) {
-            let repo_path = get_root_repos_path()?.join(repo_name);
-            fs::create_dir_all(&repo_name)?;
-            println!("Repository was created.");
+            let repo_path = get_repo_path(repo_name)?;
+            fs::create_dir_all(&repo_path)?;
+            println!("Repository \"{}\" was created.", repo_name);
         }
 
         Ok(())
@@ -94,15 +93,16 @@ impl Repository {
         Ok(template)
     }
 
-    pub fn delete_template(&self, template_name: String) -> Result<(), Error> {
-        if !self.template_exists(&template_name) {
+    pub fn delete_template(&self, template_name: &str) -> Result<(), Error> {
+        if !self.template_exists(template_name) {
             return Err(not_found_error(&format!(
-                "Not is possible find \"{}\" on repository",
-                template_name
+                "Not is possible find \"{}\" on \"{}\" repository",
+                template_name,
+                self.name
             )));
         }
 
-        let template_path = self.get_template_path(&template_name);
+        let template_path = self.get_template_path(template_name);
         fs::remove_file(template_path)?;
 
         Ok(())
@@ -113,7 +113,7 @@ impl Repository {
         new_template_name: String,
     ) -> Result<(), Error> {
         let old_template = self.get_template(old_template_name)?;
-        self.delete_template(old_template_name.to_string())?;
+        self.delete_template(old_template_name)?;
 
         let new_template = Template {
             name: new_template_name,
@@ -135,7 +135,7 @@ impl Repository {
         new_template_description: Option<String>,
     ) -> Result<(), Error> {
         let old_template = self.get_template(template_name)?;
-        self.delete_template(template_name.to_string())?;
+        self.delete_template(template_name)?;
 
         let new_template = Template {
             name: old_template.name,
@@ -156,7 +156,7 @@ impl Repository {
         old_template_name: String,
         new_template: Template,
     ) -> Result<(), Error> {
-        self.delete_template(old_template_name)?;
+        self.delete_template(&old_template_name)?;
         self.save_template(new_template)?;
         Ok(())
     }

@@ -1,6 +1,6 @@
 use crate::cli::input::command::Command;
 use crate::core::namespaces::{get_namespace, parse_to_raw_url};
-use crate::core::repos;
+use crate::core::repos::Repository;
 use crate::core::requester::{str_is_url, validate_url};
 use crate::core::template::getter::get_remote_template;
 use crate::{
@@ -48,13 +48,20 @@ pub async fn run(command: Command) -> Result<(), Error> {
     }
 
     let template = response.template;
+    let repo_name = if command.args.len() > 1 {
+        command.args[1].clone()
+    } else {
+        "main".to_string()
+    };
+
+    let repo = Repository::connect(repo_name)?;
 
     //check if a template with the same name already exists in repo
-    if repos::template_exists(&template.name) {
+    if repo.template_exists(&template.name) {
         return Err(already_exists_error(TEMPLATE_ALREADY_EXISTS));
     }
 
-    repos::save_template(template.clone())?;
+    repo.save_template(template.clone())?;
     println!("Template \"{}\" was installed.", template.name);
 
     let end = Instant::now(); // stop timing process
