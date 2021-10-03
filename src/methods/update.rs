@@ -1,6 +1,7 @@
 use crate::cli::input;
 use crate::cli::input::command::Command;
 use crate::cli::output::messages::error::INVALID_TEMPLATE_NAME;
+use crate::core::namespaces::{get_repo_namespace_obj, NamespaceObject};
 use crate::core::repos::Repository;
 use crate::core::template::maker::make_template;
 use crate::methods::check_flags;
@@ -11,7 +12,13 @@ use std::time::Instant;
 pub fn run(command: Command) -> Result<(), Error> {
     let flags = vec!["--name", "--description"];
     check_flags(&command.flags, flags)?;
-    let repo = Repository::connect(command.args[1].clone())?;
+
+    let template_namespace = &command.args[0];
+    let NamespaceObject {
+        repo_name,
+        template_name,
+    } = get_repo_namespace_obj(template_namespace);
+    let repo = Repository::connect(repo_name)?;
 
     if command.has_flag("--description") {
         if command.args.len() < 1 {
@@ -72,7 +79,6 @@ pub fn run(command: Command) -> Result<(), Error> {
     }
 
     let start = Instant::now(); // start timing process
-    let template_name = command.args[0].clone();
 
     let directory = if command.args.len() > 1 {
         &command.args[1]
