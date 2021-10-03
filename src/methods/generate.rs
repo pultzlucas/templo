@@ -2,7 +2,7 @@ use serde_json::from_str;
 
 use crate::cli::input::command::{Command, CommandOption};
 use crate::cli::output::messages::error::{INVALID_DIRECTORY_PATH_TYPE, INVALID_TEMPLATE_NAME};
-use crate::core::namespaces::{get_namespace, parse_to_raw_url};
+use crate::core::namespaces::{get_namespace, get_repo_namespace_obj, parse_to_raw_url};
 use crate::core::repos::Repository;
 use crate::core::requester::{str_is_url, validate_url};
 use crate::core::template::engine::{get_engine_args_input, set_arg_default_value, TempEngineArg};
@@ -41,9 +41,9 @@ pub async fn run(command: Command) -> Result<(), Error> {
         return Err(invalid_input_error(INVALID_DIRECTORY_PATH_TYPE));
     }
 
-    let template_name = &command.args[0];
-    let repo = Repository::connect(command.args[1].clone())?;
-    let template = repo.get_template(&template_name)?;
+    let template_namespace = get_repo_namespace_obj(&command.args[0]);
+    let repo = Repository::connect(template_namespace.repo_name)?;
+    let template = repo.get_template(&template_namespace.template_name)?;
 
     let temp_args = if !command.options.is_empty() {
         get_template_args_by_options(command.options, &template)?
@@ -52,7 +52,10 @@ pub async fn run(command: Command) -> Result<(), Error> {
     };
 
     generator::gen_template(template, directory, temp_args)?;
-    println!("Template \"{}\" was generated.", template_name);
+    println!(
+        "Template \"{}\" was generated.",
+        template_namespace.template_name
+    );
 
     let end = Instant::now(); // stop timing process
     println!("Done in {:.2?}", end.duration_since(start));

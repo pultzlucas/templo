@@ -83,8 +83,8 @@ impl Repository {
                 Some(t) => t,
                 None => {
                     return Err(not_found_error(&format!(
-                        "Not is possible find \"{}\" on repository",
-                        template_name
+                        "Not is possible find \"{}\" on \"{}\" repository",
+                        template_name, self.name
                     )))
                 }
             }
