@@ -1,6 +1,6 @@
 use crate::cli::input::command::Command;
 use crate::core::path::get_repo_path;
-use crate::core::repos::Repository;
+use crate::core::repos::{Repository};
 use crate::core::template::{Template, TemplateDisplayInfo};
 use crate::methods::check_flags;
 use crate::utils::path::pathbuf_to_string;
@@ -11,7 +11,12 @@ pub fn run(command: Command) -> Result<(), Error> {
     let flags = vec!["--local", "--total"];
     check_flags(&command.flags, flags)?;
 
-    let repo = Repository::connect(command.args[0].clone())?;
+    let repo_name = if command.args.len() > 0 {
+        command.args[0].clone()
+    } else {
+        "main".to_string()
+    };
+    let repo = Repository::connect(repo_name)?;
 
     if command.has_flag("--local") {
         println!("{}", pathbuf_to_string(get_repo_path(&repo.name).unwrap()));

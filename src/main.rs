@@ -52,6 +52,8 @@ async fn main() {
                 "del" => delete::run(command),
                 "namespace" => namespace::run(command),
                 "repo" => repo::run(command),
+                "repos" => repos::run(command),
+                "mv" => r#move::run(command),
                 "desc" => describe::run(command),
                 "docs" => docs::run(),
                 "save" => save::run(command),
