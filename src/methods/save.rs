@@ -11,7 +11,21 @@ pub fn run(command: Command) -> Result<(), Error> {
         input::get("Template name: ")?
     };
 
-    let repo = Repository::connect(command.args[1].clone())?;
+    let repo_name = if command.has_option("repo") {
+        command
+            .get_opt_by_name("description")
+            .unwrap()
+            .value
+            .clone()
+    } else {
+        input::get("Repository (main): ")?
+    };
+
+    let repo = if repo_name.is_empty() {
+        Repository::connect("main".to_string())
+    } else {
+        Repository::connect(repo_name)
+    }?;
 
     if repo.template_exists(&template_name) {
         return Err(already_exists_error(&format!(

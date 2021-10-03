@@ -70,7 +70,10 @@ impl Repository {
     pub fn get_template(&self, template_name: &str) -> Result<Template, Error> {
         let template = {
             if self.is_empty() {
-                return Err(not_found_error("Repository is empty."));
+                return Err(not_found_error(&format!(
+                    "Repo \"{}\" is empty.",
+                    self.name
+                )));
             }
 
             let matched_template = self
