@@ -74,8 +74,14 @@ pub fn run(command: Command) -> Result<(), Error> {
     let start = Instant::now(); // start timing process
     let template_name = command.args[0].clone();
 
+    let directory = if command.args.len() > 1 {
+        &command.args[1]
+    } else {
+        "."
+    };
+
     let description = repo.get_template(&template_name)?.description;
-    let new_template = make_template(template_name.clone(), description, ".")?;
+    let new_template = make_template(template_name.clone(), description, directory)?;
     repo.update_template_content(template_name.clone(), new_template)?;
 
     println!("Template \"{}\" was updated.", template_name);
