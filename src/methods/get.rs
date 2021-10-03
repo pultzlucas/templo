@@ -62,7 +62,7 @@ pub async fn run(command: Command) -> Result<(), Error> {
     }
 
     repo.save_template(template.clone())?;
-    println!("Template \"{}\" was installed.", template.name);
+    println!("Template \"{}\" was installed in \"{}\" repo.", template.name, repo.name);
 
     let end = Instant::now(); // stop timing process
     println!("Done in {:.2?}", end.duration_since(start));
