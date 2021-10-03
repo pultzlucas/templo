@@ -23,7 +23,7 @@ pub struct RemoteRepoNamespace {
 #[derive(Debug)]
 pub struct NamespaceObject {
     pub repo_name: String,
-    pub template_name: String 
+    pub template_name: String,
 }
 
 pub fn get_repo_namespace_obj(namespace: &str) -> NamespaceObject {
@@ -31,13 +31,13 @@ pub fn get_repo_namespace_obj(namespace: &str) -> NamespaceObject {
     if ns_splitted.len() == 1 {
         return NamespaceObject {
             repo_name: "main".to_string(),
-            template_name: namespace.to_string()
+            template_name: namespace.to_string(),
         };
     }
 
     NamespaceObject {
         repo_name: ns_splitted[0].clone(),
-        template_name: ns_splitted[1].clone()
+        template_name: ns_splitted[1].clone(),
     }
 }
 
@@ -90,20 +90,8 @@ fn update_namespace_file(repos: Vec<RemoteRepoNamespace>) -> Result<(), Error> {
 pub fn create_namespaces_file() -> Result<(), Error> {
     let namespaces_file_not_exists = !Path::new(&get_namespaces_file_path()?).exists();
     if namespaces_file_not_exists {
-        let initial_content = vec![get_std_tools_namespace()];
-        fs::write(
-            get_namespaces_file_path()?,
-            std_error(to_string_pretty(&initial_content))?,
-        )?;
+        fs::write(get_namespaces_file_path()?, "[]")?;
     }
 
     Ok(())
-}
-
-fn get_std_tools_namespace() -> RemoteRepoNamespace {
-    RemoteRepoNamespace {
-        name: "std-tools".to_string(),
-        base_url: "https://templo-std-tools.herokuapp.com/v1".to_string(),
-        requires_authorization: false,
-    }
 }
