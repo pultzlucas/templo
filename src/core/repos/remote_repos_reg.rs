@@ -23,7 +23,7 @@ pub fn get_reg(namespace_name: &str) -> Result<RemoteRepoNamespace, Error> {
     } else {
         Err(not_found_error(&format!(
             "Not is possible to find a namespace named as \"{}\"",
-            namespace.unwrap().name
+            namespace_name
         )))
     }
 }

@@ -3,12 +3,12 @@ use hyper::{Body, Response, body::to_bytes};
 
 use crate::utils::errors::invalid_input_error;
 
-pub fn validate_url(url: &str) -> Result<&str, Error> {
+pub fn validate_url(url: &str) -> Result<(), Error> {
     if !str_is_url(url) {
         return Err(invalid_input_error("The url must be HTTP or HTTPS."))
     }
 
-    Ok(url)
+    Ok(())
 }
 
 pub fn str_is_url(string: &str) -> bool {

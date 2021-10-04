@@ -116,11 +116,14 @@ async fn gen_from_remote_template(command: Command) -> Result<(), Error> {
     }
 
     let url = if str_is_url(&command.args[0]) {
-        validate_url(&command.args[0])?.to_string()
+        let url = &command.args[0];
+        validate_url(url)?;
+        url.to_string()
     } else {
         let template_url_path = command.args[0].clone();
         let url = parse_namespace_to_raw_url(template_url_path)?;
-        validate_url(&url)?.to_string()
+        validate_url(&url)?;
+        url.to_string()
     };
 
     let namespace_name = command.args[0].split("/").collect::<Vec<&str>>()[0];
