@@ -5,7 +5,6 @@ use crate::core::repos::Repository;
 use crate::core::requester::validate_url;
 use crate::core::template::getter::get_remote_template;
 use crate::{
-    cli::output::messages::error::TEMPLATE_ALREADY_EXISTS,
     paintln,
     utils::errors::{already_exists_error, invalid_input_error},
 };
@@ -71,7 +70,10 @@ pub async fn run(command: Command) -> Result<(), Error> {
 
     //check if a template with the same name already exists in repo
     if repo.template_exists(&template.name) {
-        return Err(already_exists_error(TEMPLATE_ALREADY_EXISTS));
+        return Err(already_exists_error(&format!(
+            "Template \"{}\" already exists in \"{}\" repo.",
+            &template.name, &repo.name
+        )));
     }
 
     repo.save_template(template.clone())?;
