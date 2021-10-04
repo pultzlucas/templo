@@ -2,7 +2,8 @@ use serde_json::from_str;
 
 use crate::cli::input::command::{Command, CommandOption};
 use crate::cli::output::messages::error::{INVALID_DIRECTORY_PATH_TYPE, INVALID_TEMPLATE_NAME};
-use crate::core::namespaces::{get_namespace, get_repo_namespace_obj, parse_to_raw_url};
+use crate::core::namespaces::{get_repo_namespace_obj, parse_namespace_to_raw_url};
+use crate::core::repos::remote_repos_reg::get_reg;
 use crate::core::repos::Repository;
 use crate::core::requester::{str_is_url, validate_url};
 use crate::core::template::engine::{get_engine_args_input, set_arg_default_value, TempEngineArg};
@@ -118,12 +119,12 @@ async fn gen_from_remote_template(command: Command) -> Result<(), Error> {
         validate_url(&command.args[0])?.to_string()
     } else {
         let template_url_path = command.args[0].clone();
-        let url = parse_to_raw_url(template_url_path)?;
+        let url = parse_namespace_to_raw_url(template_url_path)?;
         validate_url(&url)?.to_string()
     };
 
     let namespace_name = command.args[0].split("/").collect::<Vec<&str>>()[0];
-    let namespace = get_namespace(namespace_name)?;
+    let namespace = get_reg(namespace_name)?;
 
     let key = if namespace.requires_authorization {
         let key = command.get_opt_by_name("key");

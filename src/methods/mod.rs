@@ -72,7 +72,7 @@ pub mod docs;
 pub mod generate;
 pub mod get;
 pub mod help;
-pub mod namespace;
+pub mod registry;
 pub mod repo;
 pub mod repos;
 pub mod save;

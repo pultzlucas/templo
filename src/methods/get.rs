@@ -1,5 +1,6 @@
 use crate::cli::input::command::Command;
-use crate::core::namespaces::{get_namespace, parse_to_raw_url};
+use crate::core::namespaces::parse_namespace_to_raw_url;
+use crate::core::repos::remote_repos_reg::get_reg;
 use crate::core::repos::Repository;
 use crate::core::requester::{str_is_url, validate_url};
 use crate::core::template::getter::get_remote_template;
@@ -21,12 +22,12 @@ pub async fn run(command: Command) -> Result<(), Error> {
         validate_url(&command.args[0])?.to_string()
     } else {
         let template_url_path = command.args[0].clone();
-        let url = parse_to_raw_url(template_url_path)?;
+        let url = parse_namespace_to_raw_url(template_url_path)?;
         validate_url(&url)?.to_string()
     };
 
     let namespace_name = command.args[0].split("/").collect::<Vec<&str>>()[0];
-    let namespace = get_namespace(namespace_name)?;
+    let namespace = get_reg(namespace_name)?;
 
     let key = if namespace.requires_authorization {
         let key = command.get_opt_by_name("key");
@@ -62,7 +63,10 @@ pub async fn run(command: Command) -> Result<(), Error> {
     }
 
     repo.save_template(template.clone())?;
-    println!("Template \"{}\" was installed in \"{}\" repo.", template.name, repo.name);
+    println!(
+        "Template \"{}\" was installed in \"{}\" repo.",
+        template.name, repo.name
+    );
 
     let end = Instant::now(); // stop timing process
     println!("Done in {:.2?}", end.duration_since(start));

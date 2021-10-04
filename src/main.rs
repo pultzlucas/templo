@@ -50,7 +50,7 @@ async fn main() {
                 "gen" => generate::run(command).await,
                 "get" => get::run(command).await,
                 "del" => delete::run(command),
-                "namespace" => namespace::run(command),
+                "regs" => registry::run(command),
                 "repo" => repo::run(command),
                 "repos" => repos::run(command),
                 "mv" => r#move::run(command),

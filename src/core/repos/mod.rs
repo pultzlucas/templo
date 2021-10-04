@@ -1,4 +1,5 @@
 mod repository;
+pub mod remote_repos_reg;
 pub use repository::*;
 
 use crate::utils::errors::{already_exists_error, not_found_error};

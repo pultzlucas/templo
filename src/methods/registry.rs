@@ -1,9 +1,10 @@
 use crate::cli::input::command::Command;
 use crate::cli::input::{get, get_boolean_input};
-use crate::core::namespaces::{
-    self, create_namespaces_file, get_namespace, get_saved_namespaces, RemoteRepoNamespace,
+use crate::core::namespaces::RemoteRepoNamespace;
+use crate::core::repos::remote_repos_reg::{
+    self, create_regs_file, get_reg, get_all_regs,
 };
-use crate::core::path::get_namespaces_file_path;
+use crate::core::path::get_remote_repo_reg_file_path;
 use crate::methods::check_flags;
 use crate::utils::errors::invalid_input_error;
 use crate::utils::path::pathbuf_to_string;
@@ -12,13 +13,13 @@ use std::io::Error;
 use tabled::{Style, Table};
 
 pub fn run(command: Command) -> Result<(), Error> {
-    create_namespaces_file()?;
+    create_regs_file()?;
 
     let flags = vec!["--local", "-y"];
     check_flags(&command.flags, flags)?;
 
     if command.has_flag("--local") {
-        println!("{}", pathbuf_to_string(get_namespaces_file_path()?));
+        println!("{}", pathbuf_to_string(get_remote_repo_reg_file_path()?));
         return Ok(());
     }
 
@@ -37,7 +38,13 @@ pub fn run(command: Command) -> Result<(), Error> {
 }
 
 fn show_saved_namespaces() -> Result<(), Error> {
-    let repos = get_saved_namespaces()?;
+    let repos = get_all_regs()?;
+
+    if repos.is_empty() {
+        println!("No remote repos registered.");
+        return Ok(())
+    }
+
     let repos_table = Table::new(repos).with(Style::pseudo());
 
     print!("{}", repos_table);
@@ -88,7 +95,7 @@ fn add_namespace(command: Command) -> Result<(), Error> {
         requires_authorization,
     };
 
-    namespaces::add(repo_registry.clone())?;
+    remote_repos_reg::add(repo_registry.clone())?;
 
     println!("Remote repo \"{}\" was registered.", repo_registry.name);
 
@@ -119,7 +126,7 @@ fn remove_namespace(command: Command) -> Result<(), Error> {
         return Ok(());
     }
 
-    namespaces::remove(name.clone())?;
+    remote_repos_reg::remove(name.clone())?;
 
     println!("Remote repo \"{}\" was removed.", name);
 
@@ -143,7 +150,7 @@ fn update_namespace(command: Command) -> Result<(), Error> {
         input.unwrap().value.to_owned()
     };
 
-    let current_repo = get_namespace(&current_name)?;
+    let current_repo = get_reg(&current_name)?;
 
     let name = if command.options.is_empty() {
         get("New repo name: ")?
@@ -191,7 +198,7 @@ fn update_namespace(command: Command) -> Result<(), Error> {
         requires_authorization,
     };
 
-    namespaces::update(&current_name, repo_updated)?;
+    remote_repos_reg::update(&current_name, repo_updated)?;
 
     println!("Remote repo \"{}\" was updated.", current_name);
 

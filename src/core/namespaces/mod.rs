@@ -1,17 +1,11 @@
-use crate::core::path::get_namespaces_file_path;
-use crate::utils::errors::{invalid_input_error, not_found_error, std_error};
+use crate::utils::errors::{invalid_input_error, std_error};
 use crate::utils::string::split_by;
 use regex::Regex;
 use serde_derive::{Deserialize, Serialize};
-use serde_json::{from_str, to_string_pretty};
-use std::fs;
 use std::io::Error;
-use std::path::Path;
 use tabled::Tabled;
 
-mod methods;
-
-pub use methods::*;
+use super::repos::remote_repos_reg::get_reg;
 
 #[derive(Serialize, Deserialize, Tabled, Debug, Clone)]
 pub struct RemoteRepoNamespace {
@@ -24,6 +18,19 @@ pub struct RemoteRepoNamespace {
 pub struct NamespaceObject {
     pub repo_name: String,
     pub template_name: String,
+}
+
+pub fn parse_namespace_to_raw_url(route: String) -> Result<String, Error> {
+    let regex = std_error(Regex::new(r"^[\w-]+"))?;
+    let namespace_name = regex.find(&route);
+
+    if let Some(namespace_name) = namespace_name {
+        let namespace = get_reg(namespace_name.as_str())?;
+        let raw_url = regex.replace(&route, namespace.base_url).to_string();
+        return Ok(raw_url);
+    }
+
+    Err(invalid_input_error("Invalid namespace syntax."))
 }
 
 pub fn get_repo_namespace_obj(namespace: &str) -> NamespaceObject {
@@ -45,53 +52,3 @@ pub fn split_namespace_str(ns_string: &str) -> Vec<String> {
     split_by(ns_string, "/")
 }
 
-pub fn parse_to_raw_url(route: String) -> Result<String, Error> {
-    let regex = std_error(Regex::new(r"^[\w-]+"))?;
-    let namespace_name = regex.find(&route);
-
-    if let Some(namespace_name) = namespace_name {
-        let namespace = get_namespace(namespace_name.as_str())?;
-        let raw_url = regex.replace(&route, namespace.base_url).to_string();
-        return Ok(raw_url);
-    }
-
-    Err(invalid_input_error("Invalid namespace syntax."))
-}
-
-pub fn get_namespace(namespace_name: &str) -> Result<RemoteRepoNamespace, Error> {
-    let repos = get_saved_namespaces()?;
-    let namespace = repos
-        .into_iter()
-        .find(|namespace| namespace.name == namespace_name);
-    if let Some(namespace) = namespace {
-        Ok(namespace)
-    } else {
-        Err(not_found_error(&format!(
-            "Not is possible to find a namespace named as \"{}\"",
-            namespace.unwrap().name
-        )))
-    }
-}
-
-pub fn get_saved_namespaces() -> Result<Vec<RemoteRepoNamespace>, Error> {
-    let remote_repos_filename = get_namespaces_file_path()?;
-    let current_repos_json = fs::read_to_string(&remote_repos_filename)?;
-    std_error(from_str(&current_repos_json))
-}
-
-fn update_namespace_file(repos: Vec<RemoteRepoNamespace>) -> Result<(), Error> {
-    fs::write(
-        get_namespaces_file_path()?,
-        std_error(to_string_pretty(&repos))?,
-    )?;
-    Ok(())
-}
-
-pub fn create_namespaces_file() -> Result<(), Error> {
-    let namespaces_file_not_exists = !Path::new(&get_namespaces_file_path()?).exists();
-    if namespaces_file_not_exists {
-        fs::write(get_namespaces_file_path()?, "[]")?;
-    }
-
-    Ok(())
-}
