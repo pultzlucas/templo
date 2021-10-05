@@ -54,7 +54,7 @@ async fn main() {
                 "repo" => repo::run(command),
                 "repos" => repos::run(command),
                 "mv" => r#move::run(command),
-                "desc" => describe::run(command),
+                "view" => view::run(command),
                 "docs" => docs::run(),
                 "save" => save::run(command),
                 "update" => update::run(command),

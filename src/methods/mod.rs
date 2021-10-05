@@ -67,7 +67,7 @@ pub const METHODS: [MethodInfo; 10] = [
 ];
 
 pub mod delete;
-pub mod describe;
+pub mod view;
 pub mod docs;
 pub mod generate;
 pub mod get;
