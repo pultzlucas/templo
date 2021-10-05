@@ -65,10 +65,6 @@ impl Generate {
         println!("Done in {:.2?}", end.duration_since(start));
         Ok(())
     }
-
-    pub fn help() -> String {
-        "".to_string()
-    }
 }
 
 fn gen_from_template_file(command: Command) -> Result<(), Error> {

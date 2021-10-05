@@ -22,6 +22,12 @@ impl Command {
         self.flags.iter().any(|flag| regex.is_match(flag))
     }
 
+    pub fn has_help_flag(&self) -> bool {
+        self.flags
+            .iter()
+            .any(|flag| flag == "--help" || flag == "-h" || flag == "-H")
+    }
+
     pub fn has_option(&self, option: &str) -> bool {
         let regex = Regex::new(&format!("{}$", option)).unwrap();
         self.options.iter().any(|opt| regex.is_match(&opt.name))
@@ -58,7 +64,7 @@ fn get_method(command: Vec<String>) -> Option<String> {
     let is_method = !method_regex.is_match(&command[0]);
 
     if is_method {
-       return Some(command[0].clone());
+        return Some(command[0].clone());
     }
 
     None
@@ -73,7 +79,7 @@ fn get_submethod(command: Vec<String>) -> Option<String> {
 
 fn get_args(args: Vec<String>) -> Result<Vec<String>, Error> {
     if args.is_empty() {
-        return Ok(vec![])
+        return Ok(vec![]);
     }
 
     let args = args[1..].to_vec().into_iter().filter(|arg| {

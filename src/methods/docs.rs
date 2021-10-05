@@ -21,9 +21,5 @@ impl Docs {
     
         Ok(())
     }
-
-    pub fn help() -> String {
-        "".to_string()    
-    }
 }
 

@@ -1,13 +1,27 @@
 use crate::cli::input;
 use crate::cli::input::command::Command;
 use crate::core::repos::Repository;
+use crate::write_help;
 use crate::{core::template::maker::make_template, utils::errors::already_exists_error};
 use std::{io::Error, time::Instant};
 
 pub struct Save;
 
 impl Save {
+    pub fn help() {
+        write_help!("../../help_files/save.yml");
+        // let yml = load_yaml!("../../help_files/save.yml");
+        // let method = SubCommand::from_yaml(yml);
+        // method.write_help(&mut std::io::stdout()).unwrap();
+        // write_help(method);
+    }
+
     pub fn run(command: Command) -> Result<(), Error> {
+        if command.has_help_flag() {
+            Self::help();
+            return Ok(());
+        }
+
         let template_name = if command.has_option("name") {
             command.get_opt_by_name("name").unwrap().value.clone()
         } else {
