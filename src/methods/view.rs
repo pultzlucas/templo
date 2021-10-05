@@ -10,62 +10,64 @@ use crate::utils::string::decode_base64;
 use crate::{paint_string, paintln};
 use std::io::Error;
 
-pub fn run(command: Command) -> Result<(), Error> {
+pub struct View;
 
-    let expected_flags = vec!["--paths", "--created-at", "--desc"];
-    check_flags(&command.flags, expected_flags)?;
+impl View {
+    pub fn run(command: Command) -> Result<(), Error> {
+        let expected_flags = vec!["--paths", "--created-at", "--desc"];
+        check_flags(&command.flags, expected_flags)?;
 
-    if command.args.is_empty() {
-        return Err(invalid_input_error(INVALID_TEMPLATE_NAME));
-    }
+        if command.args.is_empty() {
+            return Err(invalid_input_error(INVALID_TEMPLATE_NAME));
+        }
 
-    // Get template from repository
-    let NamespaceObject {
-        repo_name,
-        template_name,
-    } = get_repo_namespace_obj(&command.args[0]);
-    let repo = Repository::connect(repo_name)?;
-    let template = repo.get_template(&template_name)?;
-    
-    if command.has_flag("--paths") {
-        display_template_paths(&template);
-        return Ok(())
-    }
-    
-    if command.has_flag("--created-at") {
-        println!("{}", template.created_at);
-        return Ok(())
-    }
+        // Get template from repository
+        let NamespaceObject {
+            repo_name,
+            template_name,
+        } = get_repo_namespace_obj(&command.args[0]);
+        let repo = Repository::connect(repo_name)?;
+        let template = repo.get_template(&template_name)?;
 
-    if command.has_flag("--desc") {
+        if command.has_flag("--paths") {
+            display_template_paths(&template);
+            return Ok(());
+        }
+
+        if command.has_flag("--created-at") {
+            println!("{}", template.created_at);
+            return Ok(());
+        }
+
+        if command.has_flag("--desc") {
+            if let Some(description) = &template.description {
+                println!("{}", description);
+            }
+            return Ok(());
+        }
+
+        paintln!("> {yellow}", &template.name);
+
+        // Template description
         if let Some(description) = &template.description {
             println!("{}", description);
         }
-        return Ok(())
+
+        // Template file content
+        if command.args.len() > 1 {
+            return display_file_content(&command.args[1..], template.clone());
+        }
+
+        // Template creation date
+        paintln!("{gray}", "[created at]");
+        println!("{}", template.created_at);
+
+        // Template paths
+        paintln!("{gray}", "[paths]");
+        display_template_paths(&template);
+
+        Ok(())
     }
-
-
-    paintln!("> {yellow}", &template.name);
-
-    // Template description
-    if let Some(description) = &template.description {
-        println!("{}", description);
-    }
-
-    // Template file content
-    if command.args.len() > 1 {
-        return display_file_content(&command.args[1..], template.clone());
-    }
-
-    // Template creation date
-    paintln!("{gray}", "[created at]");
-    println!("{}", template.created_at);
-
-    // Template paths
-    paintln!("{gray}", "[paths]");
-    display_template_paths(&template);
-
-    Ok(())
 }
 
 fn display_template_paths(template: &Template) {

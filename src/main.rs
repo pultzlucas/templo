@@ -4,10 +4,10 @@ mod core;
 mod methods;
 mod utils;
 
+use crate::core::repos::Repository;
 use crate::utils::errors::invalid_input_error;
 use cli::input::command::parse_command;
 use methods::*;
-use crate::core::repos::Repository;
 use std::env;
 
 #[tokio::main]
@@ -28,7 +28,7 @@ async fn main() {
         }
 
         if command.has_flag("--version") || command.has_flag("-v") || command.has_flag("-V") {
-            if let Err(err) = version::run() {
+            if let Err(err) = Version::run() {
                 eprintln!("{}: {}", paint_string!("{red}", "Error"), err)
             };
         }
@@ -47,19 +47,19 @@ async fn main() {
     if let Some(method) = command.method.clone() {
         let output = {
             match method.as_str() {
-                "gen" => generate::run(command).await,
-                "get" => get::run(command).await,
-                "del" => delete::run(command),
-                "regs" => registry::run(command),
-                "repo" => repo::run(command),
-                "repos" => repos::run(command),
-                "mv" => r#move::run(command),
-                "view" => view::run(command),
-                "docs" => docs::run(),
-                "save" => save::run(command),
-                "update" => update::run(command),
+                "gen" =>    Generate::run(command).await,
+                "get" =>    Get::run(command).await,
+                "del" =>    Delete::run(command),
+                "regs" =>   Registry::run(command),
+                "repo" =>   Repo::run(command),
+                "repos" =>  Repos::run(command),
+                "mv" =>     Move::run(command),
+                "view" =>   View::run(command),
+                "docs" =>   Docs::run(command),
+                "save" =>   Save::run(command),
+                "update" => Update::run(command),
                 "help" | "h" => help::run(),
-                "version" | "v" => version::run(),
+                "version" | "v" => Version::run(),
                 _ => Err(invalid_input_error(&format!(
                     "Invalid method \"{}\".",
                     method

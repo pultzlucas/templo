@@ -14,53 +14,61 @@ use crate::paintln;
 use crate::utils::errors::{invalid_input_error, std_error};
 use std::{fs, io::Error, path::Path, time::Instant};
 
-pub async fn run(command: Command) -> Result<(), Error> {
-    let flags = vec!["--file", "-f", "--remote"];
-    check_flags(&command.flags, flags)?;
+pub struct Generate;
 
-    if command.has_flag("-f") || command.has_flag("--file") {
-        return gen_from_template_file(command.clone());
+impl Generate {
+    pub async fn run(command: Command) -> Result<(), Error> {
+        let flags = vec!["--file", "-f", "--remote"];
+        check_flags(&command.flags, flags)?;
+
+        if command.has_flag("-f") || command.has_flag("--file") {
+            return gen_from_template_file(command.clone());
+        }
+
+        if command.has_flag("--remote") {
+            return gen_from_remote_template(command.clone()).await;
+        }
+
+        if command.args.len() < 1 {
+            return Err(invalid_input_error(INVALID_TEMPLATE_NAME));
+        }
+
+        let start = Instant::now(); // start timing process
+
+        let directory = if command.args.len() < 2 {
+            Path::new(".")
+        } else {
+            Path::new(&command.args[1])
+        };
+
+        if directory.extension() != None {
+            return Err(invalid_input_error(INVALID_DIRECTORY_PATH_TYPE));
+        }
+
+        let template_namespace = get_repo_namespace_obj(&command.args[0]);
+        let repo = Repository::connect(template_namespace.repo_name)?;
+        let template = repo.get_template(&template_namespace.template_name)?;
+
+        let temp_args = if !command.options.is_empty() {
+            get_template_args_by_options(command.options, &template)?
+        } else {
+            get_template_args_by_temp(&template)?
+        };
+
+        generator::gen_template(template, directory, temp_args)?;
+        println!(
+            "Template \"{}\" was generated.",
+            template_namespace.template_name
+        );
+
+        let end = Instant::now(); // stop timing process
+        println!("Done in {:.2?}", end.duration_since(start));
+        Ok(())
     }
 
-    if command.has_flag("--remote") {
-        return gen_from_remote_template(command.clone()).await;
+    pub fn help() -> String {
+        "".to_string()
     }
-
-    if command.args.len() < 1 {
-        return Err(invalid_input_error(INVALID_TEMPLATE_NAME));
-    }
-
-    let start = Instant::now(); // start timing process
-
-    let directory = if command.args.len() < 2 {
-        Path::new(".")
-    } else {
-        Path::new(&command.args[1])
-    };
-
-    if directory.extension() != None {
-        return Err(invalid_input_error(INVALID_DIRECTORY_PATH_TYPE));
-    }
-
-    let template_namespace = get_repo_namespace_obj(&command.args[0]);
-    let repo = Repository::connect(template_namespace.repo_name)?;
-    let template = repo.get_template(&template_namespace.template_name)?;
-
-    let temp_args = if !command.options.is_empty() {
-        get_template_args_by_options(command.options, &template)?
-    } else {
-        get_template_args_by_temp(&template)?
-    };
-
-    generator::gen_template(template, directory, temp_args)?;
-    println!(
-        "Template \"{}\" was generated.",
-        template_namespace.template_name
-    );
-
-    let end = Instant::now(); // stop timing process
-    println!("Done in {:.2?}", end.duration_since(start));
-    Ok(())
 }
 
 fn gen_from_template_file(command: Command) -> Result<(), Error> {

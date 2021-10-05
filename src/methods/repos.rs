@@ -5,63 +5,67 @@ use crate::{
 };
 use std::io::Error;
 
-pub fn run(command: Command) -> Result<(), Error> {
-    if let Some(submethod) = command.submethod.clone() {
-        return match submethod.as_str() {
-            "create" => {
-                if command.args.len() < 2 {
-                    return Err(invalid_input_error("Repo name must be specified."));
-                }
+pub struct Repos;
 
-                let repo_name = &command.args[1];
-                create_repo(repo_name)?;
-
-                println!("Repo \"{}\" was created.", repo_name);
-                Ok(())
-            }
-
-            "del" => {
-                if command.args.len() < 2 {
-                    return Err(invalid_input_error("Repo name must be specified."));
-                }
-
-                let repo_name = &command.args[1];
-                if !repo_exists(repo_name) {
-                    if !repo_exists(repo_name) {
-                        return Err(not_found_error(&format!(
-                            "Repo \"{}\" not exists.",
-                            repo_name
-                        )));
+impl Repos {
+    pub fn run(command: Command) -> Result<(), Error> {
+        if let Some(submethod) = command.submethod.clone() {
+            return match submethod.as_str() {
+                "create" => {
+                    if command.args.len() < 2 {
+                        return Err(invalid_input_error("Repo name must be specified."));
                     }
+
+                    let repo_name = &command.args[1];
+                    create_repo(repo_name)?;
+
+                    println!("Repo \"{}\" was created.", repo_name);
+                    Ok(())
                 }
 
-                let yes = if command.has_flag("-y").clone() {
-                    true
-                } else {
-                    get_boolean_input(&format!("Do you really want to delete \"{}\" repo and all the templates that exists inside within it? [y/n]: ", repo_name))?
-                };
+                "del" => {
+                    if command.args.len() < 2 {
+                        return Err(invalid_input_error("Repo name must be specified."));
+                    }
 
-                if yes {
-                    println!("Repo \"{}\" was deleted.", repo_name);
-                    delete_repo(repo_name)?;
-                    return Ok(());
+                    let repo_name = &command.args[1];
+                    if !repo_exists(repo_name) {
+                        if !repo_exists(repo_name) {
+                            return Err(not_found_error(&format!(
+                                "Repo \"{}\" not exists.",
+                                repo_name
+                            )));
+                        }
+                    }
+
+                    let yes = if command.has_flag("-y").clone() {
+                        true
+                    } else {
+                        get_boolean_input(&format!("Do you really want to delete \"{}\" repo and all the templates that exists inside within it? [y/n]: ", repo_name))?
+                    };
+
+                    if yes {
+                        println!("Repo \"{}\" was deleted.", repo_name);
+                        delete_repo(repo_name)?;
+                        return Ok(());
+                    }
+                    Ok(())
                 }
-                Ok(())
-            }
-            _ => {
-                return Err(invalid_input_error(&format!(
-                    "Invalid submethod \"{}\".",
-                    submethod
-                )))
-            }
-        };
+                _ => {
+                    return Err(invalid_input_error(&format!(
+                        "Invalid submethod \"{}\".",
+                        submethod
+                    )))
+                }
+            };
+        }
+
+        let repos = get_all_repos()?;
+        // print each repo name
+        repos.iter().for_each(|repo| {
+            println!("{}", repo);
+        });
+
+        Ok(())
     }
-
-    let repos = get_all_repos()?;
-    // print each repo name
-    repos.iter().for_each(|repo| {
-        println!("{}", repo);
-    });
-
-    Ok(())
 }

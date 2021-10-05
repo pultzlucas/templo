@@ -12,29 +12,33 @@ use crate::utils::string::str_to_bool;
 use std::io::Error;
 use tabled::{Style, Table};
 
-pub fn run(command: Command) -> Result<(), Error> {
-    create_regs_file()?;
+pub struct Registry;
 
-    let flags = vec!["--local", "-y"];
-    check_flags(&command.flags, flags)?;
-
-    if command.has_flag("--local") {
-        println!("{}", pathbuf_to_string(get_remote_repo_reg_file_path()?));
-        return Ok(());
-    }
-
-    if let Some(submethod) = command.submethod.as_ref() {
-        return match submethod.as_str() {
-            "add" => add_namespace(command),
-            "remove" => remove_namespace(command),
-            "update" => update_namespace(command),
-            _ => Err(invalid_input_error(&format!("Invalid namespace method \"{}\"", submethod)))
-        };
-    }
+impl Registry {
+    pub fn run(command: Command) -> Result<(), Error> {
+        create_regs_file()?;
     
-    show_saved_namespaces()?;
-
-    Ok(())
+        let flags = vec!["--local", "-y"];
+        check_flags(&command.flags, flags)?;
+    
+        if command.has_flag("--local") {
+            println!("{}", pathbuf_to_string(get_remote_repo_reg_file_path()?));
+            return Ok(());
+        }
+    
+        if let Some(submethod) = command.submethod.as_ref() {
+            return match submethod.as_str() {
+                "add" => add_namespace(command),
+                "remove" => remove_namespace(command),
+                "update" => update_namespace(command),
+                _ => Err(invalid_input_error(&format!("Invalid namespace method \"{}\"", submethod)))
+            };
+        }
+        
+        show_saved_namespaces()?;
+    
+        Ok(())
+    }
 }
 
 fn show_saved_namespaces() -> Result<(), Error> {

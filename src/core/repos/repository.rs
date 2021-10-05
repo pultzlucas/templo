@@ -1,6 +1,7 @@
 use super::repo_exists;
 use crate::core::path::get_repo_path;
 use crate::core::template::Template;
+use crate::utils::errors::already_exists_error;
 use crate::utils::errors::not_found_error;
 use crate::utils::errors::repo_connection_error;
 use crate::utils::errors::std_error;
@@ -172,6 +173,14 @@ impl Repository {
     pub fn move_template_to(&self, template_name: &str, repo: Repository) -> Result<(), Error> {
         let template_path = self.get_template_path(template_name);
         let template = self.get_template(template_name)?;
+
+        if repo.template_exists(template_name) {
+            return Err(already_exists_error(&format!(
+                "Already exists a template named as \"{}\" in \"{}\" repo.",
+                template_name, repo.name
+            )));
+        }
+
         fs::remove_file(template_path)?;
         repo.save_template(template)?;
         Ok(())

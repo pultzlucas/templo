@@ -66,17 +66,30 @@ pub const METHODS: [MethodInfo; 10] = [
     },
 ];
 
-pub mod delete;
-pub mod view;
-pub mod docs;
-pub mod generate;
-pub mod get;
+mod delete;
+mod docs;
+mod generate;
+mod get;
+mod r#move;
+mod registry;
+mod repo;
+mod repos;
+mod save;
+mod update;
+mod version;
+mod view;
 pub mod help;
-pub mod registry;
-pub mod repo;
-pub mod repos;
-pub mod save;
-pub mod update;
-pub mod version;
-pub mod r#move;
 pub mod welcome;
+
+pub use delete::Delete;
+pub use docs::Docs;
+pub use generate::Generate;
+pub use get::Get;
+pub use r#move::Move;
+pub use registry::Registry;
+pub use repo::Repo;
+pub use repos::Repos;
+pub use save::Save;
+pub use update::Update;
+pub use version::Version;
+pub use view::View;
