@@ -1,0 +1,43 @@
+{
+    "name": "submethod",
+    "about": "Method description",
+    "usage": "method-name [FLAGS] [OPTIONS] <input1> <input2>",
+    "parents": ["main", "method"],
+    "args": {
+        "flags": [
+            {
+                "short": "f1",
+                "long": "flag1",
+                "help": "About flag1"
+            },
+            {
+                "long": "flag2",
+                "help": "About flag2 help help"
+            }
+        ],
+        "options": [
+            {
+                "short": "opt",
+                "long": "option",
+                "help": "About option",
+                "default_value": "123"
+            },
+            {
+                "long": "option2",
+                "help": "About option2 help help"
+            }
+        ],
+        "inputs": [
+            {
+                "name": "input1",
+                "help": "Sets something",
+                "required": true
+            },
+            {
+                "name": "input2",
+                "help": "Sets something too",
+                "default_value": "value"
+            }
+        ]
+    } 
+}

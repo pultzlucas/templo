@@ -1,5 +1,5 @@
 name: delete
-about: Deletes a template from repository 
+about: Deletes a template from repository
 args:
     - template-namespace:
         help: Sets the template namespace
