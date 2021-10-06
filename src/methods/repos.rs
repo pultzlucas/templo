@@ -1,14 +1,19 @@
-use crate::{
-    cli::input::{command::Command, get_boolean_input},
-    core::repos::{create_repo, delete_repo, get_all_repos, repo_exists},
-    utils::errors::{invalid_input_error, not_found_error},
-};
+use crate::{cli::input::{command::Command, get_boolean_input}, core::repos::{create_repo, delete_repo, get_all_repos, repo_exists}, utils::errors::{invalid_input_error, not_found_error}, write_help};
 use std::io::Error;
 
 pub struct Repos;
 
 impl Repos {
+    pub fn help() {
+        write_help!("../../help_files/repos.yml");
+    }
+
     pub fn run(command: Command) -> Result<(), Error> {
+        if command.has_help_flag() {
+            Self::help();
+            return Ok(());
+        }
+        
         if let Some(submethod) = command.submethod.clone() {
             return match submethod.as_str() {
                 "create" => {

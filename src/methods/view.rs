@@ -7,13 +7,22 @@ use crate::methods::check_flags;
 use crate::utils::errors::invalid_input_error;
 use crate::utils::path::pathbuf_to_string;
 use crate::utils::string::decode_base64;
-use crate::{paint_string, paintln};
+use crate::{paint_string, paintln, write_help};
 use std::io::Error;
 
 pub struct View;
 
 impl View {
+    pub fn help() {
+        write_help!("../../help_files/view.yml");
+    }
+
     pub fn run(command: Command) -> Result<(), Error> {
+        if command.has_help_flag() {
+            Self::help();
+            return Ok(());
+        }
+        
         let expected_flags = vec!["--paths", "--created-at", "--desc"];
         check_flags(&command.flags, expected_flags)?;
 

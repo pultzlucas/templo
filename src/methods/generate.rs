@@ -10,14 +10,23 @@ use crate::core::template::engine::{get_engine_args_input, set_arg_default_value
 use crate::core::template::getter::get_remote_template;
 use crate::core::template::{generator, Template};
 use crate::methods::check_flags;
-use crate::paintln;
+use crate::{paintln, write_help};
 use crate::utils::errors::{invalid_input_error, std_error};
 use std::{fs, io::Error, path::Path, time::Instant};
 
 pub struct Generate;
 
 impl Generate {
+    pub fn help() {
+        write_help!("../../help_files/generate.yml");
+    }
+
     pub async fn run(command: Command) -> Result<(), Error> {
+        if command.has_help_flag() {
+            Self::help();
+            return Ok(());
+        }
+
         let flags = vec!["--file", "-f", "--remote"];
         check_flags(&command.flags, flags)?;
 

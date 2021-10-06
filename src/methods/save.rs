@@ -10,10 +10,6 @@ pub struct Save;
 impl Save {
     pub fn help() {
         write_help!("../../help_files/save.yml");
-        // let yml = load_yaml!("../../help_files/save.yml");
-        // let method = SubCommand::from_yaml(yml);
-        // method.write_help(&mut std::io::stdout()).unwrap();
-        // write_help(method);
     }
 
     pub fn run(command: Command) -> Result<(), Error> {

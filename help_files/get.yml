@@ -1,0 +1,20 @@
+name: get
+about: Gets a template from remote repo. 
+args:
+    - remote-template-namespace:
+        help: Sets the remote template namespace
+        required: false
+    - remote-template-url:
+        help: Sets the remote template url
+        required: false
+    - url:
+        long: url
+        multiple: true
+        help: If informed this flag will require the remote template url
+        requires:
+          - remote-template-url
+    - key:
+        long: key
+        value_name: authorization-key
+        help: Sets the authorization key
+        takes_value: true

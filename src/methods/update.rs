@@ -6,13 +6,23 @@ use crate::core::repos::Repository;
 use crate::core::template::maker::make_template;
 use crate::methods::check_flags;
 use crate::utils::errors::invalid_input_error;
+use crate::write_help;
 use std::io::Error;
 use std::time::Instant;
 
 pub struct Update;
 
 impl Update {
+    pub fn help() {
+        write_help!("../../help_files/update.yml");
+    }
+
     pub fn run(command: Command) -> Result<(), Error> {
+        if command.has_help_flag() {
+            Self::help();
+            return Ok(());
+        }
+        
         let flags = vec!["--name", "--description"];
         check_flags(&command.flags, flags)?;
 

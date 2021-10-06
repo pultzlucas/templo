@@ -9,13 +9,23 @@ use crate::methods::check_flags;
 use crate::utils::errors::invalid_input_error;
 use crate::utils::path::pathbuf_to_string;
 use crate::utils::string::str_to_bool;
+use crate::write_help;
 use std::io::Error;
 use tabled::{Style, Table};
 
 pub struct Registry;
 
 impl Registry {
+    pub fn help() {
+        write_help!("../../help_files/registry.yml");
+    }
+
     pub fn run(command: Command) -> Result<(), Error> {
+        if command.has_help_flag() {
+            Self::help();
+            return Ok(());
+        }
+        
         create_regs_file()?;
     
         let flags = vec!["--local", "-y"];

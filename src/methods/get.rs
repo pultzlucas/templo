@@ -9,11 +9,21 @@ use crate::{
     utils::errors::{already_exists_error, invalid_input_error},
 };
 use std::{io::Error, str, time::Instant};
+use crate::write_help;
 
 pub struct Get;
 
 impl Get {
+    pub fn help() {
+        write_help!("../../help_files/get.yml");
+    }
+
     pub async fn run(command: Command) -> Result<(), Error> {
+        if command.has_help_flag() {
+            Self::help();
+            return Ok(());
+        }
+
         if command.args.is_empty() {
             return Err(invalid_input_error("The template url must be specified."));
         }

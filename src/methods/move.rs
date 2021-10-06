@@ -1,17 +1,22 @@
-use crate::{
-    cli::input::command::Command,
-    core::{
+use crate::{cli::input::command::Command, core::{
         namespaces::{get_repo_namespace_obj, NamespaceObject},
         repos::Repository,
-    },
-    utils::errors::invalid_input_error,
-};
+    }, utils::errors::invalid_input_error, write_help};
 use std::io::Error;
 
 pub struct Move;
 
 impl Move {
+    pub fn help() {
+        write_help!("../../help_files/move.yml");
+    }
+
     pub fn run(command: Command) -> Result<(), Error> {
+        if command.has_help_flag() {
+            Self::help();
+            return Ok(());
+        }
+        
         if command.args.len() < 1 {
             return Err(invalid_input_error("Template name must be specified."));
         }
