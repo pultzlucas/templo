@@ -1,2 +1,35 @@
-name: reg
-about: Registries a remote template. 
+name: regs
+about: Manipulates the remote repos registry. 
+subcommands:
+  - add:
+      about: Adds a remote repo to the registry
+      args:
+        - name:
+            help: Sets the name of the remote repo
+        - base-url:
+            help: Sets the base url of the remote repo
+        - req-auth:
+            help: Sets if remote repo requires authentication key
+  - remove:
+      about: Removes a remote repo from registry
+      args:
+        - remote-repo-name:
+            help: Sets the remote template name
+            takes_value: true
+            required: true
+        - confirmation:
+            short: ye
+            help: Confirm the registry removement process
+            multiple: true
+  - update:
+      about: Updates a remote repo from registry
+      args:
+        - remote-repo-name:
+            help: Sets the remote template name
+            takes_value: true
+            required: true
+        - current-name:
+            long: current-name
+            value_name: current-remote-repo-name
+            help: Sets the current repo name
+            takes_value: true
