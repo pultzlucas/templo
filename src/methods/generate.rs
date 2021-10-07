@@ -18,7 +18,7 @@ pub struct Generate;
 
 impl Generate {
     pub fn help() {
-        write_help!("../../help_files/generate.yml");
+        write_help!("../../help_files/generate.json");
     }
 
     pub async fn run(command: Command) -> Result<(), Error> {

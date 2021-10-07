@@ -20,9 +20,9 @@ macro_rules! write_help {
         use serde_derive::{Deserialize, Serialize};
 
         #[derive(Serialize, Deserialize, Debug)]
-        struct HelpArgsSubmethod {
+        struct HelpSubmethod {
             name: String,
-            help: String,
+            about: String,
         }
 
         #[derive(Serialize, Deserialize, Debug)]
@@ -54,7 +54,6 @@ macro_rules! write_help {
             inputs: Option<Vec<HelpArgsInput>>,
             flags: Option<Vec<HelpArgsFlag>>,
             options: Option<Vec<HelpArgsOption>>,
-            submethods: Option<Vec<HelpArgsSubmethod>>,
         }
 
         #[derive(Serialize, Deserialize, Debug)]
@@ -62,7 +61,8 @@ macro_rules! write_help {
             name: String,
             about: String,
             parents: Option<Vec<String>>,
-            args: HelpArgs,
+            submethods: Option<Vec<HelpSubmethod>>,
+            args: Option<HelpArgs>,
         }
 
         let help_content = include_str!($src);
@@ -92,102 +92,107 @@ macro_rules! write_help {
         print!("    ");
         print!("{} {}", parents_str, help.name);
 
-        if help.args.flags.is_some() {
-            print!(" [OPTIONS]");
-        }
+        
+        if let Some(args) = &help.args {
+            if args.flags.is_some() {
+                print!(" [OPTIONS]");
+            }
+    
+            if args.flags.is_some() {
+                print!(" [FLAGS]");
+            }
 
-        if help.args.flags.is_some() {
-            print!(" [FLAGS]");
-        }
-
-        if let Some(inputs) = &help.args.inputs {
-            for input in inputs.iter() {
-                print!(" <{}>", input.name);
+            if let Some(inputs) = &args.inputs {
+                for input in inputs.iter() {
+                    print!(" <{}>", input.name);
+                }
             }
         }
 
         print!("\n");
 
-        // FLAGS
-        if let Some(flags) = help.args.flags {
-            print!("\n");
-            println!("FLAGS:");
+        if let Some(args) = help.args {
+            // FLAGS
+            if let Some(flags) = args.flags {
+                print!("\n");
+                println!("FLAGS:");
 
-            for flag in flags {
-                print!("    ");
-                if let Some(short) = flag.short {
-                    print!("{:<20}", format!("-{}, --{}", short, flag.long));
-                } else {
-                    print!("    {:<20}", format!("--{}", flag.long));
-                }
-
-                print!("\t");
-                println!("{}", flag.help);
-            }
-        }
-
-        // OPTIONS
-        if let Some(options) = help.args.options {
-            print!("\n");
-            println!("OPTIONS:");
-            for opt in options {
-                print!("    ");
-
-                let value_name = if let Some(value_name) = opt.value_name {
-                    value_name
-                } else {
-                    "value".to_string()
-                };
-
-                if let Some(short) = opt.short {
-                    print!(
-                        "{:<22}",
-                        format!("-{}, --{}=<{}>", short, opt.long, value_name)
-                    );
-                } else {
-                    print!("    {:<22}", format!("--{}=<{}>", opt.long, value_name));
-                }
-
-                print!("\t");
-                println!("{}", opt.help);
-            }
-        }
-
-        // INPUTS
-        if let Some(inputs) = help.args.inputs {
-            print!("\n");
-            println!("INPUTS:");
-            for input in inputs {
-                print!("    ");
-
-                if let Some(required) = input.required {
-                    if required && input.default_value.is_some() {
-                        panic!("An input can not be required and have a default value.");
+                for flag in flags {
+                    print!("    ");
+                    if let Some(short) = flag.short {
+                        print!("{:<20}", format!("-{}, --{}", short, flag.long));
+                    } else {
+                        print!("    {:<20}", format!("--{}", flag.long));
                     }
 
-                    if required {
-                        print!("{:<20}", format!("{} [required]", input.name));
+                    print!("\t");
+                    println!("{}", flag.help);
+                }
+            }
+
+            // OPTIONS
+            if let Some(options) = args.options {
+                print!("\n");
+                println!("OPTIONS:");
+                for opt in options {
+                    print!("    ");
+
+                    let value_name = if let Some(value_name) = opt.value_name {
+                        value_name
+                    } else {
+                        "value".to_string()
+                    };
+
+                    if let Some(short) = opt.short {
+                        print!(
+                            "{:<22}",
+                            format!("-{}, --{}=<{}>", short, opt.long, value_name)
+                        );
+                    } else {
+                        print!("    {:<22}", format!("--{}=<{}>", opt.long, value_name));
                     }
-                }
 
-                if let Some(default_value) = &input.default_value {
-                    print!(
-                        "{:<20}",
-                        format!("{} [default: {}]", input.name, default_value)
-                    );
+                    print!("\t");
+                    println!("{}", opt.help);
                 }
+            }
 
-                if input.required.is_none() && input.default_value.is_none() {
-                    print!("{:<20}", input.name)
+            // INPUTS
+            if let Some(inputs) = args.inputs {
+                print!("\n");
+                println!("INPUTS:");
+                for input in inputs {
+                    print!("    ");
+
+                    if let Some(required) = input.required {
+                        if required && input.default_value.is_some() {
+                            panic!("An input can not be required and have a default value.");
+                        }
+
+                        if required {
+                            print!("{:<20}", format!("{} [required]", input.name));
+                        }
+                    }
+
+                    if let Some(default_value) = &input.default_value {
+                        print!(
+                            "{:<20}",
+                            format!("{} [default: {}]", input.name, default_value)
+                        );
+                    }
+
+                    if input.required.is_none() && input.default_value.is_none() {
+                        print!("{:<20}", input.name)
+                    }
+
+                    print!("\t");
+                    println!("{}", input.help);
                 }
-
-                print!("\t");
-                println!("{}", input.help);
             }
         }
 
         // SUBMETHODS
-        if let Some(submethods) = help.args.submethods {
+        if let Some(submethods) = help.submethods {
             print!("\n");
             println!("SUBMETHODS:");
 
@@ -195,7 +200,7 @@ macro_rules! write_help {
                 print!("    ");
                 print!("{:<20}", submethod.name);
                 print!("\t");
-                println!("{}", submethod.help)
+                println!("{}", submethod.about)
             }
         }
     };

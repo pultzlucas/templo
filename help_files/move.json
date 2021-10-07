@@ -1,0 +1,5 @@
+{
+    "name": "mv",
+    "parents": ["tp"],
+    "about": "Moves a template from a repo to another repo"
+}

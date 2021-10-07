@@ -8,7 +8,7 @@ pub struct Move;
 
 impl Move {
     pub fn help() {
-        write_help!("../../help_files/move.yml");
+        write_help!("../../help_files/move.json");
     }
 
     pub fn run(command: Command) -> Result<(), Error> {

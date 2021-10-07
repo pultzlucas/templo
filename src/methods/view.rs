@@ -14,7 +14,7 @@ pub struct View;
 
 impl View {
     pub fn help() {
-        write_help!("../../help_files/view.yml");
+        write_help!("../../help_files/view.json");
     }
 
     pub fn run(command: Command) -> Result<(), Error> {

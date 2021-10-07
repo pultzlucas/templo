@@ -12,7 +12,7 @@ pub struct Repo;
 
 impl Repo {
     pub fn help() {
-        write_help!("../../help_files/repo.yml");
+        write_help!("../../help_files/repo.json");
     }
 
     pub fn run(command: Command) -> Result<(), Error> {

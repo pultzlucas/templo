@@ -2,17 +2,17 @@
     "name": "method",
     "about": "Method description",
     "parents": ["main"],
+    "submethods": [
+        {
+            "name": "submethod1",
+            "help": "help for submethod11"
+        },
+        {
+            "name": "subm2",
+            "help": "help for submethod12 help help"
+        }
+    ],
     "args": {
-        "submethods": [
-            {
-                "name": "submethod1",
-                "help": "help for submethod11"
-            },
-            {
-                "name": "subm2",
-                "help": "help for submethod12 help help"
-            }
-        ],
         "flags": [
             {
                 "short": "f",

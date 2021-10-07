@@ -1,0 +1,14 @@
+{
+    "name": "delete",
+    "parents": ["tp"],
+    "about": "Deletes a template from repository",
+    "args": {
+        "inputs": [
+            {
+                "name": "template-namespace",
+                "help": "Sets the template namespace",
+                "required": true
+            }
+        ]
+    }
+}

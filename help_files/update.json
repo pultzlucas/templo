@@ -1,0 +1,5 @@
+{
+    "name": "update",
+    "parents": ["tp"],
+    "about": "Updates a template from folder"
+}

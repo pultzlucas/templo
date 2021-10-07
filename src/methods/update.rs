@@ -14,7 +14,7 @@ pub struct Update;
 
 impl Update {
     pub fn help() {
-        write_help!("../../help_files/update.yml");
+        write_help!("../../help_files/update.json");
     }
 
     pub fn run(command: Command) -> Result<(), Error> {

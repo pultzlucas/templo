@@ -1,0 +1,5 @@
+{
+    "name": "view",
+    "parents": ["tp"],
+    "about": "Views template data and metadata informations"
+}

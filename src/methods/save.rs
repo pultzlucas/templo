@@ -9,7 +9,7 @@ pub struct Save;
 
 impl Save {
     pub fn help() {
-        write_help!("../../help_files/save.yml");
+        write_help!("../../help_files/save.json");
     }
 
     pub fn run(command: Command) -> Result<(), Error> {

@@ -1,0 +1,31 @@
+{
+    "name": "save",
+    "parents": ["tp"],
+    "about": "Get template from real files and folders and saves it in a repository",
+    "args": {
+        "inputs": [
+            {
+                "name": "folder-path",
+                "help": "Sets the folder to extract the template",
+                "required": true
+            }
+        ],
+        "options": [
+            {
+                "long": "name",
+                "value_name": "template-name",
+                "help": "Sets the template name"
+            },
+            {
+                "long": "repo",
+                "value_name": "repository-name",
+                "help": "Sets the repository name to save the template"
+            },
+            {
+                "long": "description",
+                "value_name": "template-description",
+                "help": "Sets the template description"
+            }
+        ]
+    }
+}

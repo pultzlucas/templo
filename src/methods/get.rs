@@ -15,7 +15,7 @@ pub struct Get;
 
 impl Get {
     pub fn help() {
-        write_help!("../../help_files/get.yml");
+        write_help!("../../help_files/get.json");
     }
 
     pub async fn run(command: Command) -> Result<(), Error> {

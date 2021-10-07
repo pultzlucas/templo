@@ -1,0 +1,19 @@
+{
+    "name": "gen",
+    "parents": ["tp"],
+    "about": "Generates a template in a specific folder ",
+    "args": {
+        "inputs": [
+            {
+                "name": "template-namespace",
+                "help": "Sets the template namespace",
+                "required": true
+            },
+            {
+                "name": "output-folder",
+                "help": "Sets the output folder",
+                "default_value": "./"
+            }
+        ]
+    }
+}

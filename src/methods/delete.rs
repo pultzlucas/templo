@@ -10,7 +10,7 @@ pub struct Delete;
 
 impl Delete {
     pub fn help() {
-        write_help!("../../help_files/method.json");
+        write_help!("../../help_files/delete.json");
     }
 
     pub fn run(command: Command) -> Result<(), Error> {
