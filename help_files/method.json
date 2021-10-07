@@ -1,12 +1,21 @@
 {
-    "name": "submethod",
+    "name": "method",
     "about": "Method description",
-    "usage": "method-name [FLAGS] [OPTIONS] <input1> <input2>",
-    "parents": ["main", "method"],
+    "parents": ["main"],
     "args": {
+        "submethods": [
+            {
+                "name": "submethod1",
+                "help": "help for submethod11"
+            },
+            {
+                "name": "subm2",
+                "help": "help for submethod12 help help"
+            }
+        ],
         "flags": [
             {
-                "short": "f1",
+                "short": "f",
                 "long": "flag1",
                 "help": "About flag1"
             },
@@ -17,14 +26,16 @@
         ],
         "options": [
             {
-                "short": "opt",
+                "short": "o",
                 "long": "option",
                 "help": "About option",
-                "default_value": "123"
+                "default_value": "123",
+                "value_name": "v1"
             },
             {
                 "long": "option2",
-                "help": "About option2 help help"
+                "help": "About option2 help help",
+                "value_name": "value2"
             }
         ],
         "inputs": [

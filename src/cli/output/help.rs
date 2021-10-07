@@ -20,6 +20,12 @@ macro_rules! write_help {
         use serde_derive::{Deserialize, Serialize};
 
         #[derive(Serialize, Deserialize, Debug)]
+        struct HelpArgsSubmethod {
+            name: String,
+            help: String,
+        }
+
+        #[derive(Serialize, Deserialize, Debug)]
         struct HelpArgsInput {
             name: String,
             help: String,
@@ -40,6 +46,7 @@ macro_rules! write_help {
             long: String,
             help: String,
             default_value: Option<String>,
+            value_name: Option<String>,
         }
 
         #[derive(Serialize, Deserialize, Debug)]
@@ -47,13 +54,13 @@ macro_rules! write_help {
             inputs: Option<Vec<HelpArgsInput>>,
             flags: Option<Vec<HelpArgsFlag>>,
             options: Option<Vec<HelpArgsOption>>,
+            submethods: Option<Vec<HelpArgsSubmethod>>,
         }
 
         #[derive(Serialize, Deserialize, Debug)]
         struct Help {
             name: String,
             about: String,
-            usage: String,
             parents: Option<Vec<String>>,
             args: HelpArgs,
         }
@@ -65,26 +72,41 @@ macro_rules! write_help {
         use crate::paint_string;
 
         // NAME
-        let mut full_name = String::new();
-        if let Some(parents) = help.parents {
-            for parent in parents {
-                if !parent.is_empty() {
-                    full_name.push_str(&format!("{} ", parent));
-                }
-            }
-        }
-        full_name.push_str(&paint_string!("{yellow}", help.name));
-        println!("{}", full_name);
-        
+        let parents_str = if let Some(parents) = help.parents {
+            parents.join(" ")
+        } else {
+            "".to_string()
+        };
+        println!(
+            "> {} {}",
+            parents_str,
+            paint_string!("{yellow}", &help.name)
+        );
+
         // ABOUT
         println!("{}", help.about);
-        
+
         // USAGE
         print!("\n");
         println!("USAGE:");
-        println!("{}", full_name);
         print!("    ");
-        println!("{}", help.usage);
+        print!("{} {}", parents_str, help.name);
+
+        if help.args.flags.is_some() {
+            print!(" [OPTIONS]");
+        }
+
+        if help.args.flags.is_some() {
+            print!(" [FLAGS]");
+        }
+
+        if let Some(inputs) = &help.args.inputs {
+            for input in inputs.iter() {
+                print!(" <{}>", input.name);
+            }
+        }
+
+        print!("\n");
 
         // FLAGS
         if let Some(flags) = help.args.flags {
@@ -94,10 +116,11 @@ macro_rules! write_help {
             for flag in flags {
                 print!("    ");
                 if let Some(short) = flag.short {
-                    print!("-{}, ", short);
+                    print!("{:<20}", format!("-{}, --{}", short, flag.long));
+                } else {
+                    print!("    {:<20}", format!("--{}", flag.long));
                 }
 
-                print!("--{}", flag.long);
                 print!("\t");
                 println!("{}", flag.help);
             }
@@ -109,11 +132,22 @@ macro_rules! write_help {
             println!("OPTIONS:");
             for opt in options {
                 print!("    ");
+
+                let value_name = if let Some(value_name) = opt.value_name {
+                    value_name
+                } else {
+                    "value".to_string()
+                };
+
                 if let Some(short) = opt.short {
-                    print!("-{}, ", short);
+                    print!(
+                        "{:<22}",
+                        format!("-{}, --{}=<{}>", short, opt.long, value_name)
+                    );
+                } else {
+                    print!("    {:<22}", format!("--{}=<{}>", opt.long, value_name));
                 }
 
-                print!("--{}", opt.long);
                 print!("\t");
                 println!("{}", opt.help);
             }
@@ -125,7 +159,6 @@ macro_rules! write_help {
             println!("INPUTS:");
             for input in inputs {
                 print!("    ");
-                print!("{} ", input.name);
 
                 if let Some(required) = input.required {
                     if required && input.default_value.is_some() {
@@ -133,12 +166,19 @@ macro_rules! write_help {
                     }
 
                     if required {
-                        print!("[required]");
+                        print!("{:<20}", format!("{} [required]", input.name));
                     }
                 }
 
-                if let Some(default_value) = input.default_value {
-                    print!("[default: {}]", default_value);
+                if let Some(default_value) = &input.default_value {
+                    print!(
+                        "{:<20}",
+                        format!("{} [default: {}]", input.name, default_value)
+                    );
+                }
+
+                if input.required.is_none() && input.default_value.is_none() {
+                    print!("{:<20}", input.name)
                 }
 
                 print!("\t");
@@ -146,6 +186,17 @@ macro_rules! write_help {
             }
         }
 
-        //println!("{:?}", help);
+        // SUBMETHODS
+        if let Some(submethods) = help.args.submethods {
+            print!("\n");
+            println!("SUBMETHODS:");
+
+            for submethod in submethods.iter() {
+                print!("    ");
+                print!("{:<20}", submethod.name);
+                print!("\t");
+                println!("{}", submethod.help)
+            }
+        }
     };
 }
