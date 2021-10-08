@@ -21,6 +21,10 @@ pub fn make_template(
         return Err(invalid_input_error("The template name cannot be empty."))
     }
 
+    if temp_name.contains(" ") {
+        return Err(invalid_input_error("The template name cannot have whitespaces."))
+    }
+
     let (name, created_at) = make_template_metadata(temp_name)?;
     let data = make_template_data(ref_path)?;
     let args = get_config_args(ref_path)?;
