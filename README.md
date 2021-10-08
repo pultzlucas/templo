@@ -12,9 +12,13 @@ For a better vision see the [Templo Website](https://templo-website.herokuapp.co
 
 ---
 
+### Guides
+
+coming soon...
+
 ### Installation
 
-To use Templo you can download the executable file.
+To use Templo you can download the executable file from [releases](https://github.com/pultzlucas/templo/releases).
 
 Another ways to download Templo is coming soon...
 
