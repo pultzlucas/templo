@@ -1,5 +1,14 @@
 {
     "name": "create",
     "parents": ["tp", "regs"],
-    "about": "Creates a new repository"
+    "about": "Creates a new repository",
+    "args": {
+        "inputs": [
+            {
+                "name": "repo-name",
+                "help": "Sets the repo name",
+                "required": true
+            }
+        ]
+    }
 }

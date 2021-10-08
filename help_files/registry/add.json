@@ -1,5 +1,24 @@
 {
     "name": "add",
     "parents": ["tp", "regs"],
-    "about": "Adds a new remote repo registry"
+    "about": "Adds a new remote repo registry",
+    "args": {
+        "options": [
+            {
+                "long": "name",
+                "help": "Sets the remote repo name",
+                "value_name": "name"
+            },
+            {
+                "long": "base-url",
+                "help": "Sets the remote repo base url",
+                "value_name": "base-url"
+            },
+            {
+                "long": "req-auth",
+                "help": "Sets if remote repo requires authentication key",
+                "value_name": "boolean"
+            }
+        ]
+    }
 }

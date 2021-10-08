@@ -1,6 +1,14 @@
 use std::io::Error;
 
-use crate::{cli::input::{self, command::Command, get_boolean_input}, core::{namespaces::RemoteRepoNamespace, repos::remote_repos_reg::{self, get_reg}}, utils::{errors::invalid_input_error, string::str_to_bool}, write_help};
+use crate::{
+    cli::input::{self, command::Command, get_boolean_input},
+    core::{
+        namespaces::RemoteRepoNamespace,
+        repos::remote_repos_reg::{self, get_reg},
+    },
+    utils::{errors::invalid_input_error, string::str_to_bool},
+    write_help,
+};
 
 pub struct Update;
 
@@ -14,22 +22,18 @@ impl Update {
             Self::help();
             return Ok(());
         }
-        
+
+        if command.args.len() < 2 {
+            return Err(invalid_input_error(
+                "The remote repo name must be specified.",
+            ));
+        }
+
+        let current_name = &command.args[1];
+
         if command.options.is_empty() {
             println!("Press Enter if you want the field remains the same.");
         }
-
-        let current_name = if command.options.is_empty() {
-            input::get("Current repo name: ")?
-        } else {
-            let input = command.get_opt_by_name("current-name");
-            if let None = input {
-                return Err(invalid_input_error(
-                    "Current name of namespace is required.",
-                ));
-            }
-            input.unwrap().value.to_owned()
-        };
 
         let current_repo = get_reg(&current_name)?;
 
