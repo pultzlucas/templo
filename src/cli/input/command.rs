@@ -40,6 +40,10 @@ impl Command {
     pub fn str_is_help_flag(flag: &str) -> bool {
         flag == "--help" || flag == "-h" || flag == "-H"
     }
+
+    pub fn str_is_flag(string: &str) -> bool {
+        string.starts_with("-")
+    }
 }
 
 pub fn parse_command(args: Vec<String>) -> Result<Command, Error> {
@@ -78,6 +82,11 @@ fn get_submethod(command: Vec<String>) -> Option<String> {
     if command.len() < 2 {
         return None;
     }
+
+    if Command::str_is_flag(&command[1]) {
+        return None
+    }
+    
     Some(command[1].clone())
 }
 
