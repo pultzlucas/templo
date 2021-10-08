@@ -1,11 +1,20 @@
 use std::io::Error;
 
-use crate::{cli::input::{self, command::Command, get_boolean_input}, core::{namespaces::RemoteRepoNamespace, repos::remote_repos_reg::{self, get_reg}}, utils::{errors::invalid_input_error, string::str_to_bool}};
+use crate::{cli::input::{self, command::Command, get_boolean_input}, core::{namespaces::RemoteRepoNamespace, repos::remote_repos_reg::{self, get_reg}}, utils::{errors::invalid_input_error, string::str_to_bool}, write_help};
 
 pub struct Update;
 
 impl Update {
+    pub fn help() {
+        write_help!("../../../help_files/registry/update.json");
+    }
+
     pub fn run(command: Command) -> Result<(), Error> {
+        if command.has_help_flag() {
+            Self::help();
+            return Ok(());
+        }
+        
         if command.options.is_empty() {
             println!("Press Enter if you want the field remains the same.");
         }

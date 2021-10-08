@@ -25,7 +25,7 @@ impl Registry {
     }
 
     pub fn run(command: Command) -> Result<(), Error> {
-        if command.has_help_flag() {
+        if command.has_help_flag() && command.submethod.is_none() {
             Self::help();
             return Ok(());
         }

@@ -1,11 +1,20 @@
 use std::io::Error;
 
-use crate::{cli::input::{self, command::Command, get_boolean_input}, core::{namespaces::RemoteRepoNamespace, repos::remote_repos_reg}, utils::{errors::invalid_input_error, string::str_to_bool}};
+use crate::{cli::input::{self, command::Command, get_boolean_input}, core::{namespaces::RemoteRepoNamespace, repos::remote_repos_reg}, utils::{errors::invalid_input_error, string::str_to_bool}, write_help};
 
 pub struct Add;
 
 impl Add {
+    pub fn help() {
+        write_help!("../../../help_files/registry/add.json");
+    }
+
     pub fn run(command: Command) -> Result<(), Error> {
+        if command.has_help_flag() {
+            Self::help();
+            return Ok(());
+        }
+
         let name = if command.options.is_empty() {
             input::get("Repo name: ")?
         } else {

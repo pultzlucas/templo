@@ -1,11 +1,11 @@
-use crate::utils::errors::invalid_input_error;
+use crate::{cli::input::command::Command, utils::errors::invalid_input_error};
 use std::io::Error;
 use tabled::Tabled;
 
 pub fn check_flags(flags: &Vec<String>, expected_flags: Vec<&str>) -> Result<(), Error> {
-    let invalid_flag = flags
-        .into_iter()
-        .find(|flag| !expected_flags.contains(&flag.as_str()));
+    let invalid_flag = flags.into_iter().find(|flag| {
+        !expected_flags.contains(&flag.as_str()) && !Command::str_is_help_flag(flag.as_str())
+    });
 
     if let Some(invalid_flag) = invalid_flag {
         return Err(invalid_input_error(&format!(
@@ -70,6 +70,7 @@ mod delete;
 mod docs;
 mod generate;
 mod get;
+pub mod help;
 mod r#move;
 mod registry;
 mod repo;
@@ -78,7 +79,6 @@ mod save;
 mod update;
 mod version;
 mod view;
-pub mod help;
 pub mod welcome;
 
 pub use delete::Delete;

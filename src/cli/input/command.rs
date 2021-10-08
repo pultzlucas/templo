@@ -25,7 +25,7 @@ impl Command {
     pub fn has_help_flag(&self) -> bool {
         self.flags
             .iter()
-            .any(|flag| flag == "--help" || flag == "-h" || flag == "-H")
+            .any(|flag| Self::str_is_help_flag(flag))
     }
 
     pub fn has_option(&self, option: &str) -> bool {
@@ -35,6 +35,10 @@ impl Command {
 
     pub fn get_opt_by_name(&self, name: &str) -> Option<&CommandOption> {
         self.options.iter().find(|opt| opt.name == name)
+    }
+
+    pub fn str_is_help_flag(flag: &str) -> bool {
+        flag == "--help" || flag == "-h" || flag == "-H"
     }
 }
 
