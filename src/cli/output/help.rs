@@ -93,6 +93,10 @@ macro_rules! write_help {
         print!("{} {}", parents_str, help.name);
 
         if let Some(args) = &help.args {
+            if args.flags.is_some() {
+                print!(" [FLAGS]");
+            }
+
             if let Some(inputs) = &args.inputs {
                 for input in inputs.iter() {
                     print!(" <{}>", input.name);
@@ -101,10 +105,6 @@ macro_rules! write_help {
 
             if args.options.is_some() {
                 print!(" [OPTIONS]");
-            }
-
-            if args.flags.is_some() {
-                print!(" [FLAGS]");
             }
         }
 
