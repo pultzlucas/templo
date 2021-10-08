@@ -25,7 +25,7 @@ impl Remove {
             input.unwrap().value.to_owned()
         };
 
-        let yes = if command.has_flag("-y") {
+        let yes = if command.has_flag("-y") || command.has_flag("--yes") {
             true
         } else {
             get_boolean_input(&format!(
