@@ -1,5 +1,15 @@
 {
     "name": "repos",
     "parents": ["tp"],
-    "about": "Manipulates the repos"
+    "about": "Manipulates the repos",
+    "submethods": [
+        {
+            "name": "create",
+            "about": "Creates a new repository."
+        },
+        {
+            "name": "del",
+            "about": "Deletes a repository."
+        }
+    ]
 }

@@ -26,6 +26,10 @@ impl Update {
         let flags = vec!["--name", "--description"];
         check_flags(&command.flags, flags)?;
 
+        if command.args.is_empty() {
+            return Err(invalid_input_error("Template name must be specified."));
+        }
+
         let template_namespace = &command.args[0];
         let NamespaceObject {
             repo_name,

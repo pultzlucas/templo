@@ -1,5 +1,13 @@
 {
     "name": "repo",
     "parents": ["tp"],
-    "about": "Shows all templates that exists in a repo"
+    "about": "Shows all templates that exists in a repo",
+    "args": {
+        "inputs": [
+            {
+                "name": "repo-name",
+                "help": "Sets the repository name"
+            }
+        ]
+    }
 }

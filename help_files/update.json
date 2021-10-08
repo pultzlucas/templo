@@ -1,5 +1,13 @@
 {
     "name": "update",
     "parents": ["tp"],
-    "about": "Updates a template from folder"
+    "about": "Updates a template from folder",
+    "args": {
+        "inputs": [
+            {
+                "name": "template-namespace",
+                "help": "Sets the template namespace"
+            }
+        ]
+    }
 }
