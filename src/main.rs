@@ -16,21 +16,22 @@ async fn main() {
     let command = parse_command(env).expect("Error when parsing command string.");
 
     if let None = command.method {
-        let flags = vec!["--help", "-h", "-H", "--version", "-v", "-V"];
-        if let Err(err) = check_flags(&command.flags, flags) {
-            eprintln!("{}: {}", paint_string!("{red}", "Error"), err)
-        };
+        if command.has_help_flag() {
+            write_help!("../help_files/mod.json");
+        }
 
-        if command.has_flag("--help") || command.has_flag("-h") || command.has_flag("-H") {
-            if let Err(err) = help::run() {
+        if command.has_version_flag() {
+            if let Err(err) = Version::run() {
                 eprintln!("{}: {}", paint_string!("{red}", "Error"), err)
             };
         }
 
-        if command.has_flag("--version") || command.has_flag("-v") || command.has_flag("-V") {
-            if let Err(err) = Version::run() {
-                eprintln!("{}: {}", paint_string!("{red}", "Error"), err)
-            };
+        if !command.has_help_flag() && !command.has_version_flag() && !command.args.is_empty() {
+            eprintln!(
+                "{}: {}",
+                paint_string!("{red}", "Error"),
+                format!("Invalid flag \"{}\"", &command.flags[0])
+            )
         }
 
         if command.flags.is_empty() {
@@ -58,7 +59,6 @@ async fn main() {
                 "docs" => Docs::run(command),
                 "save" => Save::run(command),
                 "update" => Update::run(command),
-                "help" | "h" => help::run(),
                 "version" | "v" => Version::run(),
                 _ => Err(invalid_input_error(&format!(
                     "Invalid method \"{}\".",

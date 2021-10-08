@@ -3,7 +3,7 @@ use crate::cli::output::messages::error::INVALID_TEMPLATE_NAME;
 use crate::core::namespaces::{get_repo_namespace_obj, NamespaceObject};
 use crate::core::repos::Repository;
 use crate::core::template::{TempPathType, Template};
-use crate::methods::check_flags;
+use crate::cli::input::check_flags;
 use crate::utils::errors::invalid_input_error;
 use crate::utils::path::pathbuf_to_string;
 use crate::utils::string::decode_base64;

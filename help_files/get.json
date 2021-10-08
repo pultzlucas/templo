@@ -1,7 +1,7 @@
 {
     "name": "get",
-    "parents": ["tp"],
     "about": "Gets a template from remote repo",
+    "parents": ["tp"],
     "args": {
         "inputs": [
             {

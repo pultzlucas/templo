@@ -1,7 +1,7 @@
 {
     "name": "repo",
-    "parents": ["tp"],
     "about": "Shows all templates that exists in a repo",
+    "parents": ["tp"],
     "args": {
         "inputs": [
             {

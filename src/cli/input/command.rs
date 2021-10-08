@@ -28,6 +28,12 @@ impl Command {
             .any(|flag| Self::str_is_help_flag(flag))
     }
 
+    pub fn has_version_flag(&self) -> bool {
+        self.flags
+            .iter()
+            .any(|flag| Self::str_is_version_flag(flag))
+    }
+
     pub fn has_option(&self, option: &str) -> bool {
         let regex = Regex::new(&format!("{}$", option)).unwrap();
         self.options.iter().any(|opt| regex.is_match(&opt.name))
@@ -39,6 +45,10 @@ impl Command {
 
     pub fn str_is_help_flag(flag: &str) -> bool {
         flag == "--help" || flag == "-h" || flag == "-H"
+    }
+
+    pub fn str_is_version_flag(flag: &str) -> bool {
+        flag == "--version" || flag == "-v" || flag == "-V"
     }
 
     pub fn str_is_flag(string: &str) -> bool {

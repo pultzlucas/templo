@@ -1,7 +1,7 @@
 {
     "name": "save",
-    "parents": ["tp"],
     "about": "Get template from real files and folders and saves it in a repository",
+    "parents": ["tp"],
     "args": {
         "inputs": [
             {

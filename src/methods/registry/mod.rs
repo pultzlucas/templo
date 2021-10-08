@@ -2,7 +2,7 @@
 use crate::cli::input::command::Command;
 use crate::core::path::get_remote_repo_reg_file_path;
 use crate::core::repos::remote_repos_reg::{create_regs_file, get_all_regs};
-use crate::methods::check_flags;
+use crate::cli::input::check_flags;
 use crate::utils::errors::invalid_input_error;
 use crate::utils::path::pathbuf_to_string;
 use crate::write_help;

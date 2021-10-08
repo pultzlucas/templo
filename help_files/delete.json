@@ -1,7 +1,7 @@
 {
     "name": "delete",
-    "parents": ["tp"],
     "about": "Deletes a template from repository",
+    "parents": ["tp"],
     "args": {
         "inputs": [
             {

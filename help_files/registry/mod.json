@@ -1,7 +1,7 @@
 {
     "name": "regs",
-    "parents": ["tp"],
     "about": "Manipulates the remote repos registry",
+    "parents": ["tp"],
     "submethods": [
         {
             "name": "add",

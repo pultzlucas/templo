@@ -1,7 +1,7 @@
 {
     "name": "gen",
-    "parents": ["tp"],
     "about": "Generates a template in a specific folder ",
+    "parents": ["tp"],
     "args": {
         "inputs": [
             {

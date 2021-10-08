@@ -1,0 +1,46 @@
+{
+    "name": "tp",
+    "about": "Templo is a template manager that provide you more flexibility and agility at software development time.",
+    "submethods": [
+        {
+            "name": "save",
+            "about": "Get template from real files and folders and saves it in a repository"
+        },
+        {
+            "name": "gen",
+            "about": "Generates a template in a specific folder "
+        },
+        {
+            "name": "get",
+            "about": "Gets a template from remote repo"
+        },
+        {
+            "name": "delete",
+            "about": "Deletes a template from repository"
+        },
+        {
+            "name": "update",
+            "about": "Updates a template from folder"
+        },
+        {
+            "name": "view",
+            "about": "Views template data and metadata informations"
+        },
+        {
+            "name": "repos",
+            "about": "Manipulates the repos"
+        },
+        {
+            "name": "repo",
+            "about": "Shows all templates that exists in a repo"
+        },
+        {
+            "name": "mv",
+            "about": "Moves a template from a repo to another repo"
+        },
+        {
+            "name": "regs",
+            "about": "Manipulates the remote repos registry"
+        }
+    ]
+}
