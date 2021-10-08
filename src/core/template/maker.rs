@@ -29,6 +29,7 @@ pub fn make_template(
         name,
         description,
         created_at,
+        updated_at: None,
         paths: data.paths,
         contents: data.contents,
         args,

@@ -6,7 +6,13 @@
         "inputs": [
             {
                 "name": "template-namespace",
-                "help": "Sets the template namespace"
+                "help": "Sets the template namespace",
+                "required": true
+            },
+            {
+                "name": "folder-path",
+                "help": "Sets the the input folder path",
+                "default_value": "./"
             }
         ]
     }

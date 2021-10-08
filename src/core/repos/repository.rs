@@ -123,6 +123,7 @@ impl Repository {
             description: old_template.description,
             contents: old_template.contents,
             created_at: old_template.created_at,
+            updated_at: old_template.updated_at,
             paths: old_template.paths,
             args: old_template.args,
         };
@@ -145,6 +146,7 @@ impl Repository {
             description: new_template_description,
             contents: old_template.contents,
             created_at: old_template.created_at,
+            updated_at: old_template.updated_at,
             paths: old_template.paths,
             args: old_template.args,
         };

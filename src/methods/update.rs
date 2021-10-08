@@ -5,6 +5,7 @@ use crate::core::namespaces::{get_repo_namespace_obj, NamespaceObject};
 use crate::core::repos::Repository;
 use crate::core::template::maker::make_template;
 use crate::methods::check_flags;
+use crate::utils::date;
 use crate::utils::errors::invalid_input_error;
 use crate::write_help;
 use std::io::Error;
@@ -104,7 +105,8 @@ impl Update {
         };
 
         let description = repo.get_template(&template_name)?.description;
-        let new_template = make_template(template_name.clone(), description, directory)?;
+        let mut new_template = make_template(template_name.clone(), description, directory)?;
+        new_template.updated_at = Some(date::get_date_now_string());
         repo.update_template_content(template_name.clone(), new_template)?;
 
         println!("Template \"{}\" was updated.", template_name);
