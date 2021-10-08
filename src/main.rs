@@ -59,7 +59,6 @@ async fn main() {
                 "docs" => Docs::run(command),
                 "save" => Save::run(command),
                 "update" => Update::run(command),
-                "version" | "v" => Version::run(),
                 _ => Err(invalid_input_error(&format!(
                     "Invalid method \"{}\".",
                     method
