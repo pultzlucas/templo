@@ -1,6 +1,6 @@
 {
     "name": "del",
-    "parents": ["tp", "regs"],
+    "parents": ["tp", "repos"],
     "about": "Deletes new repository",
     "args": {
         "inputs": [
