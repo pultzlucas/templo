@@ -92,7 +92,6 @@ macro_rules! write_help {
         print!("    ");
         print!("{} {}", parents_str, help.name);
 
-        
         if let Some(args) = &help.args {
             if let Some(inputs) = &args.inputs {
                 for input in inputs.iter() {
@@ -103,7 +102,7 @@ macro_rules! write_help {
             if args.options.is_some() {
                 print!(" [OPTIONS]");
             }
-    
+
             if args.flags.is_some() {
                 print!(" [FLAGS]");
             }
@@ -122,7 +121,7 @@ macro_rules! write_help {
                     if let Some(short) = flag.short {
                         print!("{:<20}", format!("-{}, --{}", short, flag.long));
                     } else {
-                        print!("    {:<20}", format!("--{}", flag.long));
+                        print!("{:<20}", format!("--{}", flag.long));
                     }
 
                     print!("\t");
@@ -145,11 +144,11 @@ macro_rules! write_help {
 
                     if let Some(short) = opt.short {
                         print!(
-                            "{:<22}",
+                            "{:<20}",
                             format!("-{}, --{}=<{}>", short, opt.long, value_name)
                         );
                     } else {
-                        print!("    {:<22}", format!("--{}=<{}>", opt.long, value_name));
+                        print!("{:<20}", format!("--{}=<{}>", opt.long, value_name));
                     }
 
                     print!("\t");
@@ -177,7 +176,7 @@ macro_rules! write_help {
                     if let Some(default_value) = &input.default_value {
                         print!(
                             "{:<20}",
-                            format!("{} [default: {}]", input.name, default_value)
+                            format!("{} [default ({})]", input.name, default_value)
                         );
                     }
 

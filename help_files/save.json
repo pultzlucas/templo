@@ -13,17 +13,17 @@
         "options": [
             {
                 "long": "name",
-                "value_name": "template-name",
+                "value_name": "temp-name",
                 "help": "Sets the template name"
             },
             {
                 "long": "repo",
-                "value_name": "repository-name",
+                "value_name": "repo-name",
                 "help": "Sets the repository name to save the template"
             },
             {
                 "long": "description",
-                "value_name": "template-description",
+                "value_name": "temp-desc",
                 "help": "Sets the template description"
             }
         ]
