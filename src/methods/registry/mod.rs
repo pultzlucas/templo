@@ -21,7 +21,7 @@ pub struct Registry;
 
 impl Registry {
     pub fn help() {
-        write_help!("../../../help_files/registry.json");
+        write_help!("../../../help_files/registry/mod.json");
     }
 
     pub fn run(command: Command) -> Result<(), Error> {

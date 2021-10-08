@@ -14,7 +14,7 @@ pub struct Repos;
 
 impl Repos {
     pub fn help() {
-        write_help!("../../../help_files/repos.json");
+        write_help!("../../../help_files/repos/mod.json");
     }
 
     pub fn run(command: Command) -> Result<(), Error> {
