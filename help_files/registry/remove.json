@@ -1,0 +1,5 @@
+{
+    "name": "remove",
+    "parents": ["tp", "regs"],
+    "about": "Removes a remote repo registry"
+}

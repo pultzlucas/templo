@@ -5,11 +5,11 @@
     "submethods": [
         {
             "name": "create",
-            "about": "Creates a new repository."
+            "about": "Creates a new repository"
         },
         {
             "name": "del",
-            "about": "Deletes a repository."
+            "about": "Deletes a repository"
         }
     ]
 }

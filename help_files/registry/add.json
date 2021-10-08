@@ -1,0 +1,5 @@
+{
+    "name": "add",
+    "parents": ["tp", "regs"],
+    "about": "Adds a new remote repo registry"
+}

@@ -1,0 +1,5 @@
+{
+    "name": "create",
+    "parents": ["tp", "regs"],
+    "about": "Creates a new repository"
+}

@@ -1,0 +1,5 @@
+{
+    "name": "del",
+    "parents": ["tp", "regs"],
+    "about": "Deletes new repository"
+}
