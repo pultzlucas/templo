@@ -12,17 +12,14 @@
         ],
         "options": [
             {
-                "long": "current-name",
-                "help": "Sets the current remote repo name"
-            },
-            {
                 "long": "name",
-                "help": "Sets the new remote repo name"
+                "help": "Sets the new remote repo name",
+                "value_name": "new-name"
             },
             {
                 "long": "base-url",
                 "help": "Sets the new remote repo base url",
-                "value_name": "base-url"
+                "value_name": "new-b-url"
             },
             {
                 "long": "req-auth",
