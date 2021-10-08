@@ -10,10 +10,6 @@ For a better vision see the [Templo Website](https://templo-website.herokuapp.co
 
 ---
 
-## Guides
-
-coming soon...
-
 ## Installation
 
 To use Templo you can download the executable file from [releases](https://github.com/pultzlucas/templo/releases).
@@ -27,3 +23,7 @@ $ tp
 ```
 
 If Templo was installed a WELCOME message will appear in your console. 🎉
+
+## Guides
+
+coming soon...
