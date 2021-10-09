@@ -1,4 +1,5 @@
 ![rust workflow](https://github.com/pultzlucas/templo/actions/workflows/rust.yml/badge.svg)
+![templo-logo-gray-bg-sand-200px](https://user-images.githubusercontent.com/70097798/136667874-3abf69d5-4b3b-402c-81eb-5ca3285e0aea.png)
 
 Templo is a template manager that provide you more flexibility and agility at software development time and is built in Rust.
 
