@@ -1,16 +1,20 @@
-use crate::paintln;
-const WELCOME_STRING: &'static str = r#" 
- _______________________________________________
-|   __    __  __  _    ___  ____   _  _   __    |
-|   \ \/\/ / ||_ ||   //   ||  || ||\/|| ||_    |
-|    \_/\_/  ||_ ||__ \\__ ||__|| ||  || ||_    |
-|                      to                       |
-|._  _  _            Templo       _     _      _|
-\_______________________________________________|
-
-"#;
+use crate::{paintln, paint, paint_string};
 
 pub fn run() {
-    print!("{}", WELCOME_STRING);
+    let welcome_msg = paint_string!("{yellow}", "WELCOME to TEMPLO");
+    let welcome_string = vec![
+        "┌────────────────────────────────────────────────┐",
+&format!("│               {}                │", welcome_msg),
+        "├───┬───┬───┬───┬───┐       ┌───┬───┬───┬───┬────┤",
+        "│   │   │   │   │   │       │   │   │   │   │    │",
+        "│   │   │   │   │   │       │   │   │   │   │    │",
+        "│   │   │   │   │   │       │   │   │   │   │    │",
+        "│   │   │   │   │   │       │   │   │   │   │    │",
+        "├───┘   └───┘   └───┘       └───┘   └───┘   └────┤",
+        "└────────────────────────────────────────────────┘",
+        ""
+    ].join("\n");
+    
+    print!("{}", welcome_string);
     paintln!(r#"Type "{yellow}" for more information."#, "tp --help");
 }
