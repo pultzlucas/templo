@@ -77,7 +77,7 @@ impl Save {
         };
 
         let start = Instant::now(); // start timing process
-        let template = make_template(template_name, description, ref_path)?;
+        let template = make_template(template_name, ref_path, description)?;
 
         repo.save_template(template)?;
         println!("Template was saved successfully.");

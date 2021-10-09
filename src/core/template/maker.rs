@@ -13,8 +13,8 @@ pub struct TempData {
 
 pub fn make_template(
     temp_name: String,
-    description: Option<String>,
     ref_path: &str,
+    description: Option<String>,
 ) -> Result<Template, Error> {
 
     if temp_name.is_empty() {
