@@ -1,4 +1,4 @@
-use crate::{paintln, paint, paint_string};
+use crate::{paintln, paint_string};
 
 pub fn run() {
     let welcome_msg = paint_string!("{yellow}", "WELCOME to TEMPLO");
