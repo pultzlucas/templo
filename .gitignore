@@ -1,6 +1,7 @@
 /target
 /dir-tests
 *.txt
+*.csv
 /src/core/secrets.rs
 .todo
 .tree
