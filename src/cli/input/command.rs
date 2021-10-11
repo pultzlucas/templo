@@ -113,7 +113,7 @@ fn get_args(args: Vec<String>) -> Result<Vec<String>, Error> {
 }
 
 fn get_options(args: Vec<String>) -> Result<Vec<CommandOption>, Error> {
-    let options_regex = Regex::new(r"--[\w-]+=").unwrap();
+    let options_regex = Regex::new(r"[\w-]+=").unwrap();
     let options = args
         .into_iter()
         .filter(|arg| options_regex.is_match(arg))
@@ -152,7 +152,7 @@ fn it_should_return_a_valid_command_struct() {
         "./arg2".to_string(),
         "--flag-2".to_string(),
         "arg-3".to_string(),
-        "--option1=value1".to_string(),
+        "option1=value1".to_string(),
         "arg_4".to_string(),
         "--option-2=value-2".to_string(),
         "--empty-option=".to_string(),
