@@ -14,7 +14,7 @@ Templo is a template manager that provide you more flexibility and agility at so
 
 ## Installation
 
-To use Templo you can download the executable file from [releases](https://github.com/pultzlucas/templo/releases).
+To use Templo you can download the executable file from [releases page](https://github.com/pultzlucas/templo/releases).
 
 Another ways to download Templo is coming soon...
 
