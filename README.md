@@ -20,6 +20,8 @@ Another ways to download Templo is coming soon...
 
 ## Getting Started
 
+If Templo was installed a WELCOME message will appear in your console. 🎉
+
 ```shell
 $ tp
 
@@ -33,8 +35,6 @@ $ tp
 ├───┘   └───┘   └───┘       └───┘   └───┘   └────┤
 └────────────────────────────────────────────────┘
 ```
-
-If Templo was installed a WELCOME message will appear in your console. 🎉
 
 ## Guides
 
