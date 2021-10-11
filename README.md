@@ -13,6 +13,8 @@ Templo is a template manager that provide you more flexibility and agility at so
 - Ships only a single executable file.
 - Is open source.
 
+> ❗ Templo is still in development, so it has unstable command line interface and features.
+
 ---
 
 ## Installation
