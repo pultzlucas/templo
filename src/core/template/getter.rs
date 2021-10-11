@@ -1,8 +1,8 @@
-use crate::core::requester::{build_request, get_reponse_body, request, HeaderValue, Method};
 use crate::utils::errors::{invalid_data_error, other_error, std_error};
 use crate::utils::string::str_to_bool;
 use std::io::Error;
 
+use super::http::{build_request, get_reponse_body, request, HeaderValue, Method};
 use super::Template;
 
 pub struct GetTemplateResponse {

@@ -5,6 +5,8 @@ pub mod engine;
 pub mod config;
 pub mod getter;
 
+use super::http;
+
 #[cfg(test)]
 mod tests;
 

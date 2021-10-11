@@ -2,7 +2,7 @@ use crate::cli::input::command::Command;
 use crate::cli::input::namespaces::parse_namespace_to_raw_url;
 use crate::core::repos::remote_repos_reg::get_reg;
 use crate::core::repos::Repository;
-use crate::core::requester::validate_url;
+use crate::core::http::validate_url;
 use crate::core::template::getter::get_remote_template;
 use crate::write_help;
 use crate::{
