@@ -145,10 +145,10 @@ macro_rules! write_help {
                     if let Some(short) = opt.short {
                         print!(
                             "{:<20}",
-                            format!("-{}, --{}=<{}>", short, opt.long, value_name)
+                            format!("{}, {}={}", short, opt.long, value_name)
                         );
                     } else {
-                        print!("{:<20}", format!("--{}=<{}>", opt.long, value_name));
+                        print!("{:<20}", format!("{}={}", opt.long, value_name));
                     }
 
                     print!("\t");
