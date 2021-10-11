@@ -8,7 +8,7 @@ Templo is a template manager that provide you more flexibility and agility at so
 
 - Generates a lot of code for you.
 - Includes a template engine.
-- Can download templates accessing a HTTP/HTTPS url.
+- Can download templates from web.
 - Has an interactive command line interface.
 - Ships only a single executable file.
 - Is open source.
