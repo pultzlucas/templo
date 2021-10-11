@@ -143,6 +143,9 @@ fn display_template_args(args: Vec<ConfigArg>, tab: bool) {
             println!("{}", about);
         }
 
+        if tab {
+            print!("    ");
+        }
         println!("Query: '{}'", arg.query);
 
         if let Some(default) = &arg.default {
@@ -160,6 +163,7 @@ fn display_template_args(args: Vec<ConfigArg>, tab: bool) {
 
 fn display_file_content(file_paths: &[String], template: Template) -> Result<(), Error> {
     for file_path in file_paths {
+        print!("\n");
         let file_path_temp = template
             .paths
             .iter()
@@ -185,9 +189,8 @@ fn display_file_content(file_paths: &[String], template: Template) -> Result<(),
             if let Some(content) = file_content {
                 let text = decode_base64(content.text.clone())?;
                 println!("{}", text);
-            } else {
-                println!("No content.");
-            }
+            } 
+            
         } else {
             return Err(invalid_input_error(&format!(
                 "Path \"{}\" not exists in \"{}\" template.",
