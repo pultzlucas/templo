@@ -72,17 +72,14 @@ impl Get {
         paintln!("{gray}", "[getting template]");
         let response = get_remote_template(&url, key).await?;
 
-        if let Some(msg) = response.message {
-            println!("{}", msg);
-        }
-
+        
         let template = response.template;
         let repo_name = if command.args.len() > 1 {
             command.args[1].clone()
         } else {
             "main".to_string()
         };
-
+        
         let repo = Repository::connect(repo_name)?;
 
         //check if a template with the same name already exists in repo
@@ -92,8 +89,13 @@ impl Get {
                 &template.name, &repo.name
             )));
         }
-
+        
         repo.save_template(template.clone())?;
+
+        if let Some(msg) = response.message {
+            println!("{}", msg);
+        }
+
         println!(
             "Template \"{}\" was installed in \"{}\" repo.",
             template.name, repo.name
