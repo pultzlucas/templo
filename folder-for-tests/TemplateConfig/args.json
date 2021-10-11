@@ -17,6 +17,7 @@
     {
         "key": "folder1",
         "about": "Sets folder1 name",
-        "query": "Folder name: "
+        "query": "Folder name: ",
+        "default": "folder1"
     }
 ]

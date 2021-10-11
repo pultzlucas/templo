@@ -1,7 +1,7 @@
 use crate::cli::input::check_flags;
 use crate::cli::input::command::Command;
+use crate::cli::input::namespaces::{get_repo_namespace_obj, NamespaceObject};
 use crate::cli::output::messages::error::INVALID_TEMPLATE_NAME;
-use crate::core::namespaces::{get_repo_namespace_obj, NamespaceObject};
 use crate::core::repos::Repository;
 use crate::core::template::config::ConfigArg;
 use crate::core::template::{TempPath, TempPathType, Template};
@@ -155,8 +155,6 @@ fn display_template_args(args: Vec<ConfigArg>, tab: bool) {
             println!("Default: {}", default);
         }
 
-
-
         print!("\n")
     })
 }
@@ -189,8 +187,7 @@ fn display_file_content(file_paths: &[String], template: Template) -> Result<(),
             if let Some(content) = file_content {
                 let text = decode_base64(content.text.clone())?;
                 println!("{}", text);
-            } 
-            
+            }
         } else {
             return Err(invalid_input_error(&format!(
                 "Path \"{}\" not exists in \"{}\" template.",

@@ -1,17 +1,17 @@
 use serde_json::from_str;
 
+use crate::cli::input::check_flags;
 use crate::cli::input::command::{Command, CommandOption};
+use crate::cli::input::namespaces::{get_repo_namespace_obj, parse_namespace_to_raw_url};
 use crate::cli::output::messages::error::{INVALID_DIRECTORY_PATH_TYPE, INVALID_TEMPLATE_NAME};
-use crate::core::namespaces::{get_repo_namespace_obj, parse_namespace_to_raw_url};
 use crate::core::repos::remote_repos_reg::get_reg;
 use crate::core::repos::Repository;
 use crate::core::requester::{str_is_url, validate_url};
 use crate::core::template::engine::{get_engine_args_input, set_arg_default_value, TempEngineArg};
 use crate::core::template::getter::get_remote_template;
 use crate::core::template::{generator, Template};
-use crate::cli::input::check_flags;
-use crate::{paintln, write_help};
 use crate::utils::errors::{invalid_input_error, std_error};
+use crate::{paintln, write_help};
 use std::{fs, io::Error, path::Path, time::Instant};
 
 pub struct Generate;

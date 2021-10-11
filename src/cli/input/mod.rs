@@ -1,4 +1,5 @@
 pub mod command;
+pub mod namespaces;
 
 use self::command::Command;
 use crate::utils::errors::invalid_input_error;

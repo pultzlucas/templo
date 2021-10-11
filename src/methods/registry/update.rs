@@ -1,11 +1,8 @@
 use std::io::Error;
 
 use crate::{
-    cli::input::{self, command::Command, get_boolean_input},
-    core::{
-        namespaces::RemoteRepoNamespace,
-        repos::remote_repos_reg::{self, get_reg},
-    },
+    cli::input::{self, command::Command, get_boolean_input, namespaces::RemoteRepoNamespace},
+    core::repos::remote_repos_reg::{self, get_reg},
     utils::{errors::invalid_input_error, string::str_to_bool},
     write_help,
 };

@@ -3,4 +3,3 @@ pub mod repos;
 pub mod template;
 pub mod requester;
 pub mod info;
-pub mod namespaces;

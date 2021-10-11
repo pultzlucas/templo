@@ -1,7 +1,7 @@
 use crate::cli::input;
 use crate::cli::input::check_flags;
 use crate::cli::input::command::Command;
-use crate::core::namespaces::{get_repo_namespace_obj, NamespaceObject};
+use crate::cli::input::namespaces::{get_repo_namespace_obj, NamespaceObject};
 use crate::core::repos::Repository;
 use crate::core::template::maker::make_template;
 use crate::utils::date;

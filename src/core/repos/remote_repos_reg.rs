@@ -1,7 +1,11 @@
-use crate::{core::{namespaces::RemoteRepoNamespace, path::get_remote_repo_reg_file_path}, utils::errors::{already_exists_error, not_found_error, std_error}};
+use crate::{
+    cli::input::namespaces::RemoteRepoNamespace,
+    core::path::get_remote_repo_reg_file_path,
+    utils::errors::{already_exists_error, not_found_error, std_error},
+};
 use serde_json::{from_str, to_string_pretty};
-use std::{fs, path::Path};
 use std::io::Error;
+use std::{fs, path::Path};
 
 pub fn create_regs_file() -> Result<(), Error> {
     let remote_repos_reg = get_remote_repo_reg_file_path()?;

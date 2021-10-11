@@ -5,7 +5,7 @@ use serde_derive::{Deserialize, Serialize};
 use std::io::Error;
 use tabled::Tabled;
 
-use super::repos::remote_repos_reg::get_reg;
+use crate::core::repos::remote_repos_reg::get_reg;
 
 #[derive(Serialize, Deserialize, Tabled, Debug, Clone)]
 pub struct RemoteRepoNamespace {
