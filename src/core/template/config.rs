@@ -10,6 +10,7 @@ use std::path::{Path, PathBuf};
 pub struct ConfigArg {
     pub key: String,
     pub query: String,
+    pub about: Option<String>,
     pub default: Option<String>,
 }
 

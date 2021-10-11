@@ -16,11 +16,6 @@ pub fn make_template(
     ref_path: &str,
     description: Option<String>,
 ) -> Result<Template, Error> {
-
-    if temp_name.is_empty() {
-        return Err(invalid_input_error("The template name cannot be empty."))
-    }
-
     if temp_name.contains(" ") {
         return Err(invalid_input_error("The template name cannot have whitespaces."))
     }

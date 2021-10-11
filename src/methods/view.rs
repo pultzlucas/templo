@@ -24,7 +24,13 @@ impl View {
             return Ok(());
         }
 
-        let expected_flags = vec!["--paths", "--created-at", "--updated-at", "--desc"];
+        let expected_flags = vec![
+            "--paths",
+            "--created-at",
+            "--updated-at",
+            "--desc",
+            "--args",
+        ];
         check_flags(&command.flags, expected_flags)?;
 
         if command.args.is_empty() {
@@ -65,6 +71,13 @@ impl View {
             return Ok(());
         }
 
+        if command.has_flag("--args") {
+            if let Some(args) = template.args {
+                display_template_args(args, false);
+            }
+            return Ok(());
+        }
+
         paintln!("> {yellow}", &template.name);
 
         // Template description
@@ -101,7 +114,7 @@ impl View {
         // Template config args
         if let Some(args) = template.args {
             paintln!("{gray}", "[ARGS]");
-            display_template_args(args);
+            display_template_args(args, true);
             print!("\n");
         }
 
@@ -116,13 +129,31 @@ fn display_template_paths(paths: Vec<TempPath>) {
     });
 }
 
-fn display_template_args(args: Vec<ConfigArg>) {
+fn display_template_args(args: Vec<ConfigArg>, tab: bool) {
     args.iter().for_each(|arg| {
-        print!("    ");
-        print!("{}", arg.key);
-        if let Some(default) = &arg.default {
-            print!(" [default: {}]", default)
+        if tab {
+            print!("    ");
         }
+        println!("{}", arg.key.to_uppercase());
+
+        if let Some(about) = &arg.about {
+            if tab {
+                print!("    ");
+            }
+            println!("{}", about);
+        }
+
+        println!("Query: '{}'", arg.query);
+
+        if let Some(default) = &arg.default {
+            if tab {
+                print!("    ");
+            }
+            println!("Default: {}", default);
+        }
+
+
+
         print!("\n")
     })
 }

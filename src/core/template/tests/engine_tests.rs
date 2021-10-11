@@ -10,16 +10,19 @@ fn get_content_parser_config_args() -> Vec<ConfigArg> {
         ConfigArg {
             query: "asdasd".to_string(),
             default: Some("value1".to_string()),
+            about: Some("Sets key1".to_string()),
             key: "key1".to_string(),
         },
         ConfigArg {
             query: "asdasd".to_string(),
             default: None,
+            about: None,
             key: "key2".to_string(),
         },
         ConfigArg {
             query: "asdasd".to_string(),
             default: Some("value3".to_string()),
+            about: None,
             key: "key3".to_string(),
         },
     ]

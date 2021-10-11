@@ -10,23 +10,27 @@ fn it_should_get_config_args_from_dir() {
             ConfigArg {
                 key: "name".to_string(),
                 query: "Your name (pultzlucas): ".to_string(),
-                default: Some("pultzlucas".to_string())
+                about: None,
+                default: Some("pultzlucas".to_string()),
             },
             ConfigArg {
                 key: "lastName".to_string(),
                 query: "Your last name: ".to_string(),
+                about: None,
                 default: None
             },
             ConfigArg {
                 key: "filename".to_string(),
                 query: "Javascript filename (script): ".to_string(),
+                about: Some("Sets javacript filename".to_string()),
                 default: Some("script".to_string())
             },
             ConfigArg {
                 key: "folder1".to_string(),
                 query: "Folder name: ".to_string(),
+                about: Some("Sets folder1 name".to_string()),
                 default: None
             }
-        ]
-    ))
+        ])
+    )
 }
