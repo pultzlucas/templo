@@ -3,6 +3,7 @@ use crate::cli::input::command::Command;
 use crate::cli::output::messages::error::INVALID_TEMPLATE_NAME;
 use crate::core::namespaces::{get_repo_namespace_obj, NamespaceObject};
 use crate::core::repos::Repository;
+use crate::core::template::config::ConfigArg;
 use crate::core::template::{TempPath, TempPathType, Template};
 use crate::utils::errors::invalid_input_error;
 use crate::utils::path::pathbuf_to_string;
@@ -97,17 +98,33 @@ impl View {
         display_template_paths(template.paths);
         print!("\n");
 
+        // Template config args
+        if let Some(args) = template.args {
+            paintln!("{gray}", "[ARGS]");
+            display_template_args(args);
+            print!("\n");
+        }
+
         Ok(())
     }
 }
 
 fn display_template_paths(paths: Vec<TempPath>) {
-    paths
-        .iter()
-        .for_each(|path| {
-            print!("    ");
-            println!("{}", pathbuf_to_string(path.path.clone()))
-        });
+    paths.iter().for_each(|path| {
+        print!("    ");
+        println!("{}", pathbuf_to_string(path.path.clone()))
+    });
+}
+
+fn display_template_args(args: Vec<ConfigArg>) {
+    args.iter().for_each(|arg| {
+        print!("    ");
+        print!("{}", arg.key);
+        if let Some(default) = &arg.default {
+            print!(" [default: {}]", default)
+        }
+        print!("\n")
+    })
 }
 
 fn display_file_content(file_paths: &[String], template: Template) -> Result<(), Error> {

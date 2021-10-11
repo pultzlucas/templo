@@ -25,6 +25,10 @@ impl Save {
             input::get("Template name: ")?
         };
 
+        if template_name.is_empty() {
+            return Err(invalid_input_error("The template name cannot be empty."));
+        }
+
         if template_name.contains(" ") {
             return Err(invalid_input_error(
                 "The template name cannot have whitespaces.",
