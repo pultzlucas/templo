@@ -29,7 +29,7 @@ fn it_should_get_config_args_from_dir() {
                 key: "folder1".to_string(),
                 query: "Folder name: ".to_string(),
                 about: Some("Sets folder1 name".to_string()),
-                default: None
+                default: Some("folder1".to_string())
             }
         ])
     )
