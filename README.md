@@ -6,6 +6,9 @@
 
 Templo is a template manager that provide you more flexibility and agility at software development time and is built in Rust.
 
+- Generates a lot of code for you.
+- Includes a template engine.
+- Can download templates accessing a HTTP/HTTPS url.
 - Has an Interactive command line interface.
 - Ships only a single executable file.
 - Is open source.
