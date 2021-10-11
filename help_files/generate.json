@@ -1,7 +1,9 @@
 {
     "name": "gen",
     "about": "Generates a template in a specific folder ",
-    "parents": ["tp"],
+    "parents": [
+        "tp"
+    ],
     "args": {
         "inputs": [
             {
@@ -28,6 +30,13 @@
             {
                 "long": "remote",
                 "help": "Generates from remote template"
+            }
+        ],
+        "options": [
+            {
+                "long": "key",
+                "value_name": "authorization-key",
+                "help": "Sets the authorization key when getting remote template"
             }
         ]
     }
