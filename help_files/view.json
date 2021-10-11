@@ -13,15 +13,23 @@
         "flags": [
             {
                 "long": "desc",
-                "help": "If it is set the template description will be returned"
+                "help": "Shows the template description"
             },
             {
                 "long": "created-at",
-                "help": "If it is set the template creation date will be returned"
+                "help": "Shows the template creation date"
+            },
+            {
+                "long": "updated-at",
+                "help": "Shows the template update date"
             },
             {
                 "long": "paths",
-                "help": "If it is set the template paths will be returned"
+                "help": "Shows the template paths"
+            },
+            {
+                "long": "args",
+                "help": "Shows the template args"
             }
         ]
     }
