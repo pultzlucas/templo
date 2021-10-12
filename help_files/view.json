@@ -5,9 +5,13 @@
     "args": {
         "inputs": [
             {
-                "name": "template-namespace",
+                "name": "template-name",
                 "help": "Sets the template namespace",
                 "required": true
+            },
+            {
+                "name": "filename",
+                "help": "Sets the template file to display"
             }
         ],
         "flags": [

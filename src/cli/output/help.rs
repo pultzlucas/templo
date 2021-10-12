@@ -29,6 +29,7 @@ macro_rules! write_help {
         struct HelpArgsInput {
             name: String,
             help: String,
+            is_range: Option<bool>,
             required: Option<bool>,
             default_value: Option<String>,
         }
@@ -99,7 +100,15 @@ macro_rules! write_help {
 
             if let Some(inputs) = &args.inputs {
                 for input in inputs.iter() {
-                    print!(" <{}>", input.name);
+                    if let Some(is_range) = input.is_range {
+                        if is_range {
+                            print!(" <...{}>", input.name);
+                        } else {
+                            print!(" <{}>", input.name);
+                        }
+                    } else {
+                        print!(" <{}>", input.name);
+                    }
                 }
             }
 
@@ -143,10 +152,7 @@ macro_rules! write_help {
                     };
 
                     if let Some(short) = opt.short {
-                        print!(
-                            "{:<20}",
-                            format!("{}, {}={}", short, opt.long, value_name)
-                        );
+                        print!("{:<20}", format!("{}, {}={}", short, opt.long, value_name));
                     } else {
                         print!("{:<20}", format!("{}={}", opt.long, value_name));
                     }

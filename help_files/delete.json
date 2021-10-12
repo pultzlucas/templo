@@ -5,8 +5,9 @@
     "args": {
         "inputs": [
             {
-                "name": "template-namespace",
-                "help": "Sets the template namespace",
+                "name": "templates-name",
+                "help": "Sets the templates that will be deleted",
+                "is_range": true,
                 "required": true
             }
         ]
