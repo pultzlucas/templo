@@ -6,11 +6,14 @@
         "inputs": [
             {
                 "name": "template-name",
-                "help": "Sets the template namespace",
+                "help": "Sets the template name",
                 "required": true
-            },
+            }
+        ],
+        "options": [
             {
-                "name": "filename",
+                "long": "file",
+                "value_name": "filename",
                 "help": "Sets the template file to display"
             }
         ],

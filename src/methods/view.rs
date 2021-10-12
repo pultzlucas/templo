@@ -86,8 +86,8 @@ impl View {
         }
 
         // Template file content
-        if command.args.len() > 1 {
-            return display_file_content(&command.args[1..], template.clone());
+        if let Some(file) = command.get_opt_by_name("file") {
+            return display_file_content(&file.value, template.clone());
         }
 
         print!("\n");
@@ -159,41 +159,39 @@ fn display_template_args(args: Vec<ConfigArg>, tab: bool) {
     })
 }
 
-fn display_file_content(file_paths: &[String], template: Template) -> Result<(), Error> {
-    for file_path in file_paths {
-        print!("\n");
-        let file_path_temp = template
-            .paths
-            .iter()
-            .find(|path| file_path == path.path.to_str().unwrap());
+fn display_file_content(file_path: &str, template: Template) -> Result<(), Error> {
+    print!("\n");
+    let file_path_temp = template
+        .paths
+        .iter()
+        .find(|path| file_path == path.path.to_str().unwrap());
 
-        if let Some(file_path) = file_path_temp {
-            let path_name = pathbuf_to_string(file_path.path.clone());
+    if let Some(file_path) = file_path_temp {
+        let path_name = pathbuf_to_string(file_path.path.clone());
 
-            if file_path.path_type == TempPathType::Dir {
-                return Err(invalid_input_error(&format!(
-                    "Path \"{}\" is not a file.",
-                    path_name
-                )));
-            }
-
-            let file_content = template
-                .contents
-                .iter()
-                .find(|content| content.file_path == path_name);
-
-            println!("{}", paint_string!("{gray}", format!("[{}]", path_name)));
-
-            if let Some(content) = file_content {
-                let text = decode_base64(content.text.clone())?;
-                println!("{}", text);
-            }
-        } else {
+        if file_path.path_type == TempPathType::Dir {
             return Err(invalid_input_error(&format!(
-                "Path \"{}\" not exists in \"{}\" template.",
-                file_path, &template.name
+                "Path \"{}\" is not a file.",
+                path_name
             )));
         }
+
+        let file_content = template
+            .contents
+            .iter()
+            .find(|content| content.file_path == path_name);
+
+        println!("{}", paint_string!("{gray}", format!("[{}]", path_name)));
+
+        if let Some(content) = file_content {
+            let text = decode_base64(content.text.clone())?;
+            println!("{}", text);
+        }
+    } else {
+        return Err(invalid_input_error(&format!(
+            "Path \"{}\" not exists in \"{}\" template.",
+            file_path, &template.name
+        )));
     }
 
     Ok(())
