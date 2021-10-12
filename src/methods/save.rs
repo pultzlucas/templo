@@ -36,11 +36,7 @@ impl Save {
         }
 
         let repo_name = if command.has_option("repo") {
-            command
-                .get_opt_by_name("description")
-                .unwrap()
-                .value
-                .clone()
+            command.get_opt_by_name("repo").unwrap().value.clone()
         } else {
             input::get("Repository (main): ")?
         };
@@ -51,10 +47,10 @@ impl Save {
             Repository::connect(repo_name)
         }?;
 
-        if repo.template_exists(&template_name) {
+        if repo.has_template(&template_name) {
             return Err(already_exists_error(&format!(
-                r#"Template "{}" already exists in your repository."#,
-                template_name
+                "Template \"{}\" already exists in \"{}\" repository.",
+                template_name, repo.name
             )));
         }
 
@@ -74,10 +70,10 @@ impl Save {
             Some(description_value)
         };
 
-        let ref_path = if !command.args.is_empty() {
-            command.args[0].as_str()
-        } else {
+        let ref_path = if command.args.is_empty() {
             "."
+        } else {
+            command.args[0].as_str()
         };
 
         let start = Instant::now(); // start timing process

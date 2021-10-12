@@ -40,7 +40,7 @@ impl Repository {
         Ok(())
     }
 
-    pub fn template_exists(&self, template_name: &str) -> bool {
+    pub fn has_template(&self, template_name: &str) -> bool {
         self.get_template_path(template_name).exists()
     }
 
@@ -98,7 +98,7 @@ impl Repository {
     }
 
     pub fn delete_template(&self, template_name: &str) -> Result<(), Error> {
-        if !self.template_exists(template_name) {
+        if !self.has_template(template_name) {
             return Err(not_found_error(&format!(
                 "Not is possible find \"{}\" on \"{}\" repository",
                 template_name, self.name
@@ -172,11 +172,11 @@ impl Repository {
             .with_extension("tpo")
     }
 
-    pub fn move_template_to(&self, template_name: &str, repo: Repository) -> Result<(), Error> {
+    pub fn move_template_to(&self, template_name: &str, repo: &Repository) -> Result<(), Error> {
         let template_path = self.get_template_path(template_name);
         let template = self.get_template(template_name)?;
 
-        if repo.template_exists(template_name) {
+        if repo.has_template(template_name) {
             return Err(already_exists_error(&format!(
                 "Already exists a template named as \"{}\" in \"{}\" repo.",
                 template_name, repo.name

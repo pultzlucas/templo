@@ -83,7 +83,7 @@ impl Get {
         let repo = Repository::connect(repo_name)?;
 
         //check if a template with the same name already exists in repo
-        if repo.template_exists(&template.name) {
+        if repo.has_template(&template.name) {
             return Err(already_exists_error(&format!(
                 "Template \"{}\" already exists in \"{}\" repo.",
                 &template.name, &repo.name

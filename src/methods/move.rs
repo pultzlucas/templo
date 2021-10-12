@@ -39,7 +39,7 @@ impl Move {
 
         let repo_sender = Repository::connect(repo_name.clone())?;
         let repo_recipient = Repository::connect(recipient_repo_name.to_owned())?;
-        repo_sender.move_template_to(&template_name, repo_recipient.clone())?;
+        repo_sender.move_template_to(&template_name, &repo_recipient)?;
 
         println!(
             "Template \"{}\" was moved to \"{}\" repo.",
