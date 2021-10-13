@@ -5,6 +5,7 @@
 /src/core/secrets.rs
 .todo
 .tree
+structure-example/
 
 .vscode/*
 !.vscode/settings.json
