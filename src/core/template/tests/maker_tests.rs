@@ -47,42 +47,43 @@ fn get_correct_template_struct() -> Template {
             TempPath { 
                 path: str_to_pathbuf("tree/file2"), 
                 path_type: TempPathType::File 
-            }], 
-            contents: vec![
-                TempContent { 
-                    file_path: "([ filename  ]).rs".to_string(), 
-                    text: "Zm4gez5maWxlbmFtZTx9KCkNCnsNCiAgICBwcmludCEoIns+bmFtZTx9IHs+ICBsYXN0TmFtZSAgPH0iKTsNCn0=".to_string() 
-                }, 
-                TempContent { 
-                    file_path: "rust-file.rs".to_string(), 
-                    text: "Zm4gbWFpbigpIHsNCiAgICBwcmludCEoImhlbGxvIikNCn0=".to_string() 
-                }
-            ], 
-            args: Some(vec![
-                ConfigArg { 
-                    key: "name".to_string(), query: "Your name (pultzlucas): ".to_string(), 
-                    about: None, 
-                    default: Some("pultzlucas".to_string()) 
-                }, 
-                ConfigArg { 
-                    key: "lastName".to_string(), 
-                    query: "Your last name: ".to_string(), 
-                    about: None, 
-                    default: None 
-                }, 
-                ConfigArg { 
-                    key: "filename".to_string(), 
-                    query: "Javascript filename (script): ".to_string(), 
-                    about: Some("Sets javacript filename".to_string()), 
-                    default: Some("script".to_string()) 
-                }, 
-                ConfigArg { 
-                    key: "folder1".to_string(), 
-                    query: "Folder name: ".to_string(), 
-                    about: Some("Sets folder1 name".to_string()), 
-                    default: Some("folder1".to_string()) 
-                }
-            ]) 
+            },
+        ], 
+        contents: vec![
+            TempContent { 
+                file_path: "([ filename  ]).rs".to_string(), 
+                text: "Zm4gez5maWxlbmFtZTx9KCkNCnsNCiAgICBwcmludCEoIns+bmFtZTx9IHs+ICBsYXN0TmFtZSAgPH0iKTsNCn0=".to_string() 
+            }, 
+            TempContent { 
+                file_path: "rust-file.rs".to_string(), 
+                text: "Zm4gbWFpbigpIHsNCiAgICBwcmludCEoImhlbGxvIikNCn0=".to_string() 
+            }
+        ], 
+        args: Some(vec![
+            ConfigArg { 
+                key: "name".to_string(), query: "Your name (pultzlucas): ".to_string(), 
+                about: None, 
+                default: Some("pultzlucas".to_string()) 
+            }, 
+            ConfigArg { 
+                key: "lastName".to_string(), 
+                query: "Your last name: ".to_string(), 
+                about: None, 
+                default: None 
+            }, 
+            ConfigArg { 
+                key: "filename".to_string(), 
+                query: "Javascript filename (script): ".to_string(), 
+                about: Some("Sets javacript filename".to_string()), 
+                default: Some("script".to_string()) 
+            }, 
+            ConfigArg { 
+                key: "folder1".to_string(), 
+                query: "Folder name: ".to_string(), 
+                about: Some("Sets folder1 name".to_string()), 
+                default: Some("folder1".to_string()) 
+            }
+        ]) 
         }
 }
 
