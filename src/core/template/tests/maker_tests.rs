@@ -17,10 +17,6 @@ fn get_correct_template_struct() -> Template {
                 path_type: TempPathType::File 
             }, 
             TempPath { 
-                path: str_to_pathbuf("rust-file.rs"), 
-                path_type: TempPathType::File 
-            }, 
-            TempPath { 
                 path: str_to_pathbuf("tree"), 
                 path_type: TempPathType::Dir 
             }, 
@@ -48,6 +44,10 @@ fn get_correct_template_struct() -> Template {
                 path: str_to_pathbuf("tree/file2"), 
                 path_type: TempPathType::File 
             },
+            TempPath { 
+                path: str_to_pathbuf("rust-file.rs"), 
+                path_type: TempPathType::File 
+            }
         ], 
         contents: vec![
             TempContent { 
