@@ -8,7 +8,7 @@ Generate templates is pretty simple.
 
 Look this...
 
-````console
+````
 $ tp gen main/articles-temp .
 [creating files and folders...]
 dir:  ./Articles
