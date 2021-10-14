@@ -8,7 +8,6 @@ mod repo;
 mod repos;
 mod save;
 mod update;
-mod version;
 mod view;
 pub mod welcome;
 
@@ -22,5 +21,4 @@ pub use repo::Repo;
 pub use repos::Repos;
 pub use save::Save;
 pub use update::Update;
-pub use version::Version;
 pub use view::View;

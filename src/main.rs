@@ -2,6 +2,7 @@ mod cli;
 mod core;
 mod methods;
 
+use crate::core::info::VERSION;
 use crate::core::repos::Repository;
 use crate::core::utils::errors::invalid_input_error;
 use cli::input::command::parse_command;
@@ -19,9 +20,7 @@ async fn main() {
         }
 
         if command.has_version_flag() {
-            if let Err(err) = Version::run() {
-                eprintln!("{}: {}", paint_string!("{red}", "Error"), err)
-            };
+            println!("{}", VERSION);
         }
 
         if !command.has_help_flag() && !command.has_version_flag() && !command.args.is_empty() {
