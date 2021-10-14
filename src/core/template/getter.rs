@@ -1,6 +1,6 @@
 use serde_json::from_str;
 
-use crate::utils::errors::{invalid_data_error, other_error, std_error};
+use crate::core::utils::errors::{invalid_data_error, other_error, std_error};
 use std::io::Error;
 
 use super::http::{build_request, get_reponse_body, request, HeaderValue, Method};

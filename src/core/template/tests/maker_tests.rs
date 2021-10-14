@@ -1,7 +1,7 @@
-use crate::{core::template::{TempPath, maker::make_template}, utils::date::get_date_now_string};
+use crate::{core::template::{TempPath, maker::make_template}, core::utils::date::get_date_now_string};
 
 use super::{TempContent, TempPathType, Template, config::ConfigArg};
-use crate::utils::path::str_to_pathbuf;
+use crate::core::utils::path::str_to_pathbuf;
 
 const FOLDER: &'static str = "./folder-for-tests";
 

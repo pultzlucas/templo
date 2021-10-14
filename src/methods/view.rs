@@ -5,9 +5,9 @@ use crate::cli::output::messages::error::INVALID_TEMPLATE_NAME;
 use crate::core::repos::Repository;
 use crate::core::template::config::ConfigArg;
 use crate::core::template::{TempPath, TempPathType, Template};
-use crate::utils::errors::invalid_input_error;
-use crate::utils::path::pathbuf_to_string;
-use crate::utils::string::decode_base64;
+use crate::core::utils::errors::invalid_input_error;
+use crate::core::utils::path::pathbuf_to_string;
+use crate::core::utils::string::decode_base64;
 use crate::{paint_string, paintln, write_help};
 use std::io::Error;
 

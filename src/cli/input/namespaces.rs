@@ -1,5 +1,5 @@
-use crate::utils::errors::{invalid_input_error, std_error};
-use crate::utils::string::split_by;
+use crate::core::utils::errors::{invalid_input_error, std_error};
+use crate::core::utils::string::split_by;
 use regex::Regex;
 use serde_derive::{Deserialize, Serialize};
 use std::io::Error;
@@ -51,4 +51,3 @@ pub fn get_repo_namespace_obj(namespace: &str) -> NamespaceObject {
 pub fn split_namespace_str(ns_string: &str) -> Vec<String> {
     split_by(ns_string, "/")
 }
-

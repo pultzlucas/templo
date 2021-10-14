@@ -2,7 +2,7 @@ pub mod command;
 pub mod namespaces;
 
 use self::command::Command;
-use crate::utils::errors::invalid_input_error;
+use crate::core::utils::errors::invalid_input_error;
 use std::io::{stdin, stdout, Error, Write};
 
 pub fn check_flags(flags: &Vec<String>, expected_flags: Vec<&str>) -> Result<(), Error> {

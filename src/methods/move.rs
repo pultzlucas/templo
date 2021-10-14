@@ -4,7 +4,7 @@ use crate::{
         namespaces::{get_repo_namespace_obj, NamespaceObject},
     },
     core::repos::Repository,
-    utils::errors::invalid_input_error,
+    core::utils::errors::invalid_input_error,
     write_help,
 };
 use std::io::Error;

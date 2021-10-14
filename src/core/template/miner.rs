@@ -1,7 +1,9 @@
 use super::{TempContent, TempPath, TempPathType};
-use crate::utils::{
-    errors::std_error,
-    path::{format_path_namespace, pathbuf_to_string, remove_dir_prefix, valid_directory_path},
+use crate::core::{
+    utils::errors::std_error,
+    utils::path::{
+        format_path_namespace, pathbuf_to_string, remove_dir_prefix, valid_directory_path,
+    },
 };
 use base64;
 use fs_tree::FsTreeBuilder;

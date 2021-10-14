@@ -1,7 +1,7 @@
 use std::io::Error;
 use hyper::{Body, Response, body::to_bytes};
 
-use crate::utils::errors::invalid_input_error;
+use crate::core::utils::errors::invalid_input_error;
 
 pub fn validate_url(url: &str) -> Result<(), Error> {
     if !str_is_url(url) {

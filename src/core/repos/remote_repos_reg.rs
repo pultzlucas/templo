@@ -1,7 +1,7 @@
 use crate::{
     cli::input::namespaces::RemoteRepoNamespace,
     core::path::get_remote_repo_reg_file_path,
-    utils::errors::{already_exists_error, not_found_error, std_error},
+    core::utils::errors::{already_exists_error, not_found_error, std_error},
 };
 use serde_json::{from_str, to_string_pretty};
 use std::io::Error;

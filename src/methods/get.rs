@@ -7,7 +7,7 @@ use crate::core::template::getter::get_remote_template;
 use crate::write_help;
 use crate::{
     paintln,
-    utils::errors::{already_exists_error, invalid_input_error},
+    core::utils::errors::{already_exists_error, invalid_input_error},
 };
 use std::{io::Error, str, time::Instant};
 

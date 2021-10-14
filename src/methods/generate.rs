@@ -10,7 +10,7 @@ use crate::core::http::{str_is_url, validate_url};
 use crate::core::template::engine::{get_engine_args_input, set_arg_default_value, TempEngineArg};
 use crate::core::template::getter::get_remote_template;
 use crate::core::template::{generator, Template};
-use crate::utils::errors::{invalid_input_error, std_error};
+use crate::core::utils::errors::{invalid_input_error, std_error};
 use crate::{paintln, write_help};
 use std::{fs, io::Error, path::Path, time::Instant};
 

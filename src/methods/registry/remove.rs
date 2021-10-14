@@ -1,6 +1,11 @@
 use std::io::Error;
 
-use crate::{cli::input::{self, command::Command, get_boolean_input}, core::repos::remote_repos_reg, utils::errors::invalid_input_error, write_help};
+use crate::{
+    cli::input::{self, command::Command, get_boolean_input},
+    core::repos::remote_repos_reg,
+    core::utils::errors::invalid_input_error,
+    write_help,
+};
 
 pub struct Remove;
 
@@ -14,7 +19,7 @@ impl Remove {
             Self::help();
             return Ok(());
         }
-        
+
         let name = if command.options.is_empty() {
             input::get("Repo name: ")?
         } else {

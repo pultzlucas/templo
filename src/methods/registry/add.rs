@@ -3,7 +3,7 @@ use std::io::Error;
 use crate::{
     cli::input::{self, command::Command, get_boolean_input, namespaces::RemoteRepoNamespace},
     core::repos::remote_repos_reg,
-    utils::{errors::invalid_input_error, string::str_to_bool},
+    core::utils::{errors::invalid_input_error, string::str_to_bool},
     write_help,
 };
 

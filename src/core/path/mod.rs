@@ -1,5 +1,5 @@
 use crate::core::info::os_is_windows;
-use crate::utils::errors::not_found_error;
+use crate::core::utils::errors::not_found_error;
 use std::io::Error;
 use std::path::PathBuf;
 

@@ -3,10 +3,10 @@ use super::engine::TempEngineArg;
 use super::Template;
 use crate::core::template::engine::parse_path;
 use crate::core::template::{TempContent, TempPath, TempPathType};
-use crate::utils::string::decode_base64;
+use crate::core::utils::string::decode_base64;
 use crate::{
+    core::utils::path::{format_path_namespace, pathbuf_to_string, str_to_pathbuf},
     paint, paintln,
-    utils::path::{format_path_namespace, pathbuf_to_string, str_to_pathbuf},
 };
 use std::{
     fs,
