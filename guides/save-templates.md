@@ -25,8 +25,8 @@ Look this...
 
 ````console
 $ tp save .
-...
 ````
+
 > Note: I'm currently working in the same folder that I want to save. 
 
 ````
@@ -39,7 +39,7 @@ Done in 15.33ms
 
 What happened here?
 
-Templo creates a template based on structure path that you inform as an input in command above and save it in main repository.
+Templo creates a template object based on structure that was inserted in the command. After that, Templo saves the template in a repository.
 
 You can check if it really happens.
 
@@ -54,7 +54,7 @@ $ tp repo main
 
 View the template data...
 
-````console
+````
 $ tp view main/articles-temp
 > articles-temp
 A template for generate articles and python scripts + index.html
