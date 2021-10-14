@@ -16,27 +16,11 @@
                 "help": "Sets the output folder",
                 "default_value": "./"
             },
-            {
-                "name": "remote-template-url",
-                "help": "Sets the remote template url when generating remote template"
-            }
-        ],
-        "flags": [
-            {
-                "long": "file",
-                "short": "f",
-                "help": "Generates from template file"
-            },
-            {
-                "long": "remote",
-                "help": "Generates from remote template"
-            }
         ],
         "options": [
             {
-                "long": "key",
-                "value_name": "authorization-key",
-                "help": "Sets the authorization key when getting remote template"
+                "long": "file",
+                "help": "Sets the template file to generate"
             }
         ]
     }

@@ -1,20 +1,15 @@
 {
     "name": "get",
-    "about": "Gets a template from remote repo",
+    "about": "Gets a template from web server using http",
     "parents": ["tp"],
     "args": {
         "inputs": [
             {
-                "name": "temp-end-point",
-                "help": "Sets the template end point in remote repo"
+                "name": "temp-url",
+                "help": "Sets the template url"
             }
         ],
         "options": [
-            {
-                "long": "url",
-                "value_name": "url",
-                "help": "Sets the template url"
-            },
             {
                 "long": "auth",
                 "help": "Sets the authentication value"
