@@ -6,7 +6,7 @@
         "inputs": [
             {
                 "name": "repo-name",
-                "help": "Sets the repository name"
+                "help": "Sets the repo name"
             }
         ]
     }

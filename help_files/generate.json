@@ -7,8 +7,8 @@
     "args": {
         "inputs": [
             {
-                "name": "template-namespace",
-                "help": "Sets the template namespace",
+                "name": "temp-name",
+                "help": "Sets the template name",
                 "required": true
             },
             {

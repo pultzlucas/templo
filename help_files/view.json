@@ -5,7 +5,7 @@
     "args": {
         "inputs": [
             {
-                "name": "template-name",
+                "name": "temp-name",
                 "help": "Sets the template name",
                 "required": true
             }

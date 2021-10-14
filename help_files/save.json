@@ -19,7 +19,7 @@
             {
                 "long": "repo",
                 "value_name": "repo-name",
-                "help": "Sets the repository name to save the template"
+                "help": "Sets the repo name to save the template"
             },
             {
                 "long": "description",
