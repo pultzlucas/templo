@@ -8,7 +8,7 @@ You can get a template from a http adress.
 Look this...
 
 ````console
-$ tp get url=https://pultzlucas-templo-server.herokuapp.com/templates/deno-server
+$ tp get https://pultzlucas-templo-server.herokuapp.com/templates/deno-server
 ````
 
 Templo will connect with the web server using the url.

@@ -24,12 +24,11 @@ impl Get {
 
         let start = Instant::now(); // start timing process
 
-        let url = &command.args[0];
-
-        if url.is_empty() {
+        if command.args.is_empty() {
             return Err(invalid_input_error("The template url must be specified."));
         }
 
+        let url = &command.args[0];
         validate_url(&url)?;
 
         let key = if command.has_option("auth") {
