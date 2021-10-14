@@ -5,25 +5,19 @@
     "args": {
         "inputs": [
             {
-                "name": "remote-template-namespace",
-                "help": "Sets the remote template namespace"
-            },
-            {
-                "name": "remote-template-url",
-                "help": "Sets the remote template url"
-            }
-        ],
-        "flags": [
-            {
-                "long": "url",
-                "help": "If informed this flag will require the remote template url"
+                "name": "temp-end-point",
+                "help": "Sets the template end point in remote repo"
             }
         ],
         "options": [
             {
-                "long": "key",
-                "value_name": "authorization-key",
-                "help": "Sets the authorization key"
+                "long": "url",
+                "value_name": "url",
+                "help": "Sets the template url"
+            },
+            {
+                "long": "auth",
+                "help": "Sets the authentication value"
             }
         ]
     }
