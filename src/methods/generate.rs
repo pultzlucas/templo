@@ -38,7 +38,7 @@ impl Generate {
             Path::new(&command.args[1])
         };
 
-        if directory.extension() != None {
+        if directory.extension().is_some() {
             return Err(invalid_input_error(INVALID_DIRECTORY_PATH_TYPE));
         }
 
