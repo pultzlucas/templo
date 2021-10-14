@@ -38,10 +38,6 @@ impl Get {
             None
         };
 
-        paintln!("{gray}", "[getting template...]");
-        let response = get_remote_template(&url, key).await?;
-
-        let template = response.template;
         let repo_name = if command.args.len() > 1 {
             command.args[1].clone()
         } else {
@@ -49,6 +45,11 @@ impl Get {
         };
 
         let repo = Repository::connect(repo_name)?;
+        
+        paintln!("{gray}", "[getting template...]");
+        let response = get_remote_template(&url, key).await?;
+
+        let template = response.template;
 
         //check if a template with the same name already exists in repo
         if repo.has_template(&template.name) {

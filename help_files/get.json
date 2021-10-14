@@ -7,6 +7,10 @@
             {
                 "name": "temp-url",
                 "help": "Sets the template url"
+            },
+            {
+                "name": "repo-name",
+                "help": "Sets the repo to save the getted template"
             }
         ],
         "options": [
