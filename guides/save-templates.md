@@ -70,3 +70,5 @@ A template for generate articles and python scripts + index.html
     Scripts
     Scripts/script.py
 ````
+
+Bigger and smaller structures can be saved as a template by Templo.
