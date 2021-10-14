@@ -12,7 +12,7 @@
         },
         {
             "name": "get",
-            "about": "Gets a template from remote repo"
+            "about": "Gets a template from web server using http"
         },
         {
             "name": "delete",
@@ -37,10 +37,6 @@
         {
             "name": "mv",
             "about": "Moves a template from a repo to another repo"
-        },
-        {
-            "name": "regs",
-            "about": "Manipulates the remote repos registry"
         }
     ]
 }
