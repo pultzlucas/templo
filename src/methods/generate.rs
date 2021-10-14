@@ -2,11 +2,10 @@ use serde_json::from_str;
 
 use crate::cli::input::check_flags;
 use crate::cli::input::command::{Command, CommandOption};
-use crate::cli::input::namespaces::{get_repo_namespace_obj, parse_namespace_to_raw_url};
+use crate::cli::input::namespaces::get_repo_namespace_obj;
 use crate::cli::output::messages::error::{INVALID_DIRECTORY_PATH_TYPE, INVALID_TEMPLATE_NAME};
-use crate::core::repos::remote_repos_reg::get_reg;
-use crate::core::repos::Repository;
 use crate::core::http::{str_is_url, validate_url};
+use crate::core::repos::Repository;
 use crate::core::template::engine::{get_engine_args_input, set_arg_default_value, TempEngineArg};
 use crate::core::template::getter::get_remote_template;
 use crate::core::template::{generator, Template};
@@ -127,29 +126,21 @@ async fn gen_from_remote_template(command: Command) -> Result<(), Error> {
     if directory.extension() != None {
         return Err(invalid_input_error(INVALID_DIRECTORY_PATH_TYPE));
     }
+    
+    if !str_is_url(&command.args[0]) {
+        return Err(invalid_input_error("The template url must be valid."));
+    }
 
-    let url = if str_is_url(&command.args[0]) {
-        let url = &command.args[0];
-        validate_url(url)?;
-        url.to_string()
-    } else {
-        let template_url_path = command.args[0].clone();
-        let url = parse_namespace_to_raw_url(template_url_path)?;
-        validate_url(&url)?;
-        url.to_string()
-    };
+    let url =  &command.args[0];
 
-    let namespace_name = command.args[0].split("/").collect::<Vec<&str>>()[0];
-    let namespace = get_reg(namespace_name)?;
+    validate_url(url)?;
+    if url.is_empty() {
+        return Err(invalid_input_error("The template url must be specified."));
+    }
 
-    let key = if namespace.requires_authorization {
-        let key = command.get_opt_by_name("key");
-        if let None = key {
-            return Err(invalid_input_error(
-                "This remote repo requires authorization key. Add --key=<key> option.",
-            ));
-        }
-        Some(key.unwrap().value.clone())
+    let key = if command.has_option("auth") {
+        let key = command.get_opt_by_name("auth").unwrap();
+        Some(key.value.clone())
     } else {
         None
     };

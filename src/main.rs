@@ -48,7 +48,6 @@ async fn main() {
                 "gen" => Generate::run(command).await,
                 "get" => Get::run(command).await,
                 "del" => Delete::run(command),
-                "regs" => Registry::run(command),
                 "repo" => Repo::run(command),
                 "repos" => Repos::run(command),
                 "mv" => Move::run(command),
