@@ -16,7 +16,7 @@ impl Generate {
         write_help!("../../help_files/generate.json");
     }
 
-    pub async fn run(command: Command) -> Result<(), Error> {
+    pub fn run(command: Command) -> Result<(), Error> {
         if command.has_help_flag() {
             Self::help();
             return Ok(());
