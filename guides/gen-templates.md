@@ -42,7 +42,7 @@ Now see your current work diretory.
 
 What happened here?
 
-Templo searched the specified template (articles-temp) in a repository (main) and generates the template paths in the specified directory (.).
+Templo searched the specified template (articles-temp) in a repository (main) and generates the template in the specified directory (.).
 
 Go Work!💻
 
