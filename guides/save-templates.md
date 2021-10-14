@@ -1,7 +1,7 @@
 # How to save templates in repository
 
 prerequisits:
-- Have Templo installed in your computer.
+- Have Templo installed in your computer
 
 At the beginning of the process you need to have a structure of files and folders to save.
 
