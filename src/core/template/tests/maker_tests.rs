@@ -14,7 +14,7 @@ fn get_correct_template_struct() -> Template {
         paths: vec![
             TempPath { 
                 path: str_to_pathbuf("([ filename  ]).rs"), 
-                path_type: TempPathType::File 
+                path_type: TempPathType::File
             }, 
             TempPath { 
                 path: str_to_pathbuf("rust-file.rs"), 
@@ -51,11 +51,13 @@ fn get_correct_template_struct() -> Template {
             contents: vec![
                 TempContent { 
                     file_path: "([ filename  ]).rs".to_string(), 
-                    text: "Zm4gez5maWxlbmFtZTx9KCkNCnsNCiAgICBwcmludCEoIns+bmFtZTx9IHs+ICBsYXN0TmFtZSAgPH0iKTsNCn0=".to_string() 
+                    bytes: "Zm4gez5maWxlbmFtZTx9KCkNCnsNCiAgICBwcmludCEoIns+bmFtZTx9IHs+ICBsYXN0TmFtZSAgPH0iKTsNCn0=".to_string(),
+                    is_text: true
                 }, 
                 TempContent { 
                     file_path: "rust-file.rs".to_string(), 
-                    text: "Zm4gbWFpbigpIHsNCiAgICBwcmludCEoImhlbGxvIikNCn0=".to_string() 
+                    bytes: "Zm4gbWFpbigpIHsNCiAgICBwcmludCEoImhlbGxvIikNCn0=".to_string(),
+                    is_text: true
                 }
             ], 
             args: Some(vec![

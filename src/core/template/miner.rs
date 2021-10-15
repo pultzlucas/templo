@@ -1,5 +1,6 @@
 use super::{TempContent, TempPath, TempPathType};
 use crate::core::{
+    fs as core_fs,
     utils::errors::std_error,
     utils::path::{
         format_path_namespace, pathbuf_to_string, remove_dir_prefix, valid_directory_path,
@@ -27,15 +28,24 @@ pub fn mine_paths_from(directory_path: &str) -> Result<Vec<TempPath>, Error> {
     Ok(vec_fs_tree)
 }
 
-pub fn mine_files_from_paths(paths: Vec<TempPath>, directory: &str) -> Vec<TempContent> {
-    paths
+pub fn mine_files_from_paths(
+    paths: Vec<TempPath>,
+    directory: &str,
+) -> Result<Vec<TempContent>, Error> {
+    let files = paths
         .into_iter()
-        .filter(|path| path.path_type == TempPathType::File)
+        .filter(|path| path.path_type == TempPathType::File);
+
+    files
         .map(|file| {
-            let file_path: TempPath = remove_dir_prefix(file.clone(), directory).unwrap();
-            let filename = pathbuf_to_string(format_path_namespace(file_path.path));
-            let text = fs::read_to_string(file.path).expect("Error when read file content");
-            TempContent::new(filename, base64::encode(text))
+            let file_path_str = &pathbuf_to_string(file.path.clone());
+            let bytes = core_fs::read_bytes(file_path_str)?;
+            let is_text = core_fs::file_content_is_text(file_path_str);
+
+            let file_path_clean =
+                remove_dir_prefix(file.path, directory).expect("Error when removing dir prefix.");
+            let filename = pathbuf_to_string(format_path_namespace(file_path_clean));
+            Ok(TempContent::new(filename, base64::encode(bytes), is_text))
         })
         .collect()
 }

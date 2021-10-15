@@ -25,13 +25,14 @@ pub fn gen_template(
             .into_iter()
             .map(|content| {
                 let text_content_parsed = base64::encode(parse_content(
-                    decode_base64(content.text)?,
+                    decode_base64(content.bytes)?,
                     temp_args.clone(),
                 )?);
                 let filename_parsed = parse_path(content.file_path, temp_args.clone())?;
                 Ok(TempContent {
                     file_path: filename_parsed,
-                    text: text_content_parsed,
+                    bytes: text_content_parsed,
+                    is_text: content.is_text
                 })
             })
             .collect()
@@ -95,7 +96,7 @@ fn write_contents(contents: Vec<TempContent>, directory: &Path) -> Result<(), Er
     for content in contents.into_iter() {
         let file_path = get_real_path(directory, str_to_pathbuf(&content.file_path));
         if file_path.exists() {
-            fs::write(&file_path, decode_base64(content.text)?)?;
+            fs::write(&file_path, decode_base64(content.bytes)?)?;
 
             print!("{}", pathbuf_to_string(format_path_namespace(file_path)));
             paintln!("...{green}", "ok");

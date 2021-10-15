@@ -1,7 +1,7 @@
 use super::config::get_config_args;
 use super::{miner, TempContent, TempPath, Template};
-use crate::core::utils::errors::invalid_input_error;
 use crate::core::utils::date::get_date_now_string;
+use crate::core::utils::errors::invalid_input_error;
 use crate::core::utils::path::{format_path_namespace, pathbuf_to_string, remove_dir_prefix};
 use std::io::Error;
 
@@ -40,9 +40,9 @@ pub fn make_template(
 pub fn make_template_data(dir_path: &str) -> Result<TempData, Error> {
     let raw_paths = miner::mine_paths_from(dir_path)?;
 
-    let files = miner::mine_files_from_paths(raw_paths.clone(), dir_path)
+    let files = miner::mine_files_from_paths(raw_paths.clone(), dir_path)?
         .into_iter()
-        .filter(|file| file.text != "")
+        .filter(|file| file.bytes != "")
         .collect();
 
     let formatted_paths: Vec<TempPath> = raw_paths
@@ -51,7 +51,14 @@ pub fn make_template_data(dir_path: &str) -> Result<TempData, Error> {
             path: format_path_namespace(path.path),
             path_type: path.path_type,
         })
-        .map(|path| remove_dir_prefix(path, dir_path).unwrap())
+        .map(|path| {
+            let path_clean =
+                remove_dir_prefix(path.path, dir_path).expect("Error when removing dir prefix");
+            TempPath {
+                path: path_clean,
+                path_type: path.path_type,
+            }
+        })
         .filter(|path| pathbuf_to_string(path.path.clone()) != "")
         .collect();
     Ok(TempData {

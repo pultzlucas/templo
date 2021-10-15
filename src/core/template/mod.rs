@@ -37,7 +37,8 @@ pub struct TempPath {
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 pub struct TempContent {
     pub file_path: String,
-    pub text: String,
+    pub bytes: String,
+    pub is_text: bool
 }
 
 #[derive(Tabled)]
@@ -70,8 +71,8 @@ impl TempPath {
 }
 
 impl TempContent {
-    pub fn new(file_path: String, text: String) -> Self {
-        Self { file_path, text }
+    pub fn new(file_path: String, bytes: String, is_text: bool) -> Self {
+        Self { file_path, bytes, is_text }
     }
 }
 

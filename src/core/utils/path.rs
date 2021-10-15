@@ -1,5 +1,4 @@
 use super::errors::{invalid_input_error, std_error};
-use crate::core::template::TempPath;
 use std::io::Error;
 use std::path::{Path, PathBuf};
 
@@ -19,13 +18,10 @@ pub fn valid_directory_path(directory: &str) -> Result<(), Error> {
     Ok(())
 }
 
-pub fn remove_dir_prefix(path: TempPath, directory: &str) -> Result<TempPath, Error> {
+pub fn remove_dir_prefix(path: PathBuf, directory: &str) -> Result<PathBuf, Error> {
     let prefix = format!("{}/", directory);
-    let new_path = std_error(path.path.strip_prefix(prefix))?.to_path_buf();
-    Ok(TempPath {
-        path: new_path,
-        path_type: path.path_type,
-    })
+    let new_path = std_error(path.strip_prefix(prefix))?.to_path_buf();
+    Ok(new_path)
 }
 
 pub fn format_path_namespace(path: PathBuf) -> PathBuf {

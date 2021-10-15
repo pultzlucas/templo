@@ -184,7 +184,7 @@ fn display_file_content(file_path: &str, template: Template) -> Result<(), Error
         println!("{}", paint_string!("{gray}", format!("[{}]", path_name)));
 
         if let Some(content) = file_content {
-            let text = decode_base64(content.text.clone())?;
+            let text = decode_base64(content.bytes.clone())?;
             println!("{}", text);
         }
     } else {
