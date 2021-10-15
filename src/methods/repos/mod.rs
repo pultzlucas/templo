@@ -1,6 +1,6 @@
 use crate::{
-    cli::input::command::Command, core::repos::get_all_repos, utils::errors::invalid_input_error,
-    write_help,
+    cli::input::command::Command, core::repos::get_all_repos,
+    core::utils::errors::invalid_input_error, write_help,
 };
 use std::io::Error;
 

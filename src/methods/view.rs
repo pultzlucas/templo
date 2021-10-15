@@ -1,12 +1,13 @@
+use crate::cli::input::check_flags;
 use crate::cli::input::command::Command;
+use crate::cli::input::namespaces::{get_repo_namespace_obj, NamespaceObject};
 use crate::cli::output::messages::error::INVALID_TEMPLATE_NAME;
-use crate::core::namespaces::{get_repo_namespace_obj, NamespaceObject};
 use crate::core::repos::Repository;
-use crate::core::template::{TempPathType, Template};
-use crate::methods::check_flags;
-use crate::utils::errors::invalid_input_error;
-use crate::utils::path::pathbuf_to_string;
-use crate::utils::string::decode_base64;
+use crate::core::template::config::ConfigArg;
+use crate::core::template::{TempPath, TempPathType, Template};
+use crate::core::utils::errors::invalid_input_error;
+use crate::core::utils::path::pathbuf_to_string;
+use crate::core::utils::string::decode_base64;
 use crate::{paint_string, paintln, write_help};
 use std::io::Error;
 
@@ -22,8 +23,14 @@ impl View {
             Self::help();
             return Ok(());
         }
-        
-        let expected_flags = vec!["--paths", "--created-at", "--desc"];
+
+        let expected_flags = vec![
+            "--paths",
+            "--created-at",
+            "--updated-at",
+            "--desc",
+            "--args",
+        ];
         check_flags(&command.flags, expected_flags)?;
 
         if command.args.is_empty() {
@@ -39,7 +46,7 @@ impl View {
         let template = repo.get_template(&template_name)?;
 
         if command.has_flag("--paths") {
-            display_template_paths(&template);
+            display_template_paths(template.paths);
             return Ok(());
         }
 
@@ -48,9 +55,25 @@ impl View {
             return Ok(());
         }
 
+        if command.has_flag("--updated-at") {
+            if let Some(updated_at) = template.updated_at {
+                println!("{}", updated_at);
+            } else {
+                println!("None");
+            }
+            return Ok(());
+        }
+
         if command.has_flag("--desc") {
             if let Some(description) = &template.description {
                 println!("{}", description);
+            }
+            return Ok(());
+        }
+
+        if command.has_flag("--args") {
+            if let Some(args) = template.args {
+                display_template_args(args, false);
             }
             return Ok(());
         }
@@ -63,65 +86,112 @@ impl View {
         }
 
         // Template file content
-        if command.args.len() > 1 {
-            return display_file_content(&command.args[1..], template.clone());
+        if let Some(file) = command.get_opt_by_name("file") {
+            return display_file_content(&file.value, template.clone());
         }
 
+        print!("\n");
+
         // Template creation date
-        paintln!("{gray}", "[created at]");
+        paintln!("{gray}", "[CREATED AT]");
+        print!("    ");
         println!("{}", template.created_at);
+        print!("\n");
+
+        // Template update date
+        if let Some(updated_at) = template.updated_at {
+            paintln!("{gray}", "[UPDATED AT]");
+            print!("    ");
+            println!("{}", updated_at);
+            print!("\n");
+        }
 
         // Template paths
-        paintln!("{gray}", "[paths]");
-        display_template_paths(&template);
+        paintln!("{gray}", "[PATHS]");
+        display_template_paths(template.paths);
+        print!("\n");
+
+        // Template config args
+        if let Some(args) = template.args {
+            paintln!("{gray}", "[ARGS]");
+            display_template_args(args, true);
+            print!("\n");
+        }
 
         Ok(())
     }
 }
 
-fn display_template_paths(template: &Template) {
-    template
-        .paths
-        .iter()
-        .for_each(|path| println!("{}", pathbuf_to_string(path.path.clone())));
+fn display_template_paths(paths: Vec<TempPath>) {
+    paths.iter().for_each(|path| {
+        print!("    ");
+        println!("{}", pathbuf_to_string(path.path.clone()))
+    });
 }
 
-fn display_file_content(file_paths: &[String], template: Template) -> Result<(), Error> {
-    for file_path in file_paths {
-        let file_path_temp = template
-            .paths
-            .iter()
-            .find(|path| file_path == path.path.to_str().unwrap());
+fn display_template_args(args: Vec<ConfigArg>, tab: bool) {
+    args.iter().for_each(|arg| {
+        if tab {
+            print!("    ");
+        }
+        println!("{}", arg.key.to_uppercase());
 
-        if let Some(file_path) = file_path_temp {
-            let path_name = pathbuf_to_string(file_path.path.clone());
-
-            if file_path.path_type == TempPathType::Dir {
-                return Err(invalid_input_error(&format!(
-                    "Path \"{}\" is not a file.",
-                    path_name
-                )));
+        if let Some(about) = &arg.about {
+            if tab {
+                print!("    ");
             }
+            println!("{}", about);
+        }
 
-            let file_content = template
-                .contents
-                .iter()
-                .find(|content| content.file_path == path_name);
+        if tab {
+            print!("    ");
+        }
+        println!("Query: '{}'", arg.query);
 
-            println!("{}", paint_string!("{gray}", format!("[{}]", path_name)));
-
-            if let Some(content) = file_content {
-                let text = decode_base64(content.text.clone())?;
-                println!("{}", text);
-            } else {
-                println!("No content.");
+        if let Some(default) = &arg.default {
+            if tab {
+                print!("    ");
             }
-        } else {
+            println!("Default: {}", default);
+        }
+
+        print!("\n")
+    })
+}
+
+fn display_file_content(file_path: &str, template: Template) -> Result<(), Error> {
+    print!("\n");
+    let file_path_temp = template
+        .paths
+        .iter()
+        .find(|path| file_path == path.path.to_str().unwrap());
+
+    if let Some(file_path) = file_path_temp {
+        let path_name = pathbuf_to_string(file_path.path.clone());
+
+        if file_path.path_type == TempPathType::Dir {
             return Err(invalid_input_error(&format!(
-                "Path \"{}\" not exists in \"{}\" template.",
-                file_path, &template.name
+                "Path \"{}\" is not a file.",
+                path_name
             )));
         }
+
+        let file_content = template
+            .contents
+            .iter()
+            .find(|content| content.file_path == path_name);
+
+        println!("{}", paint_string!("{gray}", format!("[{}]", path_name)));
+
+        if let Some(content) = file_content {
+            let text = decode_base64(content.text.clone())?;
+            println!("{}", text);
+        }
+    } else {
+        return Err(invalid_input_error(&format!(
+            "Path \"{}\" not exists in \"{}\" template.",
+            file_path, &template.name
+        )));
     }
 
     Ok(())

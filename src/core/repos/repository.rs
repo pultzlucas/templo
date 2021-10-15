@@ -1,10 +1,10 @@
 use super::repo_exists;
+use crate::core::utils::errors::already_exists_error;
+use crate::core::utils::errors::not_found_error;
+use crate::core::utils::errors::repo_connection_error;
+use crate::core::utils::errors::std_error;
 use crate::core::path::get_repo_path;
 use crate::core::template::Template;
-use crate::utils::errors::already_exists_error;
-use crate::utils::errors::not_found_error;
-use crate::utils::errors::repo_connection_error;
-use crate::utils::errors::std_error;
 use serde_json::{from_str, to_string_pretty};
 use std::{
     fs,
@@ -40,7 +40,7 @@ impl Repository {
         Ok(())
     }
 
-    pub fn template_exists(&self, template_name: &str) -> bool {
+    pub fn has_template(&self, template_name: &str) -> bool {
         self.get_template_path(template_name).exists()
     }
 
@@ -98,7 +98,7 @@ impl Repository {
     }
 
     pub fn delete_template(&self, template_name: &str) -> Result<(), Error> {
-        if !self.template_exists(template_name) {
+        if !self.has_template(template_name) {
             return Err(not_found_error(&format!(
                 "Not is possible find \"{}\" on \"{}\" repository",
                 template_name, self.name
@@ -123,6 +123,7 @@ impl Repository {
             description: old_template.description,
             contents: old_template.contents,
             created_at: old_template.created_at,
+            updated_at: old_template.updated_at,
             paths: old_template.paths,
             args: old_template.args,
         };
@@ -145,6 +146,7 @@ impl Repository {
             description: new_template_description,
             contents: old_template.contents,
             created_at: old_template.created_at,
+            updated_at: old_template.updated_at,
             paths: old_template.paths,
             args: old_template.args,
         };
@@ -170,11 +172,11 @@ impl Repository {
             .with_extension("tpo")
     }
 
-    pub fn move_template_to(&self, template_name: &str, repo: Repository) -> Result<(), Error> {
+    pub fn move_template_to(&self, template_name: &str, repo: &Repository) -> Result<(), Error> {
         let template_path = self.get_template_path(template_name);
         let template = self.get_template(template_name)?;
 
-        if repo.template_exists(template_name) {
+        if repo.has_template(template_name) {
             return Err(already_exists_error(&format!(
                 "Already exists a template named as \"{}\" in \"{}\" repo.",
                 template_name, repo.name

@@ -28,6 +28,12 @@ impl Command {
             .any(|flag| Self::str_is_help_flag(flag))
     }
 
+    pub fn has_version_flag(&self) -> bool {
+        self.flags
+            .iter()
+            .any(|flag| Self::str_is_version_flag(flag))
+    }
+
     pub fn has_option(&self, option: &str) -> bool {
         let regex = Regex::new(&format!("{}$", option)).unwrap();
         self.options.iter().any(|opt| regex.is_match(&opt.name))
@@ -39,6 +45,14 @@ impl Command {
 
     pub fn str_is_help_flag(flag: &str) -> bool {
         flag == "--help" || flag == "-h" || flag == "-H"
+    }
+
+    pub fn str_is_version_flag(flag: &str) -> bool {
+        flag == "--version" || flag == "-v" || flag == "-V"
+    }
+
+    pub fn str_is_flag(string: &str) -> bool {
+        string.starts_with("-")
     }
 }
 
@@ -78,6 +92,11 @@ fn get_submethod(command: Vec<String>) -> Option<String> {
     if command.len() < 2 {
         return None;
     }
+
+    if Command::str_is_flag(&command[1]) {
+        return None
+    }
+    
     Some(command[1].clone())
 }
 
@@ -94,7 +113,7 @@ fn get_args(args: Vec<String>) -> Result<Vec<String>, Error> {
 }
 
 fn get_options(args: Vec<String>) -> Result<Vec<CommandOption>, Error> {
-    let options_regex = Regex::new(r"--[\w-]+=").unwrap();
+    let options_regex = Regex::new(r"[\w-]+=").unwrap();
     let options = args
         .into_iter()
         .filter(|arg| options_regex.is_match(arg))
@@ -133,7 +152,7 @@ fn it_should_return_a_valid_command_struct() {
         "./arg2".to_string(),
         "--flag-2".to_string(),
         "arg-3".to_string(),
-        "--option1=value1".to_string(),
+        "option1=value1".to_string(),
         "arg_4".to_string(),
         "--option-2=value-2".to_string(),
         "--empty-option=".to_string(),

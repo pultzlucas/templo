@@ -1,5 +1,5 @@
-use crate::utils::errors::std_error;
-use crate::utils::path::str_to_pathbuf;
+use crate::core::utils::errors::std_error;
+use crate::core::utils::path::str_to_pathbuf;
 use serde_derive::{Deserialize, Serialize};
 use serde_json::from_str;
 use std::fs;
@@ -10,6 +10,7 @@ use std::path::{Path, PathBuf};
 pub struct ConfigArg {
     pub key: String,
     pub query: String,
+    pub about: Option<String>,
     pub default: Option<String>,
 }
 

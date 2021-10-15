@@ -1,19 +1,33 @@
-use crate::core::requester::{build_request, get_reponse_body, request, HeaderValue, Method};
-use crate::utils::errors::{invalid_data_error, other_error, std_error};
-use crate::utils::string::str_to_bool;
+use serde_json::from_str;
+
+use crate::core::utils::errors::{invalid_data_error, other_error, std_error};
 use std::io::Error;
 
+use super::http::{build_request, get_reponse_body, request, HeaderValue, Method};
 use super::Template;
+use serde_derive::{Deserialize, Serialize};
 
-pub struct GetTemplateResponse {
+pub struct TemplateGettedData {
     pub template: Template,
     pub message: Option<String>,
+}
+
+#[derive(Deserialize, Serialize)]
+struct Extra {
+    message: String,
+    is_error: bool,
+}
+
+#[derive(Deserialize, Serialize)]
+struct ResponseData {
+    extra: Option<Extra>,
+    template: Option<Template>,
 }
 
 pub async fn get_remote_template(
     url: &str,
     key: Option<String>,
-) -> Result<GetTemplateResponse, Error> {
+) -> Result<TemplateGettedData, Error> {
     let mut req = build_request(url, Method::GET, None);
 
     if let Some(key) = key {
@@ -26,35 +40,31 @@ pub async fn get_remote_template(
     let mut res = request(req).await?;
     let res_body = get_reponse_body(&mut res).await;
 
-    // check if template data is valid
-    if serde_json::from_str::<Template>(&res_body).is_err() {
-        return Err(invalid_data_error(
-            "The remote repo returned an invalid template.",
-        ));
+    if from_str::<ResponseData>(&res_body).is_err() {
+        return Err(invalid_data_error("The server returns an invalid data."));
     }
 
-    // catch response message
-    let message = if res.headers().contains_key("message") {
-        let is_error = if res.headers().contains_key("isError") {
-            let err = std_error(res.headers().get("isError").unwrap().to_str())?;
-            str_to_bool(err)
-        } else {
-            false
-        };
+    let ResponseData { extra, template } = std_error(from_str(&res_body))?;
 
-        let msg = std_error(res.headers().get("message").unwrap().to_str())?;
-
-        if is_error {
-            return Err(other_error(msg));
+    if let Some(extra) = &extra {
+        if extra.is_error {
+            return Err(other_error(&extra.message));
         }
 
-        Some(msg.to_string())
+        if !extra.is_error && template.is_none() {
+            return Err(invalid_data_error(
+                "Could not find a template in server response.",
+            ));
+        }
+    }
+
+    let message = if extra.is_some() {
+        Some(extra.unwrap().message)
     } else {
         None
     };
 
-    Ok(GetTemplateResponse {
-        template: std_error(serde_json::from_str(&res_body))?,
-        message,
-    })
+    let template = template.unwrap();
+
+    Ok(TemplateGettedData { template, message })
 }

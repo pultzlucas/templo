@@ -29,6 +29,7 @@ macro_rules! write_help {
         struct HelpArgsInput {
             name: String,
             help: String,
+            is_range: Option<bool>,
             required: Option<bool>,
             default_value: Option<String>,
         }
@@ -92,20 +93,27 @@ macro_rules! write_help {
         print!("    ");
         print!("{} {}", parents_str, help.name);
 
-        
         if let Some(args) = &help.args {
+            if args.flags.is_some() {
+                print!(" [FLAGS]");
+            }
+
             if let Some(inputs) = &args.inputs {
                 for input in inputs.iter() {
-                    print!(" <{}>", input.name);
+                    if let Some(is_range) = input.is_range {
+                        if is_range {
+                            print!(" <...{}>", input.name);
+                        } else {
+                            print!(" <{}>", input.name);
+                        }
+                    } else {
+                        print!(" <{}>", input.name);
+                    }
                 }
             }
 
             if args.options.is_some() {
                 print!(" [OPTIONS]");
-            }
-    
-            if args.flags.is_some() {
-                print!(" [FLAGS]");
             }
         }
 
@@ -122,7 +130,7 @@ macro_rules! write_help {
                     if let Some(short) = flag.short {
                         print!("{:<20}", format!("-{}, --{}", short, flag.long));
                     } else {
-                        print!("    {:<20}", format!("--{}", flag.long));
+                        print!("{:<20}", format!("--{}", flag.long));
                     }
 
                     print!("\t");
@@ -144,12 +152,9 @@ macro_rules! write_help {
                     };
 
                     if let Some(short) = opt.short {
-                        print!(
-                            "{:<22}",
-                            format!("-{}, --{}=<{}>", short, opt.long, value_name)
-                        );
+                        print!("{:<20}", format!("{}, {}={}", short, opt.long, value_name));
                     } else {
-                        print!("    {:<22}", format!("--{}=<{}>", opt.long, value_name));
+                        print!("{:<20}", format!("{}={}", opt.long, value_name));
                     }
 
                     print!("\t");
@@ -177,7 +182,7 @@ macro_rules! write_help {
                     if let Some(default_value) = &input.default_value {
                         print!(
                             "{:<20}",
-                            format!("{} [default: {}]", input.name, default_value)
+                            format!("{} [default ({})]", input.name, default_value)
                         );
                     }
 

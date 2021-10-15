@@ -1,8 +1,7 @@
-use crate::cli::input::command::Command;
+use crate::cli::input::{command::Command, namespaces::get_repo_namespace_obj};
 use crate::cli::output::messages::error::INVALID_TEMPLATE_NAME;
-use crate::core::namespaces::get_repo_namespace_obj;
 use crate::core::repos::Repository;
-use crate::utils::errors::invalid_input_error;
+use crate::core::utils::errors::invalid_input_error;
 use crate::write_help;
 use std::{io::Error, time::Instant};
 

@@ -11,10 +11,13 @@
     {
         "key": "filename",
         "query": "Javascript filename (script): ",
+        "about": "Sets javacript filename",
         "default": "script"
     },
     {
         "key": "folder1",
-        "query": "Folder name: "
+        "about": "Sets folder1 name",
+        "query": "Folder name: ",
+        "default": "folder1"
     }
 ]

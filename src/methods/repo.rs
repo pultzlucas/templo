@@ -1,9 +1,9 @@
+use crate::cli::input::check_flags;
 use crate::cli::input::command::Command;
 use crate::core::path::get_repo_path;
 use crate::core::repos::Repository;
 use crate::core::template::{Template, TemplateDisplayInfo};
-use crate::methods::check_flags;
-use crate::utils::path::pathbuf_to_string;
+use crate::core::utils::path::pathbuf_to_string;
 use crate::write_help;
 use std::io::Error;
 use tabled::{Disable, Style, Table};
@@ -20,7 +20,7 @@ impl Repo {
             Self::help();
             return Ok(());
         }
-        
+
         let flags = vec!["--local", "--total"];
         check_flags(&command.flags, flags)?;
 

@@ -1,6 +1,26 @@
 pub mod command;
+pub mod namespaces;
 
+use self::command::Command;
+use crate::core::utils::errors::invalid_input_error;
 use std::io::{stdin, stdout, Error, Write};
+
+pub fn check_flags(flags: &Vec<String>, expected_flags: Vec<&str>) -> Result<(), Error> {
+    let invalid_flag = flags.into_iter().find(|flag| {
+        !expected_flags.contains(&flag.as_str())
+            && !Command::str_is_help_flag(flag.as_str())
+            && !Command::str_is_version_flag(flag)
+    });
+
+    if let Some(invalid_flag) = invalid_flag {
+        return Err(invalid_input_error(&format!(
+            "Invalid flag \"{}\"",
+            invalid_flag
+        )));
+    }
+
+    Ok(())
+}
 
 pub fn get(text: &str) -> Result<String, Error> {
     print!("{}", text);
@@ -36,4 +56,4 @@ pub fn get_boolean_input(text: &str) -> Result<bool, Error> {
     })?;
 
     Ok(bool_value == "y" || bool_value == "Y")
-} 
+}

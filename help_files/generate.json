@@ -1,18 +1,26 @@
 {
     "name": "gen",
-    "parents": ["tp"],
     "about": "Generates a template in a specific folder ",
+    "parents": [
+        "tp"
+    ],
     "args": {
         "inputs": [
             {
-                "name": "template-namespace",
-                "help": "Sets the template namespace",
+                "name": "temp-name",
+                "help": "Sets the template name",
                 "required": true
             },
             {
                 "name": "output-folder",
                 "help": "Sets the output folder",
                 "default_value": "./"
+            },
+        ],
+        "options": [
+            {
+                "long": "file",
+                "help": "Sets the template file to generate"
             }
         ]
     }

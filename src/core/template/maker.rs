@@ -1,8 +1,8 @@
 use super::config::get_config_args;
 use super::{miner, TempContent, TempPath, Template};
-use crate::utils::date::get_date_now_string;
-use crate::utils::errors::invalid_input_error;
-use crate::utils::path::{format_path_namespace, pathbuf_to_string, remove_dir_prefix};
+use crate::core::utils::errors::invalid_input_error;
+use crate::core::utils::date::get_date_now_string;
+use crate::core::utils::path::{format_path_namespace, pathbuf_to_string, remove_dir_prefix};
 use std::io::Error;
 
 #[derive(Debug, PartialEq)]
@@ -13,12 +13,13 @@ pub struct TempData {
 
 pub fn make_template(
     temp_name: String,
-    description: Option<String>,
     ref_path: &str,
+    description: Option<String>,
 ) -> Result<Template, Error> {
-
-    if temp_name.is_empty() {
-        return Err(invalid_input_error("The template name cannot be empty."))
+    if temp_name.contains(" ") {
+        return Err(invalid_input_error(
+            "The template name cannot have whitespaces.",
+        ));
     }
 
     let (name, created_at) = make_template_metadata(temp_name)?;
@@ -29,6 +30,7 @@ pub fn make_template(
         name,
         description,
         created_at,
+        updated_at: None,
         paths: data.paths,
         contents: data.contents,
         args,

@@ -1,11 +1,10 @@
-extern crate tokio;
 mod cli;
 mod core;
 mod methods;
-mod utils;
 
+use crate::core::info::VERSION;
 use crate::core::repos::Repository;
-use crate::utils::errors::invalid_input_error;
+use crate::core::utils::errors::invalid_input_error;
 use cli::input::command::parse_command;
 use methods::*;
 use std::env;
@@ -16,21 +15,20 @@ async fn main() {
     let command = parse_command(env).expect("Error when parsing command string.");
 
     if let None = command.method {
-        let flags = vec!["--help", "-h", "-H", "--version", "-v", "-V"];
-        if let Err(err) = check_flags(&command.flags, flags) {
-            eprintln!("{}: {}", paint_string!("{red}", "Error"), err)
-        };
-
-        if command.has_flag("--help") || command.has_flag("-h") || command.has_flag("-H") {
-            if let Err(err) = help::run() {
-                eprintln!("{}: {}", paint_string!("{red}", "Error"), err)
-            };
+        if command.has_help_flag() {
+            write_help!("../help_files/mod.json");
         }
 
-        if command.has_flag("--version") || command.has_flag("-v") || command.has_flag("-V") {
-            if let Err(err) = Version::run() {
-                eprintln!("{}: {}", paint_string!("{red}", "Error"), err)
-            };
+        if command.has_version_flag() {
+            println!("{}", VERSION);
+        }
+
+        if !command.has_help_flag() && !command.has_version_flag() && !command.args.is_empty() {
+            eprintln!(
+                "{}: {}",
+                paint_string!("{red}", "Error"),
+                format!("Invalid flag \"{}\"", &command.flags[0])
+            )
         }
 
         if command.flags.is_empty() {
@@ -50,7 +48,6 @@ async fn main() {
                 "gen" => Generate::run(command).await,
                 "get" => Get::run(command).await,
                 "del" => Delete::run(command),
-                "regs" => Registry::run(command),
                 "repo" => Repo::run(command),
                 "repos" => Repos::run(command),
                 "mv" => Move::run(command),
@@ -58,8 +55,6 @@ async fn main() {
                 "docs" => Docs::run(command),
                 "save" => Save::run(command),
                 "update" => Update::run(command),
-                "help" | "h" => help::run(),
-                "version" | "v" => Version::run(),
                 _ => Err(invalid_input_error(&format!(
                     "Invalid method \"{}\".",
                     method

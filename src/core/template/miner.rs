@@ -1,7 +1,9 @@
 use super::{TempContent, TempPath, TempPathType};
-use crate::utils::{
-    errors::std_error,
-    path::{format_path_namespace, pathbuf_to_string, remove_dir_prefix, valid_directory_path},
+use crate::core::{
+    utils::errors::std_error,
+    utils::path::{
+        format_path_namespace, pathbuf_to_string, remove_dir_prefix, valid_directory_path,
+    },
 };
 use base64;
 use fs_tree::FsTreeBuilder;
@@ -46,8 +48,12 @@ fn get_paths_to_ignore(directory_path: &str) -> Result<Vec<String>, Error> {
     }
 
     let ignore_filename = template_config.join("ignore.json");
-    let mut paths_to_ignore: Vec<String> =
-        std_error(from_str(&fs::read_to_string(ignore_filename)?))?;
+
+    let mut paths_to_ignore = if ignore_filename.exists() {
+        std_error(from_str(&fs::read_to_string(ignore_filename)?))?
+    } else {
+        vec![]
+    };
     paths_to_ignore.push("./TemplateConfig/".to_string());
 
     let real_paths_to_ignore: Vec<String> = paths_to_ignore

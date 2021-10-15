@@ -1,16 +1,16 @@
 {
     "name": "mv",
-    "parents": ["tp"],
     "about": "Moves a template from a repo to another repo",
+    "parents": ["tp"],
     "args": {
         "inputs": [
             {
-                "name": "template-namespace",
-                "help": "Sets the template namespace"
+                "name": "temp-name",
+                "help": "Sets the template name"
             },
             {
                 "name": "repo-name",
-                "help": "Sets the repository namespace"
+                "help": "Sets the repository name"
             }
         ]
     }

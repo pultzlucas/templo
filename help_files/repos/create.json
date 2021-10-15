@@ -1,6 +1,6 @@
 {
     "name": "create",
-    "parents": ["tp", "regs"],
+    "parents": ["tp", "repos"],
     "about": "Creates a new repository",
     "args": {
         "inputs": [

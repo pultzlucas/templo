@@ -1,6 +1,11 @@
 use std::io::Error;
 
-use crate::{cli::input::{command::Command, get_boolean_input}, core::repos::{delete_repo, repo_exists}, utils::errors::{invalid_input_error, not_found_error}, write_help};
+use crate::{
+    cli::input::{command::Command, get_boolean_input},
+    core::repos::{delete_repo, repo_exists},
+    core::utils::errors::{invalid_input_error, not_found_error},
+    write_help,
+};
 
 pub struct Delete;
 
@@ -14,7 +19,7 @@ impl Delete {
             Self::help();
             return Ok(());
         }
-        
+
         if command.args.len() < 2 {
             return Err(invalid_input_error("Repo name must be specified."));
         }

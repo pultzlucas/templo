@@ -5,6 +5,8 @@ pub mod engine;
 pub mod config;
 pub mod getter;
 
+use super::http;
+
 #[cfg(test)]
 mod tests;
 
@@ -20,6 +22,7 @@ pub struct Template {
     pub name: String,
     pub description: Option<String>,
     pub created_at: String,
+    pub updated_at: Option<String>,
     pub paths: Vec<TempPath>,
     pub contents: Vec<TempContent>,
     pub args: Option<Vec<ConfigArg>>

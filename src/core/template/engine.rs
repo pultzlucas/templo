@@ -1,6 +1,6 @@
 use super::ConfigArg;
 use crate::cli::input;
-use crate::utils::errors::not_found_error;
+use crate::core::utils::errors::not_found_error;
 use regex::Regex;
 use std::io::Error;
 

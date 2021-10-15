@@ -1,12 +1,18 @@
 {
     "name": "update",
-    "parents": ["tp"],
     "about": "Updates a template from folder",
+    "parents": ["tp"],
     "args": {
         "inputs": [
             {
-                "name": "template-namespace",
-                "help": "Sets the template namespace"
+                "name": "temp-name",
+                "help": "Sets the template name",
+                "required": true
+            },
+            {
+                "name": "folder-path",
+                "help": "Sets the the input folder path",
+                "default_value": "./"
             }
         ]
     }

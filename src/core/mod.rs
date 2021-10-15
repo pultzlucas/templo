@@ -1,6 +1,6 @@
 pub mod path;
 pub mod repos;
 pub mod template;
-pub mod requester;
+pub mod http;
 pub mod info;
-pub mod namespaces;
+pub mod utils;

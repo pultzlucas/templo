@@ -1,8 +1,9 @@
 use crate::cli::input;
 use crate::cli::input::command::Command;
 use crate::core::repos::Repository;
+use crate::core::utils::errors::invalid_input_error;
 use crate::write_help;
-use crate::{core::template::maker::make_template, utils::errors::already_exists_error};
+use crate::{core::template::maker::make_template, core::utils::errors::already_exists_error};
 use std::{io::Error, time::Instant};
 
 pub struct Save;
@@ -24,12 +25,18 @@ impl Save {
             input::get("Template name: ")?
         };
 
+        if template_name.is_empty() {
+            return Err(invalid_input_error("The template name cannot be empty."));
+        }
+
+        if template_name.contains(" ") {
+            return Err(invalid_input_error(
+                "The template name cannot have whitespaces.",
+            ));
+        }
+
         let repo_name = if command.has_option("repo") {
-            command
-                .get_opt_by_name("description")
-                .unwrap()
-                .value
-                .clone()
+            command.get_opt_by_name("repo").unwrap().value.clone()
         } else {
             input::get("Repository (main): ")?
         };
@@ -40,10 +47,10 @@ impl Save {
             Repository::connect(repo_name)
         }?;
 
-        if repo.template_exists(&template_name) {
+        if repo.has_template(&template_name) {
             return Err(already_exists_error(&format!(
-                r#"Template "{}" already exists in your repository."#,
-                template_name
+                "Template \"{}\" already exists in \"{}\" repository.",
+                template_name, repo.name
             )));
         }
 
@@ -63,14 +70,14 @@ impl Save {
             Some(description_value)
         };
 
-        let ref_path = if !command.args.is_empty() {
-            command.args[0].as_str()
-        } else {
+        let ref_path = if command.args.is_empty() {
             "."
+        } else {
+            command.args[0].as_str()
         };
 
         let start = Instant::now(); // start timing process
-        let template = make_template(template_name, description, ref_path)?;
+        let template = make_template(template_name, ref_path, description)?;
 
         repo.save_template(template)?;
         println!("Template was saved successfully.");

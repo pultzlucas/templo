@@ -4,7 +4,7 @@ use open;
 use std::io::Error;
 use std::time::Instant;
 
-const DOCS_URL: &'static str = "https://github.com/Lucas-Lopes-Pultz/prottern-docs";
+const DOCS_URL: &'static str = "https://github.com/pultzlucas/templo-docs";
 
 pub struct Docs;
 

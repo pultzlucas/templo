@@ -1,9 +1,11 @@
 /target
 /dir-tests
 *.txt
+*.csv
 /src/core/secrets.rs
 .todo
 .tree
+structure-example/
 
 .vscode/*
 !.vscode/settings.json

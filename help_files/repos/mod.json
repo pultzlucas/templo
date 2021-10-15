@@ -1,7 +1,7 @@
 {
     "name": "repos",
-    "parents": ["tp"],
     "about": "Manipulates the repos",
+    "parents": ["tp"],
     "submethods": [
         {
             "name": "create",
