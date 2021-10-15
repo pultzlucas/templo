@@ -24,4 +24,3 @@ termcolor = "1.1.2"
 tabled = "0.3.0"
 open = "2.0"
 home = "0.5"
-clap = {version = "2.33.3", features = ["yaml"]}
