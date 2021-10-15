@@ -61,41 +61,39 @@ impl Repository {
     }
 
     pub fn get_templates(&self) -> Result<Vec<Template>, Error> {
-        fs::read_dir(&get_repo_path(&self.name)?)?
+        fs::read_dir(&self.path)?
             .map(|template| template.map(|e| e.path()))
             .map(|file| fs::read_to_string(file?))
             .map(|temp_string| {
-                Ok(from_str(&temp_string?).expect("Error when deserializing template object."))
+                Ok(from_str(&temp_string?)
+                    .expect("Error when deserializing template string object."))
             })
             .collect()
     }
 
     pub fn get_template(&self, template_name: &str) -> Result<Template, Error> {
-        let template = {
-            if self.is_empty() {
-                return Err(not_found_error(&format!(
-                    "Repo \"{}\" is empty.",
-                    self.name
-                )));
-            }
+        if self.is_empty() {
+            return Err(not_found_error(&format!(
+                "Repo \"{}\" is empty.",
+                self.name
+            )));
+        }
 
-            let matched_template = self
-                .get_templates()?
-                .clone()
-                .into_iter()
-                .find(|temp| temp.name == *template_name);
+        let template_file = fs::read_dir(&self.path)?.into_iter().find(|temp_file| {
+            temp_file.as_ref().unwrap().file_name().to_str().unwrap()
+                == format!("{}.tpo", template_name)
+        });
 
-            if let Some(temp) = matched_template {
-                temp
-            } else {
-                return Err(not_found_error(&format!(
-                    "Not is possible find \"{}\" on \"{}\" repository",
-                    template_name, self.name
-                )));
-            }
-        };
-
-        Ok(template)
+        if let Some(temp) = template_file {
+            let template_file_string = fs::read_to_string(temp?.path())?;
+            return Ok(from_str(&template_file_string)
+                .expect("Error when deserializing template string object."));
+        } else {
+            return Err(not_found_error(&format!(
+                "Not is possible find \"{}\" on \"{}\" repository",
+                template_name, self.name
+            )));
+        }
     }
 
     pub fn delete_template(&self, template_name: &str) -> Result<(), Error> {
