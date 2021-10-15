@@ -3,7 +3,6 @@ use super::engine::TempEngineArg;
 use super::Template;
 use crate::core::template::engine::parse_path;
 use crate::core::template::{TempContent, TempPath, TempPathType};
-use crate::core::utils::string::decode_base64;
 use crate::{
     core::utils::path::{format_path_namespace, pathbuf_to_string, str_to_pathbuf},
     paint, paintln,
@@ -24,15 +23,28 @@ pub fn gen_template(
             .contents
             .into_iter()
             .map(|content| {
-                let text_content_parsed = base64::encode(parse_content(
-                    decode_base64(content.bytes)?,
-                    temp_args.clone(),
-                )?);
                 let filename_parsed = parse_path(content.file_path, temp_args.clone())?;
+
+                if content.is_text {
+                    let text_decoded = String::from_utf8(
+                        base64::decode(content.bytes)
+                            .expect("Error when decoding template content text."),
+                    )
+                    .expect("Error when parsing template content bytes to utf8.");
+                    let text_content_parsed = parse_content(text_decoded, temp_args.clone())?
+                        .as_bytes()
+                        .to_vec();
+                    return Ok(TempContent {
+                        file_path: filename_parsed,
+                        bytes: base64::encode(text_content_parsed),
+                        is_text: content.is_text,
+                    });
+                }
+
                 Ok(TempContent {
                     file_path: filename_parsed,
-                    bytes: text_content_parsed,
-                    is_text: content.is_text
+                    bytes: content.bytes,
+                    is_text: content.is_text,
                 })
             })
             .collect()
@@ -45,6 +57,7 @@ pub fn gen_template(
     if !directory.exists() {
         fs::create_dir_all(directory)?;
     }
+
 
     paintln!("{gray}", "[creating files and folders...]");
     for path in template.paths.into_iter() {
@@ -96,7 +109,10 @@ fn write_contents(contents: Vec<TempContent>, directory: &Path) -> Result<(), Er
     for content in contents.into_iter() {
         let file_path = get_real_path(directory, str_to_pathbuf(&content.file_path));
         if file_path.exists() {
-            fs::write(&file_path, decode_base64(content.bytes)?)?;
+            fs::write(
+                &file_path,
+                base64::decode(content.bytes).expect("Error when decoding file bytes."),
+            )?;
 
             print!("{}", pathbuf_to_string(format_path_namespace(file_path)));
             paintln!("...{green}", "ok");

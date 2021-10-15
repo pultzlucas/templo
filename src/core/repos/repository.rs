@@ -1,10 +1,10 @@
 use super::repo_exists;
+use crate::core::path::get_repo_path;
+use crate::core::template::Template;
 use crate::core::utils::errors::already_exists_error;
 use crate::core::utils::errors::not_found_error;
 use crate::core::utils::errors::repo_connection_error;
 use crate::core::utils::errors::std_error;
-use crate::core::path::get_repo_path;
-use crate::core::template::Template;
 use serde_json::{from_str, to_string_pretty};
 use std::{
     fs,
@@ -64,7 +64,9 @@ impl Repository {
         fs::read_dir(&get_repo_path(&self.name)?)?
             .map(|template| template.map(|e| e.path()))
             .map(|file| fs::read_to_string(file?))
-            .map(|temp_string| std_error(from_str(&temp_string?)))
+            .map(|temp_string| {
+                Ok(from_str(&temp_string?).expect("Error when deserializing template object."))
+            })
             .collect()
     }
 
@@ -83,14 +85,13 @@ impl Repository {
                 .into_iter()
                 .find(|temp| temp.name == *template_name);
 
-            match matched_template {
-                Some(t) => t,
-                None => {
-                    return Err(not_found_error(&format!(
-                        "Not is possible find \"{}\" on \"{}\" repository",
-                        template_name, self.name
-                    )))
-                }
+            if let Some(temp) = matched_template {
+                temp
+            } else {
+                return Err(not_found_error(&format!(
+                    "Not is possible find \"{}\" on \"{}\" repository",
+                    template_name, self.name
+                )));
             }
         };
 
