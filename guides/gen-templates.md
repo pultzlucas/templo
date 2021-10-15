@@ -1,8 +1,8 @@
 # How to generate templates
 
 prerequisits:
-- Seen how to save templates guide
-- Have a template
+- Have Templo installed in your computer
+- Have a template to generate
 
 Generate templates is pretty simple.
 
