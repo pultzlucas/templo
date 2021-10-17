@@ -8,6 +8,12 @@
                 "name": "repo-name",
                 "help": "Sets the repo name"
             }
+        ],
+        "flags": [
+            {
+                "long": "local",
+                "help": "Returns the repo path adress"
+            }
         ]
     }
 }
