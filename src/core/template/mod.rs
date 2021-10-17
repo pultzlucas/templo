@@ -1,18 +1,18 @@
+pub mod config;
+pub mod engine;
 pub mod generator;
+pub mod getter;
 pub mod maker;
 pub mod miner;
-pub mod engine;
-pub mod config;
-pub mod getter;
 
-use super::http;
+use super::{core_fs, http};
 
 #[cfg(test)]
 mod tests;
 
 use config::ConfigArg;
 use serde_derive::{Deserialize, Serialize};
-use std::path::PathBuf;
+use std::{io::Error, path::PathBuf};
 use tabled::Tabled;
 
 // STRUCTS
@@ -24,19 +24,19 @@ pub struct Template {
     pub created_at: String,
     pub updated_at: Option<String>,
     pub paths: Vec<TempPath>,
-    pub contents: Vec<TempContent>,
-    pub args: Option<Vec<ConfigArg>>
+    pub args: Option<Vec<ConfigArg>>,
 }
+
 
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 pub struct TempPath {
     pub path: PathBuf,
-    pub path_type: TempPathType,
+    pub is_file: bool,
+    pub content: Option<TempPathContent>,
 }
 
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
-pub struct TempContent {
-    pub file_path: String,
+pub struct TempPathContent {
     pub bytes: String,
     pub is_text: bool
 }
@@ -47,32 +47,31 @@ pub struct TemplateDisplayInfo {
     pub created_at: String,
 }
 
-//ENUMS
-
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
-pub enum TempPathType {
-    File,
-    Dir,
-}
-
 // IMPLEMENTATIONS
 
 impl TempPath {
-    pub fn new(path: PathBuf) -> Self {
-        Self {
+    pub fn create(path: PathBuf) -> Result<Self, Error> {
+        let content = if path.is_file() {
+            let bytes = core_fs::read_bytes(&path)?;
+            Some(TempPathContent::new(bytes))
+        } else {
+            None
+        };
+
+        Ok(Self {
             path: path.clone(),
-            path_type: if path.is_file() {
-                TempPathType::File
-            } else {
-                TempPathType::Dir
-            },
-        }
+            is_file: path.is_file(),
+            content,
+        })
     }
 }
 
-impl TempContent {
-    pub fn new(file_path: String, bytes: String, is_text: bool) -> Self {
-        Self { file_path, bytes, is_text }
+impl TempPathContent {
+    pub fn new(bytes: Vec<u8>) -> Self {
+        Self{
+            bytes: base64::encode(&bytes),
+            is_text: String::from_utf8(bytes).is_ok()
+        }
     }
 }
 
@@ -82,5 +81,9 @@ impl Template {
             name: self.name.clone(),
             created_at: self.created_at.clone(),
         }
+    }
+
+    pub fn files(&self) -> Vec<TempPath> {
+        self.paths.clone().into_iter().filter(|path| path.is_file).collect()
     }
 }

@@ -16,7 +16,7 @@ struct EngineRegex {
 }
 
 // Args shape: {> arg <}
-pub fn parse_content(content: String, args: Vec<TempEngineArg>) -> Result<String, Error> {
+pub fn parse_content(content: String, args: &Vec<TempEngineArg>) -> Result<String, Error> {
     parse(
         content,
         args,
@@ -28,7 +28,7 @@ pub fn parse_content(content: String, args: Vec<TempEngineArg>) -> Result<String
 }
 
 // Args shape: ([ arg ])
-pub fn parse_path(path: String, args: Vec<TempEngineArg>) -> Result<String, Error> {
+pub fn parse_path(path: String, args: &Vec<TempEngineArg>) -> Result<String, Error> {
     parse(
         path,
         args,
@@ -39,7 +39,7 @@ pub fn parse_path(path: String, args: Vec<TempEngineArg>) -> Result<String, Erro
     )
 }
 
-fn parse(text: String, args: Vec<TempEngineArg>, regex: EngineRegex) -> Result<String, Error> {
+fn parse(text: String, args: &Vec<TempEngineArg>, regex: EngineRegex) -> Result<String, Error> {
     let mut final_text = text.clone();
 
     for caps in regex.shape.captures_iter(&text) {

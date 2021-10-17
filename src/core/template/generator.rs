@@ -2,14 +2,15 @@ use super::engine::parse_content;
 use super::engine::TempEngineArg;
 use super::Template;
 use crate::core::template::engine::parse_path;
-use crate::core::template::{TempContent, TempPath, TempPathType};
+use crate::core::template::TempPath;
 use crate::{
     core::utils::path::{format_path_namespace, pathbuf_to_string, str_to_pathbuf},
     paint, paintln,
 };
+use std::fs::File;
 use std::{
     fs,
-    io::Error,
+    io::{Error, Write},
     path::{Path, PathBuf},
 };
 
@@ -18,106 +19,69 @@ pub fn gen_template(
     directory: &Path,
     temp_args: Vec<TempEngineArg>,
 ) -> Result<(), Error> {
-    let template_contents: Result<Vec<TempContent>, Error> = if !temp_args.is_empty() {
-        template
-            .contents
-            .into_iter()
-            .map(|content| {
-                let filename_parsed = parse_path(content.file_path, temp_args.clone())?;
-
-                if content.is_text {
-                    let text_decoded = String::from_utf8(
-                        base64::decode(content.bytes)
-                            .expect("Error when decoding template content text."),
-                    )
-                    .expect("Error when parsing template content bytes to utf8.");
-                    let text_content_parsed = parse_content(text_decoded, temp_args.clone())?
-                        .as_bytes()
-                        .to_vec();
-                    return Ok(TempContent {
-                        file_path: filename_parsed,
-                        bytes: base64::encode(text_content_parsed),
-                        is_text: content.is_text,
-                    });
-                }
-
-                Ok(TempContent {
-                    file_path: filename_parsed,
-                    bytes: content.bytes,
-                    is_text: content.is_text,
-                })
-            })
-            .collect()
-    } else {
-        Ok(template.contents)
-    };
-
-    let template_contents = template_contents?;
-
     if !directory.exists() {
         fs::create_dir_all(directory)?;
     }
 
+    let temp_args_is_empty = temp_args.clone().is_empty();
 
     paintln!("{gray}", "[creating files and folders...]");
     for path in template.paths.into_iter() {
-        let path = if !temp_args.is_empty() {
-            let path_parsed = parse_path(pathbuf_to_string(path.path), temp_args.clone())?;
+        let path = if temp_args_is_empty {
+            path
+        } else {
+            let path_parsed = parse_path(pathbuf_to_string(path.path), &temp_args)?;
             TempPath {
                 path: str_to_pathbuf(&path_parsed),
-                path_type: path.path_type,
+                is_file: path.is_file,
+                content: path.content,
             }
-        } else {
-            path
         };
-        create_path(path, directory)?;
-    }
-
-    if template_contents.len() > 0 {
-        paintln!("{gray}", "\n[writing contents...]");
-        write_contents(template_contents.clone(), directory)?;
+        create_path(path, directory, &temp_args)?;
     }
 
     print!("\n");
     Ok(())
 }
 
-fn create_path(path: TempPath, directory: &Path) -> Result<(), Error> {
+fn create_path(
+    path: TempPath,
+    directory: &Path,
+    temp_args: &Vec<TempEngineArg>,
+) -> Result<(), Error> {
     let real_path = TempPath {
         path: get_real_path(directory, path.path),
-        path_type: path.path_type,
+        is_file: path.is_file,
+        content: path.content,
     };
 
-    if real_path.path_type == TempPathType::File {
-        fs::write(&real_path.path, "")?;
+    if real_path.is_file {
+        let mut file = File::create(&real_path.path)?;
+
+        if let Some(content) = real_path.content {
+            let bytes_decoded =
+                base64::decode(content.bytes).expect("Error when decoding base64 file bytes.");
+
+            // If content is text, it will be parsed by template engine
+            if content.is_text {
+                let text_decoded = String::from_utf8(bytes_decoded.clone())
+                    .expect("Error when parsing template content bytes to utf8.");
+                let text_content_parsed =
+                    parse_content(text_decoded, temp_args)?.as_bytes().to_vec();
+                file.write_all(&text_content_parsed)?;
+            } else {
+                file.write_all(&bytes_decoded)?;
+            }
+        }
+
         paint!("{gray}", "file: ");
-    }
-    if real_path.path_type == TempPathType::Dir {
+    } else {
         fs::create_dir(&real_path.path)?;
         paint!("{gray}", "dir:  ");
     }
 
-    println!(
-        "{}",
-        pathbuf_to_string(format_path_namespace(real_path.path))
-    );
-
-    Ok(())
-}
-
-fn write_contents(contents: Vec<TempContent>, directory: &Path) -> Result<(), Error> {
-    for content in contents.into_iter() {
-        let file_path = get_real_path(directory, str_to_pathbuf(&content.file_path));
-        if file_path.exists() {
-            fs::write(
-                &file_path,
-                base64::decode(content.bytes).expect("Error when decoding file bytes."),
-            )?;
-
-            print!("{}", pathbuf_to_string(format_path_namespace(file_path)));
-            paintln!("...{green}", "ok");
-        }
-    }
+    let path_string = pathbuf_to_string(format_path_namespace(real_path.path));
+    println!("{}", path_string);
 
     Ok(())
 }

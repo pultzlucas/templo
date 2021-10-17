@@ -68,7 +68,7 @@ fn get_args() -> Vec<TempEngineArg> {
 
 #[test]
 fn parse_template_content() {
-    let parsed = parse_content(TEXT.to_string(), get_args()).unwrap();
+    let parsed = parse_content(TEXT.to_string(), &get_args()).unwrap();
 
     assert_eq!(
         parsed,
@@ -94,7 +94,7 @@ fn parse_template_path1() {
         key: "filename".to_string(),
         value: "template.tpo".to_string(),
     }];
-    let parsed = parse_path(path, args).unwrap();
+    let parsed = parse_path(path, &args).unwrap();
     assert_eq!(parsed, "folder1/folder2/template.tpo")
 }
 
@@ -105,7 +105,7 @@ fn parse_template_path2() {
         key: "folder-name".to_string(),
         value: "folder2".to_string(),
     }];
-    let parsed = parse_path(path, args).unwrap();
+    let parsed = parse_path(path, &args).unwrap();
     assert_eq!(parsed, "folder1/folder2/template.tpo")
 }
 

@@ -1,15 +1,9 @@
 use super::config::get_config_args;
-use super::{miner, TempContent, TempPath, Template};
+use super::{miner, TempPath, Template};
 use crate::core::utils::date::get_date_now_string;
 use crate::core::utils::errors::invalid_input_error;
 use crate::core::utils::path::{format_path_namespace, pathbuf_to_string, remove_dir_prefix};
 use std::io::Error;
-
-#[derive(Debug, PartialEq)]
-pub struct TempData {
-    pub paths: Vec<TempPath>,
-    pub contents: Vec<TempContent>,
-}
 
 pub fn make_template(
     temp_name: String,
@@ -22,53 +16,45 @@ pub fn make_template(
         ));
     }
 
-    let (name, created_at) = make_template_metadata(temp_name)?;
-    let data = make_template_data(ref_path)?;
+    let created_at = get_date_now_string();
+    let paths = make_template_paths(ref_path)?;
     let args = get_config_args(ref_path)?;
 
     Ok(Template {
-        name,
+        name: temp_name,
         description,
         created_at,
         updated_at: None,
-        paths: data.paths,
-        contents: data.contents,
+        paths,
         args,
     })
 }
 
-pub fn make_template_data(dir_path: &str) -> Result<TempData, Error> {
+pub fn make_template_paths(dir_path: &str) -> Result<Vec<TempPath>, Error> {
     let raw_paths = miner::mine_paths_from(dir_path)?;
-
-    let files = miner::mine_files_from_paths(raw_paths.clone(), dir_path)?
-        .into_iter()
-        .filter(|file| file.bytes != "")
-        .collect();
+    // let files = miner::mine_files_from_paths(raw_paths.clone(), dir_path)?
+    //     .into_iter()
+    //     .filter(|file| file.bytes != "")
+    //     .collect();
 
     let formatted_paths: Vec<TempPath> = raw_paths
         .into_iter()
         .map(|path| TempPath {
             path: format_path_namespace(path.path),
-            path_type: path.path_type,
+            is_file: path.is_file,
+            content: path.content,
         })
         .map(|path| {
             let path_clean =
                 remove_dir_prefix(path.path, dir_path).expect("Error when removing dir prefix");
             TempPath {
                 path: path_clean,
-                path_type: path.path_type,
+                is_file: path.is_file,
+                content: path.content,
             }
         })
         .filter(|path| pathbuf_to_string(path.path.clone()) != "")
         .collect();
-    Ok(TempData {
-        paths: formatted_paths,
-        contents: files,
-    })
-}
 
-type TempMetadata = (String, String);
-fn make_template_metadata(temp_name: String) -> Result<TempMetadata, Error> {
-    let created_at = get_date_now_string();
-    Ok((temp_name, created_at))
+    Ok(formatted_paths)
 }

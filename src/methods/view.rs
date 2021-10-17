@@ -4,7 +4,7 @@ use crate::cli::input::namespaces::{get_repo_namespace_obj, NamespaceObject};
 use crate::cli::output::messages::error::INVALID_TEMPLATE_NAME;
 use crate::core::repos::Repository;
 use crate::core::template::config::ConfigArg;
-use crate::core::template::{TempPath, TempPathType, Template};
+use crate::core::template::{TempPath, Template};
 use crate::core::utils::errors::invalid_input_error;
 use crate::core::utils::path::pathbuf_to_string;
 use crate::core::utils::string::decode_base64;
@@ -169,22 +169,23 @@ fn display_file_content(file_path: &str, template: Template) -> Result<(), Error
     if let Some(file_path) = file_path_temp {
         let path_name = pathbuf_to_string(file_path.path.clone());
 
-        if file_path.path_type == TempPathType::Dir {
+        if !file_path.is_file {
             return Err(invalid_input_error(&format!(
                 "Path \"{}\" is not a file.",
                 path_name
             )));
         }
 
-        let file_content = template
-            .contents
-            .iter()
-            .find(|content| content.file_path == path_name);
+        let temp_files = template.files();
+        let file = temp_files
+            .into_iter()
+            .find(|file| pathbuf_to_string((*file.path).to_path_buf()) == path_name);
 
         println!("{}", paint_string!("{gray}", format!("[{}]", path_name)));
 
-        if let Some(content) = file_content {
-            let text = decode_base64(content.bytes.clone())?;
+        if let Some(file) = file {
+            let bytes = file.content.unwrap().bytes;
+            let text = decode_base64(bytes)?;
             println!("{}", text);
         }
     } else {
