@@ -7,7 +7,6 @@ use crate::core::template::config::ConfigArg;
 use crate::core::template::{TempPath, Template};
 use crate::core::utils::errors::invalid_input_error;
 use crate::core::utils::path::pathbuf_to_string;
-use crate::core::utils::string::decode_base64;
 use crate::{paint_string, paintln, write_help};
 use std::io::Error;
 
@@ -184,9 +183,17 @@ fn display_file_content(file_path: &str, template: Template) -> Result<(), Error
         println!("{}", paint_string!("{gray}", format!("[{}]", path_name)));
 
         if let Some(file) = file {
-            let bytes = file.content.unwrap().bytes;
-            let text = decode_base64(bytes)?;
-            println!("{}", text);
+            let content = file.content.unwrap();
+            let bytes_decoded =
+                base64::decode(content.bytes).expect("Error when decoding base64 file bytes.");
+
+            if content.is_text {
+                let text = String::from_utf8(bytes_decoded)
+                    .expect("Error when parsing bytes to utf8 string.");
+                println!("{}", text);
+            } else {
+                println!("{:?}", bytes_decoded);
+            }
         }
     } else {
         return Err(invalid_input_error(&format!(
