@@ -22,6 +22,7 @@ pub fn make_template(
 
     Ok(Template {
         name: temp_name,
+        author: None,
         description,
         created_at,
         updated_at: None,

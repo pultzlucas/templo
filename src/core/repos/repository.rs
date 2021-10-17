@@ -120,6 +120,7 @@ impl Repository {
         let new_template = Template {
             name: new_template_name,
             description: old_template.description,
+            author: old_template.author,
             created_at: old_template.created_at,
             updated_at: old_template.updated_at,
             paths: old_template.paths,
@@ -142,6 +143,7 @@ impl Repository {
         let new_template = Template {
             name: old_template.name,
             description: new_template_description,
+            author: old_template.author,
             created_at: old_template.created_at,
             updated_at: old_template.updated_at,
             paths: old_template.paths,

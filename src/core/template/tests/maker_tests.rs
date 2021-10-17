@@ -12,6 +12,7 @@ fn get_correct_template_struct() -> Template {
     Template {
         name: "test".to_string(),
         description: None,
+        author: None,
         created_at: get_date_now_string(),
         updated_at: None,
         paths: vec![
