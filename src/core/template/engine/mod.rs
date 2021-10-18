@@ -4,6 +4,11 @@ use crate::core::utils::errors::not_found_error;
 use regex::Regex;
 use std::io::Error;
 
+mod functions;
+
+#[cfg(test)]
+mod tests;
+
 #[derive(Clone, Debug, PartialEq)]
 pub struct TempEngineArg {
     pub key: String,
