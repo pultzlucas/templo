@@ -2,7 +2,7 @@ pub mod command;
 pub mod namespaces;
 
 use self::command::Command;
-use crate::core::utils::errors::invalid_input_error;
+use crate::core::{template::{config::ConfigArg, engine::args_parser::TempEngineArg}, utils::errors::invalid_input_error};
 use std::io::{stdin, stdout, Error, Write};
 
 pub fn check_flags(flags: &Vec<String>, expected_flags: Vec<&str>) -> Result<(), Error> {
@@ -56,4 +56,16 @@ pub fn get_boolean_input(text: &str) -> Result<bool, Error> {
     })?;
 
     Ok(bool_value == "y" || bool_value == "Y")
+}
+
+pub fn get_engine_args_input(args: &Vec<ConfigArg>) -> Result<Vec<TempEngineArg>, Error> {
+    args.into_iter()
+        .map(|arg| {
+            let value = get(&arg.query)?;
+            Ok(TempEngineArg {
+                key: arg.key.to_string(),
+                value,
+            })
+        })
+        .collect()
 }

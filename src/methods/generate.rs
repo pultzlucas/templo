@@ -1,8 +1,9 @@
+use crate::cli::input;
 use crate::cli::input::command::{Command, CommandOption};
 use crate::cli::input::namespaces::get_repo_namespace_obj;
 use crate::cli::output::messages::error::{INVALID_DIRECTORY_PATH_TYPE, INVALID_TEMPLATE_NAME};
 use crate::core::repos::Repository;
-use crate::core::template::engine::{get_engine_args_input, set_arg_default_value, TempEngineArg};
+use crate::core::template::engine::args_parser::{set_arg_default_value, TempEngineArg};
 use crate::core::template::{generator, Template};
 use crate::core::utils::errors::{invalid_input_error, std_error};
 use crate::write_help;
@@ -122,7 +123,7 @@ fn get_template_args_by_options(
 
 fn get_template_args_by_temp(template: &Template) -> Result<Vec<TempEngineArg>, Error> {
     if let Some(config_args) = &template.args {
-        let temp_args = get_engine_args_input(config_args)?
+        let temp_args = input::get_engine_args_input(config_args)?
             .into_iter()
             .map(|arg| set_arg_default_value(arg, config_args));
 

@@ -1,12 +1,5 @@
 use crate::core::utils::string::split_by;
 
-pub enum EngFnArgs<'a> {
-    Upper(&'a str),
-    Lower(&'a str),
-    Join(&'a str, Option<&'a str>),
-    UpperFirst(&'a str),
-}
-
 #[allow(dead_code)]
 pub fn upper(v: &str) -> String {
     v.to_uppercase()

@@ -1,8 +1,8 @@
-use crate::core::template::engine::parse_path;
+use crate::core::template::engine::args_parser::parse_path;
 
 use super::{
     config::ConfigArg,
-    engine::{parse_content, set_arg_default_value, TempEngineArg},
+    engine::args_parser::{parse_content, set_arg_default_value, TempEngineArg},
 };
 
 fn get_content_parser_config_args() -> Vec<ConfigArg> {
