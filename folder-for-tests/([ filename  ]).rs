@@ -1,4 +1,4 @@
 fn {>filename<}()
 {
-    print!("{>name<} {>  lastName  <}");
+    print!("{> upper_first(name) <} {> upper_first(lastName) <}");
 }

@@ -1,10 +1,7 @@
-use super::engine::args_parser::parse_content;
-use super::engine::args_parser::TempEngineArg;
 use super::Template;
-use crate::core::template::engine::args_parser::parse_path;
 use crate::core::template::TempPath;
 use crate::{
-    core::utils::path::{format_path_namespace, pathbuf_to_string, str_to_pathbuf},
+    core::utils::path::{format_path_namespace, pathbuf_to_string},
     paint, paintln,
 };
 use std::fs::File;
@@ -13,30 +10,19 @@ use std::{
     io::{Error, Write},
     path::{Path, PathBuf},
 };
+use templo_engine::{EngineArg, Engine};
 
 pub fn gen_template(
     template: Template,
     directory: &Path,
-    temp_args: Vec<TempEngineArg>,
+    temp_args: Vec<EngineArg>,
 ) -> Result<(), Error> {
     if !directory.exists() {
         fs::create_dir_all(directory)?;
     }
 
-    let temp_args_is_empty = temp_args.clone().is_empty();
-
     paintln!("{gray}", "[creating files and folders...]");
     for path in template.paths.into_iter() {
-        let path = if temp_args_is_empty {
-            path
-        } else {
-            let path_parsed = parse_path(pathbuf_to_string(path.path), &temp_args)?;
-            TempPath {
-                path: str_to_pathbuf(&path_parsed),
-                is_file: path.is_file,
-                content: path.content,
-            }
-        };
         create_path(path, directory, &temp_args)?;
     }
 
@@ -47,7 +33,7 @@ pub fn gen_template(
 fn create_path(
     path: TempPath,
     directory: &Path,
-    temp_args: &Vec<TempEngineArg>,
+    temp_args: &Vec<EngineArg>,
 ) -> Result<(), Error> {
     let real_path = TempPath {
         path: get_real_path(directory, path.path),
@@ -66,8 +52,8 @@ fn create_path(
             if content.is_text {
                 let text_decoded = String::from_utf8(bytes_decoded.clone())
                     .expect("Error when parsing template content bytes to utf8.");
-                let text_content_parsed =
-                    parse_content(text_decoded, temp_args)?.as_bytes().to_vec();
+                let engine = Engine::new(temp_args.clone());
+                let text_content_parsed = engine.compile(text_decoded)?.as_bytes().to_vec();
                 file.write_all(&text_content_parsed)?;
             } else {
                 file.write_all(&bytes_decoded)?;

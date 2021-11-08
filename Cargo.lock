@@ -774,6 +774,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "templo_engine"
+version = "0.1.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "28f1c3f488cdf44e3fc6977c9e0d01464a5d54c95644a1717d9b591bf1c1004f"
+dependencies = [
+ "regex",
+]
+
+[[package]]
 name = "termcolor"
 version = "1.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -879,6 +888,7 @@ dependencies = [
  "serde_derive",
  "serde_json",
  "tabled",
+ "templo_engine",
  "termcolor",
  "tokio",
  "winres",

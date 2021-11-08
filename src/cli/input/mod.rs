@@ -1,8 +1,10 @@
 pub mod command;
 pub mod namespaces;
 
+use templo_engine::{EngineArg, EngineArgType};
+
 use self::command::Command;
-use crate::core::{template::{config::ConfigArg, engine::args_parser::TempEngineArg}, utils::errors::invalid_input_error};
+use crate::core::{template::config::ConfigArg, utils::errors::invalid_input_error};
 use std::io::{stdin, stdout, Error, Write};
 
 pub fn check_flags(flags: &Vec<String>, expected_flags: Vec<&str>) -> Result<(), Error> {
@@ -58,13 +60,24 @@ pub fn get_boolean_input(text: &str) -> Result<bool, Error> {
     Ok(bool_value == "y" || bool_value == "Y")
 }
 
-pub fn get_engine_args_input(args: &Vec<ConfigArg>) -> Result<Vec<TempEngineArg>, Error> {
+pub fn get_engine_args_input(args: Vec<ConfigArg>) -> Result<Vec<EngineArg>, Error> {
     args.into_iter()
         .map(|arg| {
-            let value = get(&arg.query)?;
-            Ok(TempEngineArg {
+            let mut value = get(&arg.query)?;
+            
+            // Sets arg default value if it is not specified
+            if value.is_empty() {
+                if let Some(default) = arg.default {
+                    value = default
+                } else {
+                    value = String::new();
+                }
+            }
+
+            Ok(EngineArg {
                 key: arg.key.to_string(),
                 value,
+                value_type: EngineArgType::String,
             })
         })
         .collect()

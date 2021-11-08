@@ -1,32 +1,29 @@
-use crate::core::template::engine::args_parser::parse_path;
+use templo_engine::{Engine, EngineArg, EngineArgType};
 
-use super::{
-    config::ConfigArg,
-    engine::args_parser::{parse_content, set_arg_default_value, TempEngineArg},
-};
+// use super::config::ConfigArg;
 
-fn get_content_parser_config_args() -> Vec<ConfigArg> {
-    vec![
-        ConfigArg {
-            query: "asdasd".to_string(),
-            default: Some("value1".to_string()),
-            about: Some("Sets key1".to_string()),
-            key: "key1".to_string(),
-        },
-        ConfigArg {
-            query: "asdasd".to_string(),
-            default: None,
-            about: None,
-            key: "key2".to_string(),
-        },
-        ConfigArg {
-            query: "asdasd".to_string(),
-            default: Some("value3".to_string()),
-            about: None,
-            key: "key3".to_string(),
-        },
-    ]
-}
+// fn get_content_parser_config_args() -> Vec<ConfigArg> {
+//     vec![
+//         ConfigArg {
+//             query: "asdasd".to_string(),
+//             default: Some("value1".to_string()),
+//             about: Some("Sets key1".to_string()),
+//             key: "key1".to_string(),
+//         },
+//         ConfigArg {
+//             query: "asdasd".to_string(),
+//             default: None,
+//             about: None,
+//             key: "key2".to_string(),
+//         },
+//         ConfigArg {
+//             query: "asdasd".to_string(),
+//             default: Some("value3".to_string()),
+//             about: None,
+//             key: "key3".to_string(),
+//         },
+//     ]
+// }
 
 const TEXT: &'static str = r#"
 function {> fn_name <}(a, b) {
@@ -41,34 +38,40 @@ const obj = {
 }
 "#;
 
-fn get_args() -> Vec<TempEngineArg> {
+fn get_args() -> Vec<EngineArg> {
     vec![
-        TempEngineArg {
+        EngineArg {
             key: "id".to_string(),
             value: "123".to_string(),
+            value_type: EngineArgType::String,
         },
-        TempEngineArg {
+        EngineArg {
             key: "thing".to_string(),
             value: "World!".to_string(),
+            value_type: EngineArgType::String,
         },
-        TempEngineArg {
+        EngineArg {
             key: "name".to_string(),
             value: "Lucas".to_string(),
+            value_type: EngineArgType::String,
         },
-        TempEngineArg {
+        EngineArg {
             key: "fn_name".to_string(),
             value: "add".to_string(),
+            value_type: EngineArgType::String,
         },
-        TempEngineArg {
+        EngineArg {
             key: "folder1".to_string(),
             value: "folder1".to_string(),
+            value_type: EngineArgType::String,
         },
     ]
 }
 
 #[test]
 fn parse_template_content() {
-    let parsed = parse_content(TEXT.to_string(), &get_args()).unwrap();
+    let engine = Engine::new(get_args());
+    let parsed = engine.compile(TEXT.to_string()).unwrap();
 
     assert_eq!(
         parsed,
@@ -85,74 +88,4 @@ const obj = {
 }
 "#
     )
-}
-
-#[test]
-fn parse_template_path1() {
-    let path = "folder1/folder2/([ filename ])".to_string();
-    let args = vec![TempEngineArg {
-        key: "filename".to_string(),
-        value: "template.tpo".to_string(),
-    }];
-    let parsed = parse_path(path, &args).unwrap();
-    assert_eq!(parsed, "folder1/folder2/template.tpo")
-}
-
-#[test]
-fn parse_template_path2() {
-    let path = "folder1/([ folder-name ])/template.tpo".to_string();
-    let args = vec![TempEngineArg {
-        key: "folder-name".to_string(),
-        value: "folder2".to_string(),
-    }];
-    let parsed = parse_path(path, &args).unwrap();
-    assert_eq!(parsed, "folder1/folder2/template.tpo")
-}
-
-#[test]
-fn set_default_value_in_engine_arg1() {
-    let engine_arg = TempEngineArg {
-        key: "key1".to_string(),
-        value: "".to_string(),
-    };
-
-    assert_eq!(
-        set_arg_default_value(engine_arg, &get_content_parser_config_args()).unwrap(),
-        TempEngineArg {
-            key: "key1".to_string(),
-            value: "value1".to_string()
-        }
-    );
-}
-
-#[test]
-fn no_set_none_default_value_in_engine_arg2() {
-    let engine_arg = TempEngineArg {
-        key: "key2".to_string(),
-        value: "".to_string(),
-    };
-
-    assert_eq!(
-        set_arg_default_value(engine_arg, &get_content_parser_config_args()).unwrap(),
-        TempEngineArg {
-            key: "key2".to_string(),
-            value: "".to_string()
-        }
-    );
-}
-
-#[test]
-fn no_set_default_value_in_no_empty_engine_arg2() {
-    let engine_arg = TempEngineArg {
-        key: "key3".to_string(),
-        value: "value3".to_string(),
-    };
-
-    assert_eq!(
-        set_arg_default_value(engine_arg, &get_content_parser_config_args()).unwrap(),
-        TempEngineArg {
-            key: "key3".to_string(),
-            value: "value3".to_string()
-        }
-    );
 }

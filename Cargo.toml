@@ -9,6 +9,7 @@ repository = "https://github.com/pultzlucas/templo"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+templo_engine = "*"
 serde = "1.0.126"
 serde_json = "1.0.64"
 serde_derive = "1.0.126"

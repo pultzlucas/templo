@@ -3,12 +3,12 @@ use crate::cli::input::command::{Command, CommandOption};
 use crate::cli::input::namespaces::get_repo_namespace_obj;
 use crate::cli::output::messages::error::{INVALID_DIRECTORY_PATH_TYPE, INVALID_TEMPLATE_NAME};
 use crate::core::repos::Repository;
-use crate::core::template::engine::args_parser::{set_arg_default_value, TempEngineArg};
 use crate::core::template::{generator, Template};
 use crate::core::utils::errors::{invalid_input_error, std_error};
 use crate::write_help;
 use serde_json::from_str;
 use std::{fs, io::Error, path::Path, time::Instant};
+use templo_engine::{EngineArg, EngineArgType};
 
 pub struct Generate;
 
@@ -48,9 +48,9 @@ impl Generate {
         let template = repo.get_template(&template_namespace.template_name)?;
 
         let temp_args = if !command.options.is_empty() {
-            get_template_args_by_options(command.options, &template)?
+            get_engine_args_by_options(command.options)
         } else {
-            get_template_args_by_temp(&template)?
+            get_engine_args_by_temp(&template)?
         };
 
         generator::gen_template(template, directory, temp_args)?;
@@ -88,9 +88,9 @@ fn gen_from_template_file(command: Command) -> Result<(), Error> {
     let template: Template = std_error(from_str(&template_string))?;
 
     let temp_args = if !command.options.is_empty() {
-        get_template_args_by_options(command.options, &template)?
+        get_engine_args_by_options(command.options)
     } else {
-        get_template_args_by_temp(&template)?
+        get_engine_args_by_temp(&template)?
     };
 
     generator::gen_template(template.clone(), directory, temp_args)?;
@@ -101,33 +101,20 @@ fn gen_from_template_file(command: Command) -> Result<(), Error> {
     Ok(())
 }
 
-fn get_template_args_by_options(
-    options: Vec<CommandOption>,
-    template: &Template,
-) -> Result<Vec<TempEngineArg>, Error> {
+fn get_engine_args_by_options(options: Vec<CommandOption>) -> Vec<EngineArg> {
     options
         .into_iter()
-        .map(|option| TempEngineArg {
+        .map(|option| EngineArg {
             key: option.name,
             value: option.value,
-        })
-        .map(|engine_arg| {
-            if let Some(config_args) = &template.args {
-                set_arg_default_value(engine_arg, config_args)
-            } else {
-                Ok(engine_arg)
-            }
+            value_type: EngineArgType::String,
         })
         .collect()
 }
 
-fn get_template_args_by_temp(template: &Template) -> Result<Vec<TempEngineArg>, Error> {
+fn get_engine_args_by_temp(template: &Template) -> Result<Vec<EngineArg>, Error> {
     if let Some(config_args) = &template.args {
-        let temp_args = input::get_engine_args_input(config_args)?
-            .into_iter()
-            .map(|arg| set_arg_default_value(arg, config_args));
-
-        return temp_args.collect();
+        return input::get_engine_args_input(config_args.to_vec());
     }
 
     Ok(vec![])
